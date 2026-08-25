@@ -1,1 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
 @import 'tailwindcss';
+
+@theme {
+  --color-midnight: #0b0d1a;
+  --color-midnight-soft: #121527;
+  --color-midnight-lift: #1a1e33;
+  --color-rose-gold: #c9956c;
+  --color-rose-light: #e5b897;
+  --color-deep-purple: #7b5ea7;
+  --color-ink-muted: #9699ad;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-midnight font-sans text-white antialiased;
+  }
+}
