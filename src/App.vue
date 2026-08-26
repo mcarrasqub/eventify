@@ -23,10 +23,24 @@ import { RouterLink, RouterView } from 'vue-router';
           <nav class="space-y-2">
             <RouterLink
               to="/"
-              class="flex items-center gap-3 rounded-lg border border-rose-gold/20 bg-rose-gold/10 px-4 py-3 text-sm font-medium text-rose-light transition hover:bg-rose-gold/20"
+              class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
             >
               <span class="font-mono text-xs">01</span>
-              <span>Overview</span>
+              <span>Home</span>
+            </RouterLink>
+            <RouterLink
+              to="/explore"
+              class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
+            >
+              <span class="font-mono text-xs">02</span>
+              <span>Explore</span>
+            </RouterLink>
+            <RouterLink
+              to="/login"
+              class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
+            >
+              <span class="font-mono text-xs">03</span>
+              <span>Log In</span>
             </RouterLink>
           </nav>
         </div>
