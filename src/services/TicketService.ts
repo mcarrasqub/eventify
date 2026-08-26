@@ -11,6 +11,10 @@ export class TicketService {
     return useTicketStore().tickets.find((ticket) => ticket.id === id);
   }
 
+  static getTicketByEventId(eventId: number): TicketInterface[] {
+    return useTicketStore().tickets.filter((ticket) => ticket.eventId === eventId);
+  }
+
   static createTicket(ticket: TicketInterface): void {
     const store = useTicketStore();
 

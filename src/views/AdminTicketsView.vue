@@ -4,20 +4,35 @@ import { computed, ref } from 'vue';
 
 //internal imports
 import { TicketService } from '@/services/TicketService.js';
+import { EventService } from '@/services/EventService.js';
+
+//variables
+const tickets = TicketService.getTickets();
 
 //selectors
 const selectorEvents = computed(() => TicketService.getUniqueTicketEvents());
+const selectorEventOptions = computed(() =>
+  selectorEvents.value.map((eventId) => ({
+    eventId,
+    title: getEventTitle(Number(eventId)),
+  })),
+);
 const selectedEvent = ref('');
 
 //reactive variables
 const filteredTickets = computed(() => {
-  const tickets = TicketService.getTickets();
   if (!selectedEvent.value) {
     return tickets;
   }
 
   return tickets.filter((ticket) => ticket.eventId.toString() === selectedEvent.value);
 });
+
+//functions
+function getEventTitle(eventId: number): string {
+  const event = EventService.getEventById(eventId);
+  return event ? event.title : 'Unknown Event';
+}
 </script>
 
 <template>
@@ -45,12 +60,12 @@ const filteredTickets = computed(() => {
         >
           <option value="" class="bg-midnight text-white">All Events</option>
           <option
-            v-for="eventId in selectorEvents"
-            :key="eventId"
-            :value="eventId"
+            v-for="event in selectorEventOptions"
+            :key="event.eventId"
+            :value="event.eventId"
             class="bg-midnight text-white"
           >
-            {{ eventId }}
+            {{ event.title }}
           </option>
         </select>
       </div>
@@ -62,7 +77,7 @@ const filteredTickets = computed(() => {
           >
             <div class="mb-4 flex items-start justify-between gap-3">
               <h3 class="font-display text-xl font-semibold text-white">
-                {{ ticket.eventId }}
+                {{ getEventTitle(ticket.eventId) }}
               </h3>
               <span
                 class="rounded-full border border-deep-purple/40 bg-deep-purple/20 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-purple-200"
