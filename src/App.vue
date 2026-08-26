@@ -42,6 +42,13 @@ import { RouterLink, RouterView } from 'vue-router';
               <span class="font-mono text-xs">03</span>
               <span>Log In</span>
             </RouterLink>
+            <RouterLink
+              to="/admin_tickets"
+              class="flex items-center gap-3 rounded-lg border border-rose-gold/20 bg-rose-gold/10 px-4 py-3 text-sm font-medium text-rose-light transition hover:bg-rose-gold/20"
+            >
+              <span class="font-mono text-xs">01</span>
+              <span>Admin Tickets</span>
+            </RouterLink>
           </nav>
         </div>
 

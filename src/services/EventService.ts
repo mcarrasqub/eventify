@@ -9,6 +9,11 @@ export class EventService {
     return eventStore.events;
   }
 
+  public static getEventById(id: number): EventInterface | undefined {
+    const eventStore = useEventStore();
+    return eventStore.events.find((event) => event.id === id);
+  }
+
   public static getFeaturedEvents(): EventInterface[] {
     return this.getEvents().slice(0, 3);
   }
