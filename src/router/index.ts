@@ -1,6 +1,7 @@
 // Imports
 import { createRouter, createWebHistory } from 'vue-router';
 
+import AdminTicketsView from '@/views/AdminTicketsView.vue';
 import ExploreEventsView from '@/views/ExploreEventsView.vue';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
@@ -26,6 +27,12 @@ const router = createRouter({
       name: 'login',
       component: LoginView,
       meta: { title: 'Log In' },
+    },
+    {
+      path: '/admin_tickets',
+      name: 'admin_tickets',
+      component: AdminTicketsView,
+      meta: { title: 'Admin Tickets' },
     },
   ],
 });
