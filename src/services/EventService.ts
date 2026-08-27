@@ -2,35 +2,35 @@
 import type { CreateEventDTO, UpdateEventDTO } from '@/dtos/EventDTO.js';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { useEventStore } from '@/stores/eventstore.js';
-import Utils from '@/utils/Utils.js';
 
 // Service Class
 export class EventService {
   public static getEvents(): EventInterface[] {
-    const eventStore = useEventStore();
-    return eventStore.events;
+    const store = useEventStore();
+    return store.events;
   }
 
   public static getEventById(id: number): EventInterface | undefined {
-    const eventStore = useEventStore();
-    return eventStore.events.find((event) => event.id === id);
+    const store = useEventStore();
+    return store.events.find((event) => event.id === id);
   }
 
   public static createEvent(eventDTO: CreateEventDTO): EventInterface {
-    const eventStore = useEventStore();
-    const nextId = Utils.generateNextId(eventStore.events);
+    const store = useEventStore();
+    const nextId =
+      store.events.length > 0 ? Math.max(...store.events.map((event) => event.id), 0) + 1 : 1;
 
     const newEvent: EventInterface = {
       ...eventDTO,
       id: nextId,
     };
 
-    eventStore.addEvent(newEvent);
+    store.addEvent(newEvent);
     return newEvent;
   }
 
   public static updateEvent(id: number, eventDTO: UpdateEventDTO): boolean {
-    const eventStore = useEventStore();
+    const store = useEventStore();
     const existingEvent = this.getEventById(id);
 
     if (!existingEvent) {
@@ -43,12 +43,12 @@ export class EventService {
       id,
     };
 
-    return eventStore.updateEvent(updatedEvent);
+    return store.updateEvent(updatedEvent);
   }
 
   public static deleteEvent(id: number): boolean {
-    const eventStore = useEventStore();
-    return eventStore.removeEvent(id);
+    const store = useEventStore();
+    return store.removeEvent(id);
   }
 
   public static getFeaturedEvents(): EventInterface[] {
