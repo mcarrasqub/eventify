@@ -1,0 +1,7 @@
+export interface TicketInterface {
+  id: number;
+  price: number;
+  status: string;
+  eventId: number;
+  userId: number;
+}
