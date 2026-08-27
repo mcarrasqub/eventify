@@ -15,7 +15,7 @@ withDefaults(
     placeholder?: string;
   }>(),
   {
-    id: 'selector-filtro',
+    id: 'filter-selector',
     label: '',
     placeholder: 'All',
   },
@@ -74,7 +74,7 @@ function getOptionLabel(option: string | SelectorOption): string {
         </option>
       </select>
 
-      <!-- Dropdown Chevron Icon -->
+      <!-- Selector Chevron Icon -->
       <div
         class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-ink-muted"
       >
