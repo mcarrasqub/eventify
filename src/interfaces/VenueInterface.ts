@@ -1,20 +1,12 @@
-/**
- * ============================================================================
- * INTERFACE: VenueInterface
- * Responsibility: Defines the data contract for an event's location/venue.
- * Programming Rule: 1.2 (Domain Typing) & 2 (Interfaces in src/interfaces/).
- * ============================================================================
- */
+// Interface Definition
 export interface VenueInterface {
-  /** Name of the venue or place (e.g., "Madison Square Garden", "Metropolitan Theater") */
+  id: number;
+  imageURL: string;
   name: string;
-
-  /** Physical street address */
-  address: string;
-
-  /** City where the event is hosted (crucial for city-based filtering) */
   city: string;
-
-  /** Maximum attendance capacity of the venue */
+  address: string;
   capacity: number;
+  createdAt: string;
+  updatedAt: string;
+  eventIds?: number[];
 }

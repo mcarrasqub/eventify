@@ -15,6 +15,10 @@ export const eventSeeder: EventInterface[] = [
     time: '09:00 AM',
     duration: '8 hours',
     status: 'Active',
+    createdAt: '2026-08-01T10:00:00Z',
+    updatedAt: '2026-08-01T10:00:00Z',
+    venueId: 1,
+    ticketIds: [1, 3],
   },
   {
     id: 2,
@@ -28,6 +32,10 @@ export const eventSeeder: EventInterface[] = [
     time: '04:00 PM',
     duration: '6 hours',
     status: 'Active',
+    createdAt: '2026-08-05T14:30:00Z',
+    updatedAt: '2026-08-05T14:30:00Z',
+    venueId: 2,
+    ticketIds: [2],
   },
   {
     id: 3,
@@ -41,5 +49,9 @@ export const eventSeeder: EventInterface[] = [
     time: '02:00 PM',
     duration: '3 hours',
     status: 'Active',
+    createdAt: '2026-08-10T09:15:00Z',
+    updatedAt: '2026-08-10T09:15:00Z',
+    venueId: 3,
+    ticketIds: [],
   },
 ];

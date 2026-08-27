@@ -1,9 +1,12 @@
+// Imports
 import { createPinia } from 'pinia';
 import { watch } from 'vue';
-import { ticketSeeder } from '@/stores/ticketseeder.js';
+
 import { eventSeeder } from '@/stores/eventseeder.js';
+import { ticketSeeder } from '@/stores/ticketseeder.js';
 import { userSeeder } from '@/stores/userseeder.js';
 
+// Configuration Class
 export default class PiniaConfig {
   public static init() {
     const pinia = createPinia();

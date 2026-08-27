@@ -10,6 +10,10 @@ export const userSeeder: UserInterface[] = [
     password: 'password123',
     isAdmin: true,
     phone: '3001234567',
+    createdAt: '2026-08-01T10:00:00Z',
+    updatedAt: '2026-08-01T10:00:00Z',
+    eventIds: [1, 2],
+    ticketIds: [1],
   },
   {
     id: 2,
@@ -18,5 +22,9 @@ export const userSeeder: UserInterface[] = [
     password: 'password123',
     isAdmin: false,
     phone: '3009876543',
+    createdAt: '2026-08-01T10:00:00Z',
+    updatedAt: '2026-08-01T10:00:00Z',
+    eventIds: [3],
+    ticketIds: [2],
   },
 ];

@@ -5,31 +5,35 @@ import { useEventStore } from '@/stores/eventstore.js';
 
 // Service Class
 export class EventService {
-  public static getEvents(): EventInterface[] {
+  static getEvents(): EventInterface[] {
     const store = useEventStore();
     return store.events;
   }
 
-  public static getEventById(id: number): EventInterface | undefined {
+  static getEventById(id: number): EventInterface | undefined {
     const store = useEventStore();
     return store.events.find((event) => event.id === id);
   }
 
-  public static createEvent(eventDTO: CreateEventDTO): EventInterface {
+  static createEvent(eventDTO: CreateEventDTO): EventInterface {
     const store = useEventStore();
     const nextId =
       store.events.length > 0 ? Math.max(...store.events.map((event) => event.id), 0) + 1 : 1;
+    const timestamp = new Date().toISOString();
 
     const newEvent: EventInterface = {
       ...eventDTO,
       id: nextId,
+      createdAt: eventDTO.createdAt ?? timestamp,
+      updatedAt: eventDTO.updatedAt ?? timestamp,
+      ticketIds: eventDTO.ticketIds ?? [],
     };
 
     store.addEvent(newEvent);
     return newEvent;
   }
 
-  public static updateEvent(id: number, eventDTO: UpdateEventDTO): boolean {
+  static updateEvent(id: number, eventDTO: UpdateEventDTO): boolean {
     const store = useEventStore();
     const existingEvent = this.getEventById(id);
 
@@ -41,21 +45,22 @@ export class EventService {
       ...existingEvent,
       ...eventDTO,
       id,
+      updatedAt: new Date().toISOString(),
     };
 
     return store.updateEvent(updatedEvent);
   }
 
-  public static deleteEvent(id: number): boolean {
+  static deleteEvent(id: number): boolean {
     const store = useEventStore();
     return store.removeEvent(id);
   }
 
-  public static getFeaturedEvents(): EventInterface[] {
+  static getFeaturedEvents(): EventInterface[] {
     return this.getEvents().slice(0, 3);
   }
 
-  public static searchEvents(query: string, categorySelector: string): EventInterface[] {
+  static searchEvents(query: string, categorySelector: string): EventInterface[] {
     return this.getEvents().filter((event) => {
       const matchesQuery =
         event.title.toLowerCase().includes(query.toLowerCase()) ||
@@ -65,31 +70,31 @@ export class EventService {
     });
   }
 
-  public static getEventsByStatus(statusSelector: string): EventInterface[] {
+  static getEventsByStatus(statusSelector: string): EventInterface[] {
     if (!statusSelector || statusSelector === 'All') {
       return this.getEvents();
     }
     return this.getEvents().filter((event) => event.status === statusSelector);
   }
 
-  public static getEventsByCategory(categorySelector: string): EventInterface[] {
+  static getEventsByCategory(categorySelector: string): EventInterface[] {
     if (!categorySelector || categorySelector === 'All') {
       return this.getEvents();
     }
     return this.getEvents().filter((event) => event.category === categorySelector);
   }
 
-  public static getUniqueCategories(): string[] {
+  static getUniqueCategories(): string[] {
     const categories = this.getEvents().map((event) => event.category);
     return Array.from(new Set(categories));
   }
 
-  public static getUniqueStatuses(): string[] {
+  static getUniqueStatuses(): string[] {
     const statuses = this.getEvents().map((event) => event.status);
     return Array.from(new Set(statuses));
   }
 
-  public static getEventStatusCounts(): Record<string, number> {
+  static getEventStatusCounts(): Record<string, number> {
     const events = this.getEvents();
     const counts: Record<string, number> = {
       Active: 0,
