@@ -1,10 +1,10 @@
 // Imports
 import { createRouter, createWebHistory } from 'vue-router';
 
-import AdminTicketsView from '@/views/AdminTicketsView.vue';
 import ExploreEventsView from '@/views/ExploreEventsView.vue';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
+import TicketsStatsView from '@/views/TicketsStatsView.vue';
 
 // Router Definition
 const router = createRouter({
@@ -29,10 +29,10 @@ const router = createRouter({
       meta: { title: 'Log In' },
     },
     {
-      path: '/admin_tickets',
-      name: 'admin_tickets',
-      component: AdminTicketsView,
-      meta: { title: 'Admin Tickets' },
+      path: '/tickets_stats',
+      name: 'tickets_stats',
+      component: TicketsStatsView,
+      meta: { title: 'Tickets Stats' },
     },
   ],
 });
