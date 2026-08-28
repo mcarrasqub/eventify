@@ -10,19 +10,23 @@ const CURRENT_USER_KEY = 'eventify_current_user';
 
 // Service Class
 export class UserService {
-  public static initializeStorage(): void {
+  static initializeStorage(): void {
     if (!localStorage.getItem(USERS_STORAGE_KEY)) {
       localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(userSeeder));
     }
   }
 
-  public static getUsers(): UserInterface[] {
+  static getUsers(): UserInterface[] {
     this.initializeStorage();
     const data = localStorage.getItem(USERS_STORAGE_KEY);
     return data ? JSON.parse(data) : [];
   }
 
-  public static login(credentials: LoginDTO): UserResponseDTO | null {
+  static getUserById(id: number): UserInterface | undefined {
+    return this.getUsers().find((user) => user.id === id);
+  }
+
+  static login(credentials: LoginDTO): UserResponseDTO | null {
     const users = this.getUsers();
     const foundUser = users.find(
       (u) => u.email === credentials.email && u.password === credentials.password,
@@ -42,7 +46,7 @@ export class UserService {
     return userWithoutPassword;
   }
 
-  public static getCurrentUser(): UserResponseDTO | null {
+  static getCurrentUser(): UserResponseDTO | null {
     const userStore = useUserStore();
     if (userStore.currentUser) {
       return userStore.currentUser;
@@ -57,7 +61,7 @@ export class UserService {
     return null;
   }
 
-  public static logout(): void {
+  static logout(): void {
     localStorage.removeItem(CURRENT_USER_KEY);
     const userStore = useUserStore();
     userStore.setCurrentUser(null);
