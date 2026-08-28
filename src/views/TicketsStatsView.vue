@@ -2,6 +2,7 @@
 // Imports
 import { computed, ref } from 'vue';
 
+import GraphComponent from '@/components/GraphComponent.vue';
 import type { TicketInterface } from '@/interfaces/TicketInterface.js';
 import { EventService } from '@/services/EventService.js';
 import { TicketService } from '@/services/TicketService.js';
@@ -64,6 +65,17 @@ const filteredTickets = computed<TicketInterface[]>(() => {
             {{ event.title }}
           </option>
         </select>
+      </div>
+    </div>
+
+    <!-- Statistics Overview / Graph -->
+    <div class="mb-8 rounded-2xl border border-white/10 bg-midnight-soft p-6 shadow-xl">
+      <div class="mb-4">
+        <h3 class="font-display text-lg font-semibold text-white">Ticket Status Overview</h3>
+        <p class="text-xs text-ink-muted">General distribution overview</p>
+      </div>
+      <div class="mx-auto max-w-xs">
+        <GraphComponent />
       </div>
     </div>
 
