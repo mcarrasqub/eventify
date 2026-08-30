@@ -23,7 +23,7 @@ const featuredEvents = computed(() => EventService.getFeaturedEvents());
         </p>
         <h1 class="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">
           Hello,
-          <span class="text-rose-gold">{{ currentUser ? currentUser.name : 'Guest' }}</span> 👋
+          <span class="text-rose-gold">{{ currentUser ? currentUser.name : 'Guest' }}</span>
         </h1>
         <p class="text-sm text-ink-muted sm:text-base">
           Discover the best technology, cultural, and independent events all in one place.
