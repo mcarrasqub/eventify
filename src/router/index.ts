@@ -34,6 +34,12 @@ const router = createRouter({
       component: TicketsStatsView,
       meta: { title: 'Tickets Stats' },
     },
+    {
+      path: '/admin-events',
+      name: 'admin-events',
+      component: () => import('@/views/AdminEventsView.vue'),
+      meta: { title: 'Admin Events' },
+    },
   ],
 });
 

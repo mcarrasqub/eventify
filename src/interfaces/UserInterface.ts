@@ -6,8 +6,6 @@ export interface UserInterface {
   password?: string;
   isAdmin: boolean;
   phone: string;
-  createdAt: string;
-  updatedAt: string;
   eventIds?: number[];
   ticketIds?: number[];
 }

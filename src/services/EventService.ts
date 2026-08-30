@@ -19,13 +19,10 @@ export class EventService {
     const store = useEventStore();
     const nextId =
       store.events.length > 0 ? Math.max(...store.events.map((event) => event.id), 0) + 1 : 1;
-    const timestamp = new Date().toISOString();
 
     const newEvent: EventInterface = {
       ...eventDTO,
       id: nextId,
-      createdAt: eventDTO.createdAt ?? timestamp,
-      updatedAt: eventDTO.updatedAt ?? timestamp,
       ticketIds: eventDTO.ticketIds ?? [],
     };
 
@@ -45,7 +42,6 @@ export class EventService {
       ...existingEvent,
       ...eventDTO,
       id,
-      updatedAt: new Date().toISOString(),
     };
 
     return store.updateEvent(updatedEvent);
@@ -117,5 +113,9 @@ export class EventService {
     }
 
     return counts;
+  }
+
+  static getEventsByVenueId(venueId: number): EventInterface[] {
+    return this.getEvents().filter((event) => event.venueId === venueId);
   }
 }

@@ -10,8 +10,6 @@ export interface EventInterface {
   time: string;
   duration: string;
   status: string;
-  createdAt: string;
-  updatedAt: string;
   venueId: number;
   ticketIds?: number[];
 }

@@ -23,7 +23,6 @@ export class TicketService {
 
   static createTicket(ticket: TicketInterface): void {
     const store = useTicketStore();
-    const timestamp = new Date().toISOString();
 
     const newTicket: TicketInterface = {
       id: Utils.generateNextId(store.tickets),
@@ -31,8 +30,6 @@ export class TicketService {
       eventId: ticket.eventId,
       price: ticket.price,
       status: ticket.status,
-      createdAt: ticket.createdAt ?? timestamp,
-      updatedAt: ticket.updatedAt ?? timestamp,
     };
 
     store.tickets.push(newTicket);

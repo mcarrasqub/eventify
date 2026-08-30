@@ -5,7 +5,5 @@ export interface VenueInterface {
   city: string;
   address: string;
   capacity: number;
-  createdAt: string;
-  updatedAt: string;
   eventIds?: number[];
 }
