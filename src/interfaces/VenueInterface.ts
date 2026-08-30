@@ -6,4 +6,5 @@ export interface VenueInterface {
   address: string;
   capacity: number;
   eventIds?: number[];
+  imageURL?: string;
 }

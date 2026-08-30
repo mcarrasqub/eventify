@@ -40,6 +40,12 @@ const router = createRouter({
       component: () => import('@/views/AdminEventsView.vue'),
       meta: { title: 'Admin Events' },
     },
+    {
+      path: '/event/:id',
+      name: 'event-show',
+      component: () => import('@/views/ShowEventView.vue'),
+      meta: { title: 'Event Details' },
+    },
   ],
 });
 

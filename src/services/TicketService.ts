@@ -1,5 +1,8 @@
 // Imports
+import type { CreateTicketDTO } from '@/dtos/TicketDTO.js';
 import type { TicketInterface } from '@/interfaces/TicketInterface.js';
+import { EventService } from '@/services/EventService.js';
+import { VenueService } from '@/services/VenueService.js';
 import { useTicketStore } from '@/stores/ticketstore.js';
 import Utils from '@/utils/Utils.js';
 
@@ -21,18 +24,45 @@ export class TicketService {
     return useTicketStore().tickets.filter((ticket) => ticket.userId === userId);
   }
 
-  static createTicket(ticket: TicketInterface): void {
+  static getSoldTicketsCount(eventId: number): number {
+    const eventTickets = this.getTicketByEventId(eventId);
+    return eventTickets.reduce((total, ticket) => total + (ticket.quantity ?? 1), 0);
+  }
+
+  static getTicketPriceByEventId(eventId: number): number {
+    const tickets = this.getTicketByEventId(eventId);
+    return tickets.length > 0 && tickets[0] ? tickets[0].price : 0;
+  }
+
+  static getAvailableTickets(eventId: number): number {
+    const event = EventService.getEventById(eventId);
+    if (!event) {
+      return 0;
+    }
+
+    const venue = VenueService.getVenueById(event.venueId);
+    const capacity = venue?.capacity ?? 0;
+    const soldTickets = this.getSoldTicketsCount(eventId);
+
+    return Math.max(0, capacity - soldTickets);
+  }
+
+  static createTicket(ticketDTO: CreateTicketDTO): TicketInterface | null {
+    const availableTickets = this.getAvailableTickets(ticketDTO.eventId);
+
+    if (ticketDTO.quantity <= 0 || ticketDTO.quantity > availableTickets) {
+      return null;
+    }
+
     const store = useTicketStore();
 
     const newTicket: TicketInterface = {
+      ...ticketDTO,
       id: Utils.generateNextId(store.tickets),
-      userId: ticket.userId,
-      eventId: ticket.eventId,
-      price: ticket.price,
-      status: ticket.status,
     };
 
     store.tickets.push(newTicket);
+    return newTicket;
   }
 
   static getUniqueTicketEvents(): string[] {
@@ -42,14 +72,4 @@ export class TicketService {
 
     return Array.from(uniqueEvents);
   }
-
-  /*  public static getTicketStatsByEventId(eventId: number): number[] {
-    const tickets = TicketService.getTicketByEventId(eventId);
-    const soldTickets = tickets.length;
-
-    const venue = EventService.getVenueByEventId(eventId);
-    const availableTickets = venue.capacity - soldTickets;
-
-    return [soldTickets, availableTickets];
-  } */ // this will give me info for stats when the time comes
 }
