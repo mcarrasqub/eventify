@@ -5,6 +5,7 @@ import { watch } from 'vue';
 import { eventSeeder } from '@/stores/eventseeder.js';
 import { ticketSeeder } from '@/stores/ticketseeder.js';
 import { userSeeder } from '@/stores/userseeder.js';
+import { venueSeeder } from '@/stores/venueseeder.js';
 
 // Configuration Class
 export default class PiniaConfig {
@@ -17,16 +18,20 @@ export default class PiniaConfig {
     } else {
       // initialize the state with the seeders
       pinia.state.value = {
-        user: {
-          users: userSeeder,
-        },
-
         event: {
           events: eventSeeder,
         },
 
         ticket: {
           tickets: ticketSeeder,
+        },
+
+        user: {
+          users: userSeeder,
+        },
+
+        venue: {
+          venues: venueSeeder,
         },
       };
 
