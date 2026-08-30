@@ -45,4 +45,14 @@ export class TicketService {
 
     return Array.from(uniqueEvents);
   }
+
+  /*  public static getTicketStatsByEventId(eventId: number): number[] {
+    const tickets = TicketService.getTicketByEventId(eventId);
+    const soldTickets = tickets.length;
+
+    const venue = EventService.getVenueByEventId(eventId);
+    const availableTickets = venue.capacity - soldTickets;
+
+    return [soldTickets, availableTickets];
+  } */ // this will give me info for stats when the time comes
 }

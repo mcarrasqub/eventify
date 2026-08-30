@@ -60,6 +60,10 @@ export class EventService {
     return this.getEvents().slice(0, 3);
   }
 
+  public static getEventTitle(id: number): string {
+    return this.getEventById(id)?.title ?? 'Unknown Event';
+  }
+
   static searchEvents(query: string, categorySelector: string): EventInterface[] {
     return this.getEvents().filter((event) => {
       const matchesQuery =

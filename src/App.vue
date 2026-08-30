@@ -61,12 +61,12 @@ function handleLogout(): void {
             <!-- Admin-Only Route -->
             <RouterLink
               v-if="currentUser?.isAdmin"
-              to="/admin_tickets"
+              to="/tickets_stats"
               class="flex items-center gap-3 rounded-lg border border-rose-gold/20 bg-rose-gold/10 px-4 py-3 text-sm font-medium text-rose-light transition hover:bg-rose-gold/20"
               active-class="border-rose-gold/50 bg-rose-gold/20 text-white"
             >
               <span class="font-mono text-xs">03</span>
-              <span>Admin Tickets</span>
+              <span>Tickets Statistics</span>
             </RouterLink>
 
             <!-- Login Route (When Not Logged In) -->
