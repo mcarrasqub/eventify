@@ -17,88 +17,47 @@ const eventId = Number(route.params.id);
 
 // Reactive variables
 const quantitySelector = ref<number>(1);
-const feedbackMessage = ref<string>('');
-const feedbackType = ref<'error' | 'success' | ''>('');
+const purchaseMessage = ref<string>('');
 
 // Computed
 const event = computed<EventInterface | undefined>(() => EventService.getEventById(eventId));
 
-const venue = computed<VenueInterface | undefined>(() => {
-  if (!event.value) {
-    return undefined;
-  }
-  return VenueService.getVenueById(event.value.venueId);
-});
+const venue = computed<VenueInterface | undefined>(() =>
+  event.value ? VenueService.getVenueById(event.value.venueId) : undefined,
+);
 
-const availableTickets = computed<number>(() => {
-  if (!event.value) {
-    return 0;
-  }
-  return TicketService.getAvailableTickets(event.value.id);
-});
+const availableTickets = computed<number>(() =>
+  event.value ? TicketService.getAvailableTickets(event.value.id) : 0,
+);
 
-const soldTickets = computed<number>(() => {
-  if (!event.value) {
-    return 0;
-  }
-  return TicketService.getSoldTicketsCount(event.value.id);
-});
+const soldTickets = computed<number>(() =>
+  event.value ? TicketService.getSoldTicketsCount(event.value.id) : 0,
+);
 
-const ticketUnitPrice = computed<number>(() => {
-  if (!event.value) {
-    return 0;
-  }
-  return TicketService.getTicketPriceByEventId(event.value.id);
-});
+const ticketUnitPrice = computed<number>(() =>
+  event.value ? TicketService.getTicketPriceByEventId(event.value.id) : 0,
+);
 
-const totalCost = computed<number>(() => {
-  return quantitySelector.value * ticketUnitPrice.value;
-});
+const totalCost = computed<number>(() => quantitySelector.value * ticketUnitPrice.value);
 
 // Methods
 function handlePurchase(): void {
-  feedbackMessage.value = '';
-  feedbackType.value = '';
-
   if (!event.value) {
-    feedbackType.value = 'error';
-    feedbackMessage.value = 'Event does not exist.';
-    return;
-  }
-
-  if (quantitySelector.value <= 0) {
-    feedbackType.value = 'error';
-    feedbackMessage.value = 'Please select a quantity greater than zero.';
-    return;
-  }
-
-  if (quantitySelector.value > availableTickets.value) {
-    feedbackType.value = 'error';
-    feedbackMessage.value = `Only ${availableTickets.value} tickets are currently available.`;
     return;
   }
 
   const currentUser = UserService.getCurrentUser();
-  const userId = currentUser ? currentUser.id : 1;
 
   const ticketDTO: CreateTicketDTO = {
     eventId: event.value.id,
     price: ticketUnitPrice.value,
     quantity: quantitySelector.value,
     status: 'UNUSED',
-    userId,
+    userId: currentUser ? currentUser.id : 1,
   };
 
-  const createdTicket = TicketService.createTicket(ticketDTO);
-
-  if (createdTicket) {
-    feedbackType.value = 'success';
-    feedbackMessage.value = `Successfully acquired ${quantitySelector.value} ticket(s) for "${event.value.title}"!`;
-    quantitySelector.value = availableTickets.value > 0 ? 1 : 0;
-  } else {
-    feedbackType.value = 'error';
-    feedbackMessage.value = 'Purchase failed. Tickets are sold out or unavailable.';
-  }
+  TicketService.createTicket(ticketDTO);
+  purchaseMessage.value = `Successfully acquired ${quantitySelector.value} ticket(s) for "${event.value.title}"!`;
 }
 </script>
 
@@ -278,11 +237,7 @@ function handlePurchase(): void {
             <!-- Purchase Button -->
             <button
               type="button"
-              :disabled="
-                quantitySelector <= 0 ||
-                quantitySelector > availableTickets ||
-                availableTickets === 0
-              "
+              :disabled="availableTickets === 0"
               @click="handlePurchase"
               class="w-full rounded-xl bg-rose-gold py-3.5 font-display text-sm font-bold text-midnight transition hover:bg-rose-light disabled:cursor-not-allowed disabled:opacity-40"
             >
@@ -291,15 +246,10 @@ function handlePurchase(): void {
 
             <!-- Feedback Alert -->
             <div
-              v-if="feedbackMessage"
-              :class="[
-                'rounded-xl border p-3 text-xs leading-relaxed',
-                feedbackType === 'success'
-                  ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
-                  : 'border-rose-500/30 bg-rose-500/10 text-rose-300',
-              ]"
+              v-if="purchaseMessage"
+              class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs leading-relaxed text-emerald-300"
             >
-              {{ feedbackMessage }}
+              {{ purchaseMessage }}
             </div>
           </div>
         </div>
