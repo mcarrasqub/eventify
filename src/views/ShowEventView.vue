@@ -4,8 +4,6 @@ import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import type { CreateTicketDTO } from '@/dtos/TicketDTO.js';
-import type { EventInterface } from '@/interfaces/EventInterface.js';
-import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { EventService } from '@/services/EventService.js';
 import { TicketService } from '@/services/TicketService.js';
 import { UserService } from '@/services/UserService.js';
@@ -20,44 +18,36 @@ const quantitySelector = ref<number>(1);
 const purchaseMessage = ref<string>('');
 
 // Computed
-const event = computed<EventInterface | undefined>(() => EventService.getEventById(eventId));
+const event = computed(() => EventService.getEventById(eventId)!);
 
-const venue = computed<VenueInterface | undefined>(() =>
-  event.value ? VenueService.getVenueById(event.value.venueId) : undefined,
-);
+const venue = computed(() => VenueService.getVenueById(event.value.venueId));
 
-const availableTickets = computed<number>(() =>
-  event.value ? TicketService.getAvailableTickets(event.value.id) : 0,
-);
+const availableTickets = computed<number>(() => TicketService.getAvailableTickets(event.value.id));
 
-const soldTickets = computed<number>(() =>
-  event.value ? TicketService.getSoldTicketsCount(event.value.id) : 0,
-);
+const soldTickets = computed<number>(() => TicketService.getSoldTicketsCount(event.value.id));
 
-const ticketUnitPrice = computed<number>(() =>
-  event.value ? TicketService.getTicketPriceByEventId(event.value.id) : 0,
-);
+const ticketUnitPrice = computed<number>(() => EventService.getEventPriceById(event.value.id));
 
 const totalCost = computed<number>(() => quantitySelector.value * ticketUnitPrice.value);
 
 // Methods
 function handlePurchase(): void {
-  if (!event.value) {
-    return;
-  }
-
   const currentUser = UserService.getCurrentUser();
 
   const ticketDTO: CreateTicketDTO = {
     eventId: event.value.id,
-    price: ticketUnitPrice.value,
     quantity: quantitySelector.value,
     status: 'UNUSED',
     userId: currentUser ? currentUser.id : 1,
   };
 
-  TicketService.createTicket(ticketDTO);
-  purchaseMessage.value = `Successfully acquired ${quantitySelector.value} ticket(s) for "${event.value.title}"!`;
+  const createdTickets = TicketService.createTicket(ticketDTO);
+
+  if (createdTickets) {
+    purchaseMessage.value = `Successfully acquired ${createdTickets.length} ticket(s) for "${event.value.title}"!`;
+  } else {
+    purchaseMessage.value = 'Could not complete the purchase. Please check ticket availability.';
+  }
 }
 </script>
 
@@ -74,22 +64,8 @@ function handlePurchase(): void {
       </RouterLink>
     </div>
 
-    <!-- Event Not Found State -->
-    <div v-if="!event" class="rounded-2xl border border-white/10 bg-midnight-soft p-12 text-center">
-      <h2 class="font-display text-2xl font-bold text-white">Event Not Found</h2>
-      <p class="mt-2 text-sm text-ink-muted">The requested event could not be found.</p>
-      <div class="mt-6">
-        <RouterLink
-          to="/explore"
-          class="inline-flex rounded-xl bg-rose-gold px-6 py-2.5 text-xs font-semibold text-midnight transition hover:bg-rose-light"
-        >
-          Explore Other Events
-        </RouterLink>
-      </div>
-    </div>
-
     <!-- Event Details & Purchase Grid -->
-    <div v-else class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
       <!-- Main Event Information -->
       <div class="space-y-6 lg:col-span-2">
         <!-- Event Banner Image -->

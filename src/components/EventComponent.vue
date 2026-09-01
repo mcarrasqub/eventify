@@ -54,11 +54,12 @@ defineProps<{
         <span class="rounded-md bg-emerald-500/10 px-2 py-1 text-xs font-semibold text-emerald-400">
           {{ event.status }}
         </span>
-        <button
+        <RouterLink
+          :to="`/event/${event.id}`"
           class="rounded-lg bg-rose-gold/10 px-3 py-1.5 text-xs font-semibold text-rose-light transition hover:bg-rose-gold hover:text-midnight"
         >
           View Details
-        </button>
+        </RouterLink>
       </div>
     </div>
   </article>

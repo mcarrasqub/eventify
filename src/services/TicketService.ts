@@ -25,13 +25,7 @@ export class TicketService {
   }
 
   static getSoldTicketsCount(eventId: number): number {
-    const eventTickets = this.getTicketByEventId(eventId);
-    return eventTickets.reduce((total, ticket) => total + (ticket.quantity ?? 1), 0);
-  }
-
-  static getTicketPriceByEventId(eventId: number): number {
-    const tickets = this.getTicketByEventId(eventId);
-    return tickets.length > 0 && tickets[0] ? tickets[0].price : 0;
+    return this.getTicketByEventId(eventId).length;
   }
 
   static getAvailableTickets(eventId: number): number {
@@ -47,22 +41,29 @@ export class TicketService {
     return Math.max(0, capacity - soldTickets);
   }
 
-  static createTicket(ticketDTO: CreateTicketDTO): TicketInterface | null {
-    const availableTickets = this.getAvailableTickets(ticketDTO.eventId);
+  static createTicket(ticketDTO: CreateTicketDTO): TicketInterface[] | null {
+    const availableTickets = TicketService.getAvailableTickets(ticketDTO.eventId);
 
-    if (ticketDTO.quantity <= 0 || ticketDTO.quantity > availableTickets) {
+    if (ticketDTO.quantity > availableTickets) {
       return null;
     }
 
     const store = useTicketStore();
+    const createdTickets: TicketInterface[] = [];
 
-    const newTicket: TicketInterface = {
-      ...ticketDTO,
-      id: Utils.generateNextId(store.tickets),
-    };
+    for (let i = 0; i < ticketDTO.quantity; i++) {
+      const newTicket: TicketInterface = {
+        id: Utils.generateNextId(store.tickets),
+        status: ticketDTO.status,
+        eventId: ticketDTO.eventId,
+        userId: ticketDTO.userId,
+      };
 
-    store.tickets.push(newTicket);
-    return newTicket;
+      store.tickets.push(newTicket);
+      createdTickets.push(newTicket);
+    }
+
+    return createdTickets;
   }
 
   static getUniqueTicketEvents(): string[] {
