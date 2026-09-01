@@ -1,9 +1,11 @@
 // Imports
 import { createRouter, createWebHistory } from 'vue-router';
 
+import AdminEventsView from '@/views/AdminEventsView.vue';
 import ExploreEventsView from '@/views/ExploreEventsView.vue';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
+import ShowEventView from '@/views/ShowEventView.vue';
 import TicketsStatsView from '@/views/TicketsStatsView.vue';
 
 // Router Definition
@@ -37,13 +39,13 @@ const router = createRouter({
     {
       path: '/admin-events',
       name: 'admin-events',
-      component: () => import('@/views/AdminEventsView.vue'),
+      component: AdminEventsView,
       meta: { title: 'Admin Events' },
     },
     {
       path: '/event/:id',
       name: 'event-show',
-      component: () => import('@/views/ShowEventView.vue'),
+      component: ShowEventView,
       meta: { title: 'Event Details' },
     },
   ],
