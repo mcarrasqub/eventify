@@ -1,13 +1,19 @@
 <script setup lang="ts">
 // Imports
+// External Imports
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import type { CreateTicketDTO } from '@/dtos/TicketDTO.js';
+// Internal Imports
+import MapComponent from '@/components/MapComponent.vue';
 import { EventService } from '@/services/EventService.js';
 import { TicketService } from '@/services/TicketService.js';
 import { UserService } from '@/services/UserService.js';
 import { VenueService } from '@/services/VenueService.js';
+
+import type { CreateTicketDTO } from '@/dtos/TicketDTO.js';
+import type { EventInterface } from '@/interfaces/EventInterface.js';
+import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 
 // Variables
 const route = useRoute();
@@ -120,9 +126,12 @@ function handlePurchase(): void {
         </div>
 
         <!-- Venue Information -->
-        <div v-if="venue" class="rounded-2xl border border-white/10 bg-midnight-soft p-6 sm:p-8">
+        <div
+          v-if="venue"
+          class="space-y-6 rounded-2xl border border-white/10 bg-midnight-soft p-6 sm:p-8"
+        >
           <h2 class="font-display text-xl font-semibold text-white">Location & Venue</h2>
-          <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <p class="font-mono text-xs uppercase tracking-wider text-rose-gold">Venue</p>
               <p class="mt-1 text-sm font-semibold text-white">{{ venue.name }}</p>
@@ -144,6 +153,14 @@ function handlePurchase(): void {
               <p class="mt-1 font-mono text-sm text-purple-200">{{ soldTickets }}</p>
             </div>
           </div>
+
+          <!-- Venue Map -->
+          <MapComponent
+            :latitude="venue.latitude"
+            :longitude="venue.longitude"
+            :name="venue.name"
+            :address="`${venue.address}, ${venue.city}`"
+          />
         </div>
       </div>
 
