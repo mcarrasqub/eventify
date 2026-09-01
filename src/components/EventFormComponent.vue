@@ -26,7 +26,7 @@ const emit = defineEmits<{
   (e: 'saved', event: EventInterface): void;
 }>();
 
-// Variables reactivas (Formulario y Errores)
+// Reactive State (Form & Errors)
 const title = ref<string>('');
 const description = ref<string>('');
 const type = ref<string>('Conference');
@@ -39,7 +39,7 @@ const venueId = ref<number>(1);
 const imageURL = ref<string>('');
 const errorMessage = ref<string>('');
 
-// Categorías y Tipos predeterminados
+// Default Categories and Types
 const defaultCategories: string[] = [
   'Technology',
   'Music',
@@ -75,7 +75,7 @@ const categoryOptions = computed<string[]>(() => {
   return merged.filter((cat) => cat.length > 0);
 });
 
-// Watcher para sincronizar datos al abrir el modal o cambiar el evento
+// Watcher to synchronize form data when modal opens or event changes
 watch(
   () => [props.isOpen, props.event],
   () => {
@@ -100,7 +100,7 @@ watch(
   { immediate: true },
 );
 
-// Métodos
+// Methods
 function resetForm(): void {
   title.value = '';
   description.value = '';
@@ -217,7 +217,7 @@ function handleSubmit(): void {
     <div
       class="relative my-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-midnight-soft p-6 shadow-2xl sm:p-8"
     >
-      <!-- Encabezado del Modal -->
+      <!-- Modal Header -->
       <div class="mb-6 flex items-center justify-between border-b border-white/10 pb-4">
         <div>
           <p class="font-mono text-[10px] uppercase tracking-[0.24em] text-rose-gold">
@@ -243,7 +243,7 @@ function handleSubmit(): void {
         </button>
       </div>
 
-      <!-- Mensaje de Error -->
+      <!-- Error Message -->
       <div
         v-if="errorMessage"
         class="mb-6 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-400"
@@ -251,9 +251,9 @@ function handleSubmit(): void {
         {{ errorMessage }}
       </div>
 
-      <!-- Formulario de Evento -->
+      <!-- Event Form -->
       <form class="space-y-4" @submit.prevent="handleSubmit">
-        <!-- Título -->
+        <!-- Title -->
         <div class="flex flex-col gap-1.5">
           <label
             for="event-title"
@@ -271,7 +271,7 @@ function handleSubmit(): void {
           />
         </div>
 
-        <!-- Fila de Tipo y Categoría -->
+        <!-- Type and Category Row -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div class="flex flex-col gap-1.5">
             <label
@@ -320,7 +320,7 @@ function handleSubmit(): void {
           </div>
         </div>
 
-        <!-- Fila de Fecha, Hora y Duración -->
+        <!-- Date, Time and Duration Row -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div class="flex flex-col gap-1.5">
             <label
@@ -373,7 +373,7 @@ function handleSubmit(): void {
           </div>
         </div>
 
-        <!-- Fila de Venue y Estado -->
+        <!-- Venue and Status Row -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div class="flex flex-col gap-1.5">
             <label
@@ -422,7 +422,7 @@ function handleSubmit(): void {
           </div>
         </div>
 
-        <!-- URL de Imagen -->
+        <!-- Image URL -->
         <div class="flex flex-col gap-1.5">
           <label
             for="event-image"
@@ -440,7 +440,7 @@ function handleSubmit(): void {
           />
         </div>
 
-        <!-- Descripción -->
+        <!-- Description -->
         <div class="flex flex-col gap-1.5">
           <label
             for="event-description"
@@ -458,7 +458,7 @@ function handleSubmit(): void {
           ></textarea>
         </div>
 
-        <!-- Botones de Acción -->
+        <!-- Action Buttons -->
         <div class="flex items-center justify-end gap-3 border-t border-white/10 pt-4">
           <button
             type="button"

@@ -24,7 +24,7 @@ const emit = defineEmits<{
   (e: 'saved', venue: VenueInterface): void;
 }>();
 
-// Variables reactivas (Formulario y Errores)
+// Reactive State (Form & Errors)
 const name = ref<string>('');
 const city = ref<string>('');
 const address = ref<string>('');
@@ -35,7 +35,7 @@ const errorMessage = ref<string>('');
 // Computed
 const isEditMode = computed<boolean>(() => !!props.venue);
 
-// Watcher para sincronizar datos al abrir el modal o cambiar el venue
+// Watcher to synchronize form data when modal opens or venue changes
 watch(
   () => [props.isOpen, props.venue],
   () => {
@@ -55,7 +55,7 @@ watch(
   { immediate: true },
 );
 
-// Métodos
+// Methods
 function resetForm(): void {
   name.value = '';
   city.value = '';
@@ -147,7 +147,7 @@ function handleSubmit(): void {
     <div
       class="relative my-8 w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-midnight-soft p-6 shadow-2xl sm:p-8"
     >
-      <!-- Encabezado del Modal -->
+      <!-- Modal Header -->
       <div class="mb-6 flex items-center justify-between border-b border-white/10 pb-4">
         <div>
           <p class="font-mono text-[10px] uppercase tracking-[0.24em] text-rose-gold">
@@ -173,7 +173,7 @@ function handleSubmit(): void {
         </button>
       </div>
 
-      <!-- Mensaje de Error -->
+      <!-- Error Message -->
       <div
         v-if="errorMessage"
         class="mb-6 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-400"
@@ -181,9 +181,9 @@ function handleSubmit(): void {
         {{ errorMessage }}
       </div>
 
-      <!-- Formulario de Venue -->
+      <!-- Venue Form -->
       <form class="space-y-4" @submit.prevent="handleSubmit">
-        <!-- Nombre del Venue -->
+        <!-- Venue Name -->
         <div class="flex flex-col gap-1.5">
           <label
             for="venue-name"
@@ -201,7 +201,7 @@ function handleSubmit(): void {
           />
         </div>
 
-        <!-- Fila de Ciudad y Capacidad -->
+        <!-- City and Capacity Row -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div class="flex flex-col gap-1.5">
             <label
@@ -239,7 +239,7 @@ function handleSubmit(): void {
           </div>
         </div>
 
-        <!-- Dirección -->
+        <!-- Address -->
         <div class="flex flex-col gap-1.5">
           <label
             for="venue-address"
@@ -257,7 +257,7 @@ function handleSubmit(): void {
           />
         </div>
 
-        <!-- URL de Imagen -->
+        <!-- Image URL -->
         <div class="flex flex-col gap-1.5">
           <label
             for="venue-image"
@@ -274,7 +274,7 @@ function handleSubmit(): void {
           />
         </div>
 
-        <!-- Botones de Acción -->
+        <!-- Action Buttons -->
         <div class="flex items-center justify-end gap-3 border-t border-white/10 pt-4">
           <button
             type="button"

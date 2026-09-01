@@ -8,7 +8,7 @@ import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
 import { VenueService } from '@/services/VenueService.js';
 
-// Variables reactivas (Búsqueda, Selectores y Modales)
+// Reactive State (Search, Selectors and Modals)
 const searchQuery = ref<string>('');
 const categorySelector = ref<string>('All');
 const statusSelector = ref<string>('All');
@@ -35,7 +35,7 @@ const filteredEvents = computed<EventInterface[]>(() => {
   });
 });
 
-// Métodos
+// Methods
 function handleCreateEvent(): void {
   selectedEvent.value = null;
   isEventModalOpen.value = true;
@@ -61,7 +61,7 @@ function getVenueName(venueId: number): string {
 
 <template>
   <section class="mx-auto max-w-7xl">
-    <!-- Encabezado de la Vista y Acciones de Creación -->
+    <!-- View Header and Creation Actions -->
     <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <p class="mb-2 font-mono text-[10px] uppercase tracking-[0.24em] text-ink-muted">
@@ -84,7 +84,7 @@ function getVenueName(venueId: number): string {
       </div>
     </div>
 
-    <!-- Barra de Búsqueda y Selectores de Filtro -->
+    <!-- Search Bar and Filter Selectors -->
     <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
       <div class="flex flex-col gap-1.5">
         <label
@@ -119,11 +119,11 @@ function getVenueName(venueId: number): string {
       />
     </div>
 
-    <!-- Tabla de Eventos -->
+    <!-- Events Table -->
     <div class="overflow-hidden rounded-2xl border border-white/10 bg-midnight-soft shadow-xl">
       <div class="overflow-x-auto">
         <table class="w-full border-collapse text-left text-sm text-white">
-          <!-- Encabezado de la Tabla -->
+          <!-- Table Header -->
           <thead
             class="border-b border-white/10 bg-midnight-lift font-mono text-[11px] uppercase tracking-[0.2em] text-ink-muted"
           >
@@ -138,9 +138,9 @@ function getVenueName(venueId: number): string {
             </tr>
           </thead>
 
-          <!-- Cuerpo de la Tabla -->
+          <!-- Table Body -->
           <tbody class="divide-y divide-white/5 font-sans">
-            <!-- Estado vacío -->
+            <!-- Empty State -->
             <tr v-if="filteredEvents.length === 0">
               <td colspan="7" class="py-12 text-center">
                 <div class="flex flex-col items-center justify-center gap-3">
@@ -163,7 +163,7 @@ function getVenueName(venueId: number): string {
               </td>
             </tr>
 
-            <!-- Filas de Datos -->
+            <!-- Data Rows -->
             <tr
               v-for="event in filteredEvents"
               :key="event.id"
@@ -174,7 +174,7 @@ function getVenueName(venueId: number): string {
                 #{{ event.id }}
               </td>
 
-              <!-- Evento (Imagen + Título + Tipo) -->
+              <!-- Event (Image + Title + Type) -->
               <td class="px-6 py-4 text-left text-sm align-middle">
                 <div class="flex items-center gap-3">
                   <img
@@ -193,7 +193,7 @@ function getVenueName(venueId: number): string {
                 </div>
               </td>
 
-              <!-- Categoría -->
+              <!-- Category -->
               <td class="px-6 py-4 text-left text-sm align-middle">
                 <span
                   class="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-rose-light"
@@ -202,7 +202,7 @@ function getVenueName(venueId: number): string {
                 </span>
               </td>
 
-              <!-- Fecha y Hora -->
+              <!-- Date & Time -->
               <td class="px-6 py-4 text-left text-sm align-middle">
                 <div class="text-xs">
                   <p class="font-medium text-white">
@@ -222,7 +222,7 @@ function getVenueName(venueId: number): string {
                 </div>
               </td>
 
-              <!-- Estado con Badge de Color -->
+              <!-- Status Badge -->
               <td class="w-32 px-6 py-4 text-center text-sm align-middle">
                 <span
                   :class="[
@@ -237,7 +237,7 @@ function getVenueName(venueId: number): string {
                 </span>
               </td>
 
-              <!-- Acciones: Editar y Eliminar -->
+              <!-- Actions: Edit and Delete -->
               <td class="px-6 py-4 text-right text-sm align-middle">
                 <div class="flex items-center justify-end gap-2">
                   <button
@@ -262,7 +262,7 @@ function getVenueName(venueId: number): string {
       </div>
     </div>
 
-    <!-- Modales de Formulario -->
+    <!-- Form Modal -->
     <EventFormComponent
       :is-open="isEventModalOpen"
       :event="selectedEvent"

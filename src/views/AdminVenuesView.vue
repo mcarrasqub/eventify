@@ -8,7 +8,7 @@ import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { EventService } from '@/services/EventService.js';
 import { VenueService } from '@/services/VenueService.js';
 
-// Variables reactivas (Búsqueda, Selectores y Modales)
+// Reactive State (Search, Selectors and Modals)
 const searchQuery = ref<string>('');
 const citySelector = ref<string>('All');
 
@@ -35,7 +35,7 @@ const filteredVenues = computed<VenueInterface[]>(() => {
   });
 });
 
-// Métodos
+// Methods
 function handleCreateVenue(): void {
   selectedVenue.value = null;
   isVenueModalOpen.value = true;
@@ -60,7 +60,7 @@ function getEventCount(venueId: number): number {
 
 <template>
   <section class="mx-auto max-w-7xl">
-    <!-- Encabezado de la Vista y Acciones de Creación -->
+    <!-- View Header and Creation Actions -->
     <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <p class="mb-2 font-mono text-[10px] uppercase tracking-[0.24em] text-ink-muted">
@@ -83,7 +83,7 @@ function getEventCount(venueId: number): number {
       </div>
     </div>
 
-    <!-- Barra de Búsqueda y Selectores de Filtro -->
+    <!-- Search Bar and Filter Selectors -->
     <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div class="flex flex-col gap-1.5">
         <label
@@ -110,11 +110,11 @@ function getEventCount(venueId: number): number {
       />
     </div>
 
-    <!-- Tabla de Venues -->
+    <!-- Venues Table -->
     <div class="overflow-hidden rounded-2xl border border-white/10 bg-midnight-soft shadow-xl">
       <div class="overflow-x-auto">
         <table class="w-full border-collapse text-left text-sm text-white">
-          <!-- Encabezado de la Tabla -->
+          <!-- Table Header -->
           <thead
             class="border-b border-white/10 bg-midnight-lift font-mono text-[11px] uppercase tracking-[0.2em] text-ink-muted"
           >
@@ -129,9 +129,9 @@ function getEventCount(venueId: number): number {
             </tr>
           </thead>
 
-          <!-- Cuerpo de la Tabla -->
+          <!-- Table Body -->
           <tbody class="divide-y divide-white/5 font-sans">
-            <!-- Estado vacío -->
+            <!-- Empty State -->
             <tr v-if="filteredVenues.length === 0">
               <td colspan="7" class="py-12 text-center">
                 <div class="flex flex-col items-center justify-center gap-3">
@@ -154,7 +154,7 @@ function getEventCount(venueId: number): number {
               </td>
             </tr>
 
-            <!-- Filas de Datos -->
+            <!-- Data Rows -->
             <tr
               v-for="venue in filteredVenues"
               :key="venue.id"
@@ -165,7 +165,7 @@ function getEventCount(venueId: number): number {
                 #{{ venue.id }}
               </td>
 
-              <!-- Venue (Imagen + Nombre) -->
+              <!-- Venue (Image + Name) -->
               <td class="px-6 py-4 text-left text-sm align-middle">
                 <div class="flex items-center gap-3">
                   <img
@@ -184,7 +184,7 @@ function getEventCount(venueId: number): number {
                 </div>
               </td>
 
-              <!-- Ciudad -->
+              <!-- City -->
               <td class="px-6 py-4 text-left text-sm align-middle">
                 <span
                   class="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-rose-light"
@@ -193,17 +193,17 @@ function getEventCount(venueId: number): number {
                 </span>
               </td>
 
-              <!-- Dirección -->
+              <!-- Address -->
               <td class="px-6 py-4 text-left text-sm text-ink-muted align-middle">
                 {{ venue.address }}
               </td>
 
-              <!-- Capacidad -->
+              <!-- Capacity -->
               <td class="px-6 py-4 text-left text-sm font-medium text-white align-middle">
                 {{ venue.capacity.toLocaleString() }} pax
               </td>
 
-              <!-- Eventos Vinculados -->
+              <!-- Linked Events -->
               <td class="px-6 py-4 text-center text-sm align-middle">
                 <span
                   class="rounded-md border border-white/10 bg-midnight px-2.5 py-1 font-mono text-xs text-white"
@@ -212,7 +212,7 @@ function getEventCount(venueId: number): number {
                 </span>
               </td>
 
-              <!-- Acciones: Editar y Eliminar -->
+              <!-- Actions: Edit and Delete -->
               <td class="px-6 py-4 text-right text-sm align-middle">
                 <div class="flex items-center justify-end gap-2">
                   <button
@@ -237,7 +237,7 @@ function getEventCount(venueId: number): number {
       </div>
     </div>
 
-    <!-- Modales de Formulario -->
+    <!-- Form Modal -->
     <VenueFormComponent
       :is-open="isVenueModalOpen"
       :venue="selectedVenue"
