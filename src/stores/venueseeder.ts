@@ -6,7 +6,7 @@ export const venueSeeder: VenueInterface[] = [
   {
     id: 1,
     imageURL:
-      'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=600&auto=format&fit=crop&q=80',
+      'https://api2.teatrometropolitano.com/storage/365/conversions/WLwSo1wAZsvD99VZgmXh-thumb.jpg',
     name: 'Ágora Bogotá: Convention Center',
     city: 'Bogotá',
     address: 'Ac. 24 #38-47',
@@ -30,7 +30,7 @@ export const venueSeeder: VenueInterface[] = [
   {
     id: 3,
     imageURL:
-      'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&auto=format&fit=crop&q=80',
+      'https://epicoworkspace.com/wp-content/uploads/epico-workspace-coworking-cali-2-1.jpg',
     name: 'Épico Workspace',
     city: 'Cali',
     address: 'Cl. 3 #4-19',
