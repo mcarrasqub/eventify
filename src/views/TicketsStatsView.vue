@@ -117,7 +117,7 @@ const filteredTickets = computed<TicketInterface[]>(() => {
             <div class="flex items-center justify-between text-sm">
               <span class="text-ink-muted">Price</span>
               <span class="font-mono text-base font-medium text-rose-light">
-                {{ ticket.price }}
+                {{ EventService.getEventPriceById(ticket.eventId) }}
               </span>
             </div>
           </div>

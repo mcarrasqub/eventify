@@ -9,6 +9,7 @@ export interface EventInterface {
   date: string;
   time: string;
   duration: string;
+  price: number;
   status: string;
   venueId: number;
   ticketIds?: number[];

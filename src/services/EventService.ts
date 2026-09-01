@@ -15,6 +15,10 @@ export class EventService {
     return store.events.find((event) => event.id === id);
   }
 
+  static getEventPriceById(id: number): number {
+    return this.getEventById(id)?.price ?? 0;
+  }
+
   static createEvent(eventDTO: CreateEventDTO): EventInterface {
     const store = useEventStore();
     const nextId =
