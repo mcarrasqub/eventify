@@ -150,7 +150,7 @@ export const eventSeeder: EventInterface[] = [
   {
     id: 10,
     imageURL:
-      'https://images.unsplash.com/photo-1517649763962-0c623266010b?w=600&auto=format&fit=crop&q=80',
+      'https://img.olympicchannel.com/images/image/private/t_s_pog_staticContent_hero_lg/f_auto/primary/ee5o7x36p22btsxqentt',
     title: 'Urban Skate & Extreme Sports Championship',
     description: 'High-adrenaline skateboarding, BMX, and freestyle competitions.',
     type: 'Tournament',
