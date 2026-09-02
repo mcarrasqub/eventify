@@ -2,6 +2,7 @@
 // Imports
 import { computed, ref } from 'vue';
 
+import BarGraphComponent from '@/components/BarGraphComponent.vue';
 import FilterSelectorComponent from '@/components/FilterSelectorComponent.vue';
 import GraphComponent from '@/components/PieGraphComponent.vue';
 import type { SelectorOption } from '@/components/FilterSelectorComponent.vue';
@@ -19,6 +20,10 @@ const eventOptions: SelectorOption[] = EventService.getEvents().map((event) => (
 }));
 
 const pieLabels = ['Tickets sold', 'Tickets available'];
+
+const revenueLabels = computed<string[]>(() =>
+  EventService.getEvents().map((event) => event.title),
+);
 
 // Computed
 const filteredTickets = computed<TicketInterface[]>(() => {
@@ -65,6 +70,10 @@ const ticketStatusChartData = computed<number[]>(() => {
     TicketService.getAvailableTickets(selectedEventId.value),
   ];
 });
+
+const revenueChartData = computed<number[]>(() =>
+  EventService.getEvents().map((event) => EventService.getEventRevenue(event.id)),
+);
 </script>
 
 <template>
@@ -92,6 +101,36 @@ const ticketStatusChartData = computed<number[]>(() => {
           placeholder="All Events"
           :placeholder-value="''"
           class="sm:min-w-72"
+        />
+      </div>
+    </div>
+
+    <!-- Revenue Overview / Bar Graph -->
+    <div class="mb-8 rounded-2xl border border-white/10 bg-midnight-soft p-6 shadow-xl">
+      <div class="mb-4">
+        <h3 class="font-display text-lg font-semibold text-white">Revenue by Event</h3>
+        <p class="text-xs text-ink-muted">Total revenue across all events</p>
+      </div>
+      <div class="mx-auto max-w-5xl">
+        <BarGraphComponent
+          :data="revenueChartData"
+          :labels="revenueLabels"
+          :background-color="[
+            '#c9956c',
+            '#d4a276',
+            '#7b5ea7',
+            '#b48fd8',
+            '#f0b3a5',
+            '#9bae61',
+            '#8fb5d9',
+            '#ec9f9f',
+            '#6dc7bf',
+            '#d7b8a6',
+            '#a5b4fc',
+            '#d2b3f0',
+          ]"
+          :border-color="'#111827'"
+          title="Event revenue"
         />
       </div>
     </div>
