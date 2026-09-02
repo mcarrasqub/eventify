@@ -11,7 +11,7 @@ const router = useRouter();
 // Computed
 const currentUser = computed(() => UserService.getCurrentUser());
 
-// Methods
+// Métodos
 function handleLogout(): void {
   UserService.logout();
   router.push('/login');
@@ -79,12 +79,23 @@ function handleLogout(): void {
               <span class="font-mono text-xs">04</span>
               <span>Log In</span>
             </RouterLink>
+
             <RouterLink
               to="/admin-events"
               class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
+              active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
             >
               <span class="font-mono text-xs">05</span>
               <span>Admin Events</span>
+            </RouterLink>
+
+            <RouterLink
+              to="/admin-venues"
+              class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
+              active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
+            >
+              <span class="font-mono text-xs">06</span>
+              <span>Admin Venues</span>
             </RouterLink>
           </nav>
         </div>
@@ -123,8 +134,9 @@ function handleLogout(): void {
 
             <!-- Logout Button -->
             <button
-              @click="handleLogout"
+              type="button"
               class="flex w-full items-center justify-center gap-2 rounded-lg border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-xs font-semibold text-rose-300 transition hover:bg-rose-500/20 hover:text-white"
+              @click="handleLogout"
             >
               <span>Log Out</span>
             </button>
@@ -169,7 +181,6 @@ function handleLogout(): void {
             </div>
             <div class="flex items-center gap-3">
               <!-- Mobile Profile Avatar -->
-
               <div
                 class="flex h-9 w-9 items-center justify-center rounded-full bg-deep-purple font-display text-sm text-white lg:hidden"
               >

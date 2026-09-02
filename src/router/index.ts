@@ -43,6 +43,12 @@ const router = createRouter({
       meta: { title: 'Admin Events' },
     },
     {
+      path: '/admin-venues',
+      name: 'admin-venues',
+      component: () => import('@/views/AdminVenuesView.vue'),
+      meta: { title: 'Admin Venues' },
+    },
+    {
       path: '/event/:id',
       name: 'event-show',
       component: ShowEventView,

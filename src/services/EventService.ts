@@ -2,17 +2,16 @@
 import type { CreateEventDTO, UpdateEventDTO } from '@/dtos/EventDTO.js';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { useEventStore } from '@/stores/eventstore.js';
+import Utils from '@/utils/Utils.js';
 
 // Service Class
 export class EventService {
   static getEvents(): EventInterface[] {
-    const store = useEventStore();
-    return store.events;
+    return useEventStore().events;
   }
 
   static getEventById(id: number): EventInterface | undefined {
-    const store = useEventStore();
-    return store.events.find((event) => event.id === id);
+    return useEventStore().events.find((event) => event.id === id);
   }
 
   static getEventPriceById(id: number): number {
@@ -21,46 +20,51 @@ export class EventService {
 
   static createEvent(eventDTO: CreateEventDTO): EventInterface {
     const store = useEventStore();
-    const nextId =
-      store.events.length > 0 ? Math.max(...store.events.map((event) => event.id), 0) + 1 : 1;
 
     const newEvent: EventInterface = {
       ...eventDTO,
-      id: nextId,
+      id: Utils.generateNextId(store.events),
       ticketIds: eventDTO.ticketIds ?? [],
     };
 
-    store.addEvent(newEvent);
+    store.events.push(newEvent);
     return newEvent;
   }
 
   static updateEvent(id: number, eventDTO: UpdateEventDTO): boolean {
     const store = useEventStore();
-    const existingEvent = this.getEventById(id);
+    const index = store.events.findIndex((event) => event.id === id);
 
-    if (!existingEvent) {
+    if (index === -1) {
       return false;
     }
 
-    const updatedEvent: EventInterface = {
-      ...existingEvent,
+    const currentEvent = store.events[index];
+    if (!currentEvent) {
+      return false;
+    }
+
+    store.events[index] = {
+      ...currentEvent,
       ...eventDTO,
       id,
     };
 
-    return store.updateEvent(updatedEvent);
+    return true;
   }
 
   static deleteEvent(id: number): boolean {
     const store = useEventStore();
-    return store.removeEvent(id);
+    const initialLength = store.events.length;
+    store.events = store.events.filter((event) => event.id !== id);
+    return store.events.length < initialLength;
   }
 
   static getFeaturedEvents(): EventInterface[] {
     return this.getEvents().slice(0, 3);
   }
 
-  public static getEventTitle(id: number): string {
+  static getEventTitle(id: number): string {
     return this.getEventById(id)?.title ?? 'Unknown Event';
   }
 
