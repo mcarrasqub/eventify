@@ -30,15 +30,11 @@ export class TicketService {
 
   static getAvailableTickets(eventId: number): number {
     const event = EventService.getEventById(eventId);
-    if (!event) {
-      return 0;
-    }
-
-    const venue = VenueService.getVenueById(event.venueId);
+    const venue = VenueService.getVenueById(event?.venueId ?? 0);
     const capacity = venue?.capacity ?? 0;
     const soldTickets = this.getSoldTicketsCount(eventId);
 
-    return Math.max(0, capacity - soldTickets);
+    return capacity - soldTickets;
   }
 
   static createTicket(ticketDTO: CreateTicketDTO): TicketInterface[] | null {

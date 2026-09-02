@@ -220,12 +220,12 @@ function handlePurchase(): void {
                   0 tickets
                 </option>
                 <option
-                  v-for="qty in Math.min(availableTickets, 10)"
-                  :key="qty"
-                  :value="qty"
+                  v-for="quantity in Math.min(availableTickets, 10)"
+                  :key="quantity"
+                  :value="quantity"
                   class="bg-midnight text-white"
                 >
-                  {{ qty }} {{ qty === 1 ? 'ticket' : 'tickets' }}
+                  {{ quantity }} {{ quantity === 1 ? 'ticket' : 'tickets' }}
                 </option>
               </select>
             </div>

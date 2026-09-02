@@ -7,26 +7,22 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 Chart.register(ArcElement, Legend, PieController, Tooltip);
 
 // Props
-const props = withDefaults(
-  defineProps<{
-    backgroundColor?: string[];
-    data?: number[];
-    labels?: string[];
-  }>(),
-  {
-    backgroundColor: () => ['#c9956c', '#7b5ea7'],
-    data: () => [30, 70],
-    labels: () => ['Used', 'Unused'],
-  },
-);
+const props = defineProps<{
+  backgroundColor: string[];
+  borderColor: string;
+  data: number[];
+  labels: string[];
+  legendPosition?: 'top' | 'left' | 'bottom' | 'right';
+  title?: string;
+}>();
 
-// Reactive variables
+// Variables reactivas
 const chartCanvas = ref<HTMLCanvasElement | null>(null);
 
 // Variables
-let chartInstance: Chart | null = null;
+let chartInstance: Chart<'pie'>;
 
-// Methods
+// Métodos
 function renderChart(): void {
   if (!chartCanvas.value) {
     return;
@@ -42,27 +38,40 @@ function renderChart(): void {
       labels: props.labels,
       datasets: [
         {
-          backgroundColor: props.backgroundColor,
-          borderColor: '#121527',
-          borderWidth: 2,
           data: props.data,
+          backgroundColor: props.backgroundColor,
+          borderColor: props.borderColor,
+          borderWidth: 2,
         },
       ],
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
+          position: props.legendPosition,
           labels: {
-            color: '#e5b897',
+            color: '#f4d7c0',
             font: {
               family: 'DM Mono',
               size: 12,
             },
           },
-          position: 'bottom',
         },
+        title: props.title
+          ? {
+              display: true,
+              text: props.title,
+              color: '#f4d7c0',
+              font: {
+                family: 'DM Mono',
+                size: 13,
+                weight: 'bold',
+              },
+            }
+          : undefined,
       },
-      responsive: true,
     },
   };
 
@@ -75,7 +84,14 @@ onMounted(() => {
 });
 
 watch(
-  () => [props.data, props.labels, props.backgroundColor],
+  () => [
+    props.data,
+    props.labels,
+    props.backgroundColor,
+    props.borderColor,
+    props.legendPosition,
+    props.title,
+  ],
   () => {
     renderChart();
   },
@@ -90,9 +106,21 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <!-- Chart Container -->
-  <div class="relative w-full">
-    <!-- Chart Canvas -->
+  <div class="pie-graph">
     <canvas ref="chartCanvas"></canvas>
   </div>
 </template>
+
+<style scoped>
+.pie-graph {
+  position: relative;
+  width: 100%;
+  height: 260px;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+</style>

@@ -1,6 +1,7 @@
 // Internal Imports
 import type { CreateEventDTO, UpdateEventDTO } from '@/dtos/EventDTO.js';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
+import { TicketService } from '@/services/TicketService.js';
 import { useEventStore } from '@/stores/eventstore.js';
 import Utils from '@/utils/Utils.js';
 
@@ -16,6 +17,13 @@ export class EventService {
 
   static getEventPriceById(id: number): number {
     return this.getEventById(id)?.price ?? 0;
+  }
+
+  static getEventRevenue(eventId: number): number {
+    const event = EventService.getEventById(eventId);
+    const soldTickets = TicketService.getSoldTicketsCount(eventId);
+
+    return soldTickets * (event?.price ?? 0);
   }
 
   static createEvent(eventDTO: CreateEventDTO): EventInterface {
