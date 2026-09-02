@@ -1,4 +1,4 @@
-// Imports
+// Internal Imports
 import type { CreateTicketDTO } from '@/dtos/TicketDTO.js';
 import type { TicketInterface } from '@/interfaces/TicketInterface.js';
 import { EventService } from '@/services/EventService.js';

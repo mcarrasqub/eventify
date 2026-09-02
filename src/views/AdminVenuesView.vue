@@ -1,7 +1,8 @@
 <script setup lang="ts">
-// Imports
+// External Imports
 import { computed, ref } from 'vue';
 
+// Internal Imports
 import FilterSelectorComponent from '@/components/FilterSelectorComponent.vue';
 import VenueFormComponent from '@/components/VenueFormComponent.vue';
 import type { VenueInterface } from '@/interfaces/VenueInterface.js';

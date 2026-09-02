@@ -1,7 +1,8 @@
 <script setup lang="ts">
-// Imports
+// External Imports
 import { computed, ref, watch } from 'vue';
 
+// Internal Imports
 import type { CreateVenueDTO, UpdateVenueDTO } from '@/dtos/VenueDTO.js';
 import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { VenueService } from '@/services/VenueService.js';

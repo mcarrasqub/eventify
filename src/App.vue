@@ -1,8 +1,9 @@
 <script setup lang="ts">
-// Imports
+// External Imports
 import { computed } from 'vue';
 import { RouterLink, RouterView, useRouter } from 'vue-router';
 
+// Internal Imports
 import { UserService } from '@/services/UserService.js';
 
 // Variables
@@ -11,7 +12,7 @@ const router = useRouter();
 // Computed
 const currentUser = computed(() => UserService.getCurrentUser());
 
-// Métodos
+// Methods
 function handleLogout(): void {
   UserService.logout();
   router.push('/login');
@@ -40,63 +41,56 @@ function handleLogout(): void {
 
           <!-- Navigation Links -->
           <nav class="space-y-2">
-            <RouterLink
-              to="/"
-              class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
-              active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
-            >
-              <span class="font-mono text-xs">01</span>
-              <span>Home</span>
-            </RouterLink>
+            <!-- Regular User / Guest Navigation Links -->
+            <template v-if="!currentUser?.isAdmin">
+              <RouterLink
+                to="/"
+                class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
+                active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
+              >
+                <span class="font-mono text-xs">01</span>
+                <span>Home</span>
+              </RouterLink>
 
-            <RouterLink
-              to="/explore"
-              class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
-              active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
-            >
-              <span class="font-mono text-xs">02</span>
-              <span>Explore</span>
-            </RouterLink>
+              <RouterLink
+                to="/explore"
+                class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
+                active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
+              >
+                <span class="font-mono text-xs">02</span>
+                <span>Explore</span>
+              </RouterLink>
+            </template>
 
-            <!-- Admin-Only Route -->
-            <RouterLink
-              v-if="currentUser?.isAdmin"
-              to="/tickets_stats"
-              class="flex items-center gap-3 rounded-lg border border-rose-gold/20 bg-rose-gold/10 px-4 py-3 text-sm font-medium text-rose-light transition hover:bg-rose-gold/20"
-              active-class="border-rose-gold/50 bg-rose-gold/20 text-white"
-            >
-              <span class="font-mono text-xs">03</span>
-              <span>Tickets Statistics</span>
-            </RouterLink>
+            <!-- Admin-Only Navigation Links -->
+            <template v-else>
+              <RouterLink
+                to="/tickets-stats"
+                class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
+                active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
+              >
+                <span class="font-mono text-xs">01</span>
+                <span>Tickets Statistics</span>
+              </RouterLink>
 
-            <!-- Login Route (When Not Logged In) -->
-            <RouterLink
-              v-if="!currentUser"
-              to="/login"
-              class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
-              active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
-            >
-              <span class="font-mono text-xs">04</span>
-              <span>Log In</span>
-            </RouterLink>
+              <RouterLink
+                to="/admin-events"
+                class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
+                active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
+              >
+                <span class="font-mono text-xs">02</span>
+                <span>Admin Events</span>
+              </RouterLink>
 
-            <RouterLink
-              to="/admin-events"
-              class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
-              active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
-            >
-              <span class="font-mono text-xs">05</span>
-              <span>Admin Events</span>
-            </RouterLink>
-
-            <RouterLink
-              to="/admin-venues"
-              class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
-              active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
-            >
-              <span class="font-mono text-xs">06</span>
-              <span>Admin Venues</span>
-            </RouterLink>
+              <RouterLink
+                to="/admin-venues"
+                class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
+                active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
+              >
+                <span class="font-mono text-xs">03</span>
+                <span>Admin Venues</span>
+              </RouterLink>
+            </template>
           </nav>
         </div>
 
@@ -158,9 +152,10 @@ function handleLogout(): void {
 
             <RouterLink
               to="/login"
-              class="flex w-full items-center justify-center rounded-lg bg-rose-gold px-3 py-2 text-xs font-bold text-midnight transition hover:bg-rose-light"
+              class="flex w-full items-center justify-center gap-2 rounded-xl bg-rose-gold px-4 py-2.5 font-display text-xs font-bold text-midnight transition duration-200 hover:bg-rose-light hover:shadow-md hover:shadow-rose-gold/20"
             >
-              Log In
+              <span>Log In</span>
+              <span>→</span>
             </RouterLink>
           </div>
         </div>
@@ -168,28 +163,6 @@ function handleLogout(): void {
 
       <!-- Main Layout Area -->
       <div class="flex min-w-0 flex-1 flex-col lg:ml-64">
-        <!-- Header -->
-        <header class="border-b border-white/10 bg-midnight/80 backdrop-blur">
-          <div class="flex items-center justify-between px-5 py-5 sm:px-8">
-            <div>
-              <p class="font-mono text-[10px] uppercase tracking-[0.25em] text-rose-gold">
-                Saturday, 12 October 2024
-              </p>
-              <h1 class="mt-1 font-display text-2xl font-bold text-white sm:text-3xl">
-                {{ $route.meta.title }}
-              </h1>
-            </div>
-            <div class="flex items-center gap-3">
-              <!-- Mobile Profile Avatar -->
-              <div
-                class="flex h-9 w-9 items-center justify-center rounded-full bg-deep-purple font-display text-sm text-white lg:hidden"
-              >
-                {{ currentUser ? currentUser.name.charAt(0).toUpperCase() : 'G' }}
-              </div>
-            </div>
-          </div>
-        </header>
-
         <!-- Main Content -->
         <main class="flex-1 overflow-y-auto px-5 py-7 sm:px-8 sm:py-10">
           <RouterView />

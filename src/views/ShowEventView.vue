@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// Imports
 // External Imports
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -38,11 +37,16 @@ const totalCost = computed<number>(() => quantitySelector.value * ticketUnitPric
 function handlePurchase(): void {
   const currentUser = UserService.getCurrentUser();
 
+  if (!currentUser) {
+    purchaseMessage.value = 'You must log in to acquire tickets.';
+    return;
+  }
+
   const ticketDTO: CreateTicketDTO = {
     eventId: event.value.id,
     quantity: quantitySelector.value,
     status: 'UNUSED',
-    userId: currentUser ? currentUser.id : 1,
+    userId: currentUser.id,
   };
 
   const createdTickets = TicketService.createTicket(ticketDTO);
@@ -68,76 +72,83 @@ function handlePurchase(): void {
       </RouterLink>
     </div>
 
-    <!-- Event Details & Purchase Grid -->
-    <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-      <!-- Main Event Information -->
-      <div class="space-y-6 lg:col-span-2">
-        <!-- Event Banner Image -->
-        <div class="relative overflow-hidden rounded-2xl border border-white/10 bg-midnight">
-          <img :src="event.imageURL" :alt="event.title" class="h-72 w-full object-cover sm:h-96" />
-          <div class="absolute top-4 right-4 flex gap-2">
-            <span
-              class="rounded-full border border-white/20 bg-midnight/80 px-3 py-1 font-mono text-xs font-medium text-rose-gold backdrop-blur"
-            >
-              {{ event.type }}
-            </span>
-            <span
-              class="rounded-full border border-white/20 bg-midnight/80 px-3 py-1 font-mono text-xs font-medium text-rose-light backdrop-blur"
-            >
-              {{ event.category }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Title & Basic Details -->
-        <div class="rounded-2xl border border-white/10 bg-midnight-soft p-6 sm:p-8">
-          <div class="mb-3 flex items-center justify-between">
-            <span
-              class="rounded-md bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-400"
-            >
-              {{ event.status }}
-            </span>
-            <span class="font-mono text-xs text-ink-muted">
-              {{ event.date }} • {{ event.time }}
-            </span>
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
+      <!-- Left Column: Details & Map -->
+      <div class="space-y-8 lg:col-span-2">
+        <!-- Event Main Card -->
+        <div class="overflow-hidden rounded-3xl border border-white/10 bg-midnight-soft shadow-xl">
+          <div class="relative h-72 sm:h-96">
+            <img
+              :src="event.imageURL"
+              :alt="event.title"
+              class="h-full w-full object-cover opacity-80"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-midnight-soft via-midnight-soft/30 to-transparent"
+            ></div>
+            <div class="absolute bottom-6 left-6 right-6 space-y-2">
+              <span
+                class="rounded-full bg-rose-gold/20 px-3 py-1 font-mono text-xs font-semibold text-rose-gold"
+              >
+                {{ event.category }}
+              </span>
+              <h1 class="font-display text-3xl font-bold text-white sm:text-4xl">
+                {{ event.title }}
+              </h1>
+            </div>
           </div>
 
-          <h1 class="font-display text-3xl font-bold text-white sm:text-4xl">
-            {{ event.title }}
-          </h1>
-
-          <div
-            class="mt-4 flex flex-wrap gap-4 border-t border-white/10 pt-4 font-mono text-xs text-ink-muted"
-          >
-            <div><span class="text-white">Duration:</span> {{ event.duration }}</div>
-            <div><span class="text-white">Category:</span> {{ event.category }}</div>
-            <div><span class="text-white">Type:</span> {{ event.type }}</div>
-          </div>
-
-          <!-- Description -->
-          <div class="mt-6 border-t border-white/10 pt-6">
-            <h2 class="font-display text-xl font-semibold text-white">About the Event</h2>
-            <p class="mt-3 text-sm leading-relaxed text-ink-muted sm:text-base">
+          <div class="space-y-6 p-6 sm:p-8">
+            <p class="text-sm leading-relaxed text-ink-muted sm:text-base">
               {{ event.description }}
             </p>
+
+            <!-- Event Metadata Grid -->
+            <div class="grid grid-cols-2 gap-4 rounded-2xl border border-white/10 bg-midnight p-4">
+              <div>
+                <p class="font-mono text-xs uppercase tracking-wider text-rose-gold">Date</p>
+                <p class="mt-1 text-sm font-semibold text-white">{{ event.date }}</p>
+              </div>
+              <div>
+                <p class="font-mono text-xs uppercase tracking-wider text-rose-gold">Time</p>
+                <p class="mt-1 text-sm font-semibold text-white">{{ event.time }}</p>
+              </div>
+              <div>
+                <p class="font-mono text-xs uppercase tracking-wider text-rose-gold">Duration</p>
+                <p class="mt-1 text-sm font-semibold text-white">{{ event.duration }}</p>
+              </div>
+              <div>
+                <p class="font-mono text-xs uppercase tracking-wider text-rose-gold">Status</p>
+                <p
+                  :class="[
+                    'mt-1 font-mono text-xs font-bold uppercase',
+                    event.status === 'Active' ? 'text-emerald-400' : 'text-rose-400',
+                  ]"
+                >
+                  {{ event.status }}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Venue Information -->
+        <!-- Venue & Location Section -->
         <div
           v-if="venue"
-          class="space-y-6 rounded-2xl border border-white/10 bg-midnight-soft p-6 sm:p-8"
+          class="space-y-6 rounded-3xl border border-white/10 bg-midnight-soft p-6 sm:p-8"
         >
-          <h2 class="font-display text-xl font-semibold text-white">Location & Venue</h2>
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <h2 class="font-display text-2xl font-bold text-white">Location & Venue</h2>
+            <p class="mt-1 text-xs text-ink-muted">Venue details and geographic location</p>
+          </div>
+
+          <div
+            class="grid grid-cols-1 gap-4 rounded-2xl border border-white/10 bg-midnight p-5 sm:grid-cols-3"
+          >
             <div>
               <p class="font-mono text-xs uppercase tracking-wider text-rose-gold">Venue</p>
-              <p class="mt-1 text-sm font-semibold text-white">{{ venue.name }}</p>
-            </div>
-            <div>
-              <p class="font-mono text-xs uppercase tracking-wider text-rose-gold">
-                City & Address
-              </p>
+              <p class="mt-1 font-semibold text-white">{{ venue.name }}</p>
               <p class="mt-1 text-sm text-ink-muted">{{ venue.address }}, {{ venue.city }}</p>
             </div>
             <div>
@@ -172,11 +183,11 @@ function handlePurchase(): void {
           <div class="mt-6 space-y-3 rounded-xl border border-rose-gold/25 bg-rose-gold/10 p-4">
             <div class="flex items-center justify-between">
               <span class="text-xs text-ink-muted">Price per ticket</span>
-              <span class="font-mono text-lg font-bold text-rose-light">
+              <span class="font-mono text-lg font-bold text-rose-gold">
                 ${{ ticketUnitPrice }}
               </span>
             </div>
-            <div class="flex items-center justify-between border-t border-rose-gold/20 pt-2">
+            <div class="flex items-center justify-between border-t border-rose-gold/20 pt-3">
               <span class="text-xs text-ink-muted">Available tickets</span>
               <span
                 :class="[
@@ -238,9 +249,21 @@ function handlePurchase(): void {
             <!-- Feedback Alert -->
             <div
               v-if="purchaseMessage"
-              class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs leading-relaxed text-emerald-300"
+              :class="[
+                'flex flex-col gap-2 rounded-xl border p-3.5 text-xs leading-relaxed',
+                UserService.getCurrentUser()
+                  ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
+                  : 'border-rose-500/30 bg-rose-500/10 text-rose-300',
+              ]"
             >
-              {{ purchaseMessage }}
+              <p>{{ purchaseMessage }}</p>
+              <RouterLink
+                v-if="!UserService.getCurrentUser()"
+                to="/login"
+                class="inline-flex w-fit items-center gap-1 font-semibold text-rose-gold underline hover:text-rose-light"
+              >
+                Go to Log In →
+              </RouterLink>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Imports
+// External Imports
 import { computed, ref } from 'vue';
 
 import BarGraphComponent from '@/components/BarGraphComponent.vue';

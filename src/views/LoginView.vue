@@ -1,8 +1,9 @@
 <script setup lang="ts">
-// Imports
+// External Imports
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+// Internal Imports
 import type { LoginDTO } from '@/dtos/UserDTO.js';
 import { UserService } from '@/services/UserService.js';
 
@@ -27,7 +28,11 @@ function handleLogin(): void {
 
   const user = UserService.login(credentials.value);
   if (user) {
-    router.push('/');
+    if (user.isAdmin) {
+      router.push('/admin-events');
+    } else {
+      router.push('/');
+    }
   } else {
     errorMessage.value = 'Invalid credentials. Try mariana@example.com / password123';
   }
@@ -35,50 +40,98 @@ function handleLogin(): void {
 </script>
 
 <template>
-  <!-- Login Form Container -->
-  <div class="mx-auto flex max-w-md flex-col justify-center py-10">
-    <div class="rounded-2xl border border-white/10 bg-midnight-soft p-8 shadow-xl">
+  <!-- Full Hero Container with Background Image & Overlay -->
+  <div
+    class="relative flex min-h-[82vh] items-center justify-center overflow-hidden rounded-3xl border border-white/10 p-6 sm:p-12"
+  >
+    <!-- Background Image -->
+    <img
+      src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600&auto=format&fit=crop&q=80"
+      alt="Concert stage background"
+      class="absolute inset-0 h-full w-full object-cover opacity-90"
+    />
+
+    <!-- Dark Gradient Overlay -->
+    <div
+      class="absolute inset-0 bg-gradient-to-br from-midnight/95 via-midnight/80 to-midnight/95"
+    ></div>
+
+    <!-- Glassmorphic Login Card (Expanded Width & Padding) -->
+    <div
+      class="relative z-10 w-full max-w-xl overflow-hidden rounded-3xl border border-white/15 bg-midnight-soft/85 p-10 shadow-2xl backdrop-blur-xl sm:p-14"
+    >
+      <!-- Top Decorative Accent Bar -->
+      <div
+        class="absolute top-0 left-0 h-1.5 w-full bg-gradient-to-r from-rose-gold via-rose-light to-rose-gold"
+      ></div>
+
       <!-- Header -->
-      <div class="mb-6 text-center">
-        <h2 class="font-display text-3xl font-bold text-white">Log In</h2>
-        <p class="mt-2 text-xs text-ink-muted">Enter your credentials to access Eventify</p>
+      <div class="mb-10 text-center">
+        <span
+          class="mb-3 inline-flex items-center gap-1.5 rounded-full border border-rose-gold/30 bg-rose-gold/10 px-4 py-1 font-mono text-xs uppercase tracking-widest text-rose-gold"
+        >
+          ✦ Account Access
+        </span>
+        <h2 class="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">
+          Welcome Back
+        </h2>
+        <p class="mt-3 text-sm text-ink-muted sm:text-base">
+          Enter your credentials to access your account
+        </p>
       </div>
 
       <!-- Error Alert -->
       <div
         v-if="errorMessage"
-        class="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-300"
+        class="mb-6 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs leading-relaxed text-rose-300 sm:text-sm"
       >
         {{ errorMessage }}
       </div>
 
-      <!-- Form Inputs -->
-      <form @submit.prevent="handleLogin" class="space-y-4">
-        <div>
-          <label class="mb-1 block font-mono text-xs text-ink-muted">Email address</label>
+      <!-- Login Form -->
+      <form @submit.prevent="handleLogin" class="space-y-6">
+        <!-- Email Input -->
+        <div class="flex flex-col gap-2">
+          <label
+            for="login-email"
+            class="font-mono text-xs uppercase tracking-[0.2em] text-rose-gold"
+          >
+            Email Address
+          </label>
           <input
+            id="login-email"
             v-model="credentials.email"
             type="email"
+            required
             placeholder="mariana@example.com"
-            class="w-full rounded-xl border border-white/10 bg-midnight px-4 py-3 text-sm text-white placeholder-white/30 focus:border-rose-gold focus:outline-none"
+            class="w-full rounded-2xl border border-white/15 bg-midnight/90 px-5 py-3.5 text-base text-white placeholder-white/30 outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30"
           />
         </div>
 
-        <div>
-          <label class="mb-1 block font-mono text-xs text-ink-muted">Password</label>
+        <!-- Password Input -->
+        <div class="flex flex-col gap-2">
+          <label
+            for="login-password"
+            class="font-mono text-xs uppercase tracking-[0.2em] text-rose-gold"
+          >
+            Password
+          </label>
           <input
+            id="login-password"
             v-model="credentials.password"
             type="password"
+            required
             placeholder="••••••••"
-            class="w-full rounded-xl border border-white/10 bg-midnight px-4 py-3 text-sm text-white placeholder-white/30 focus:border-rose-gold focus:outline-none"
+            class="w-full rounded-2xl border border-white/15 bg-midnight/90 px-5 py-3.5 text-base text-white placeholder-white/30 outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30"
           />
         </div>
 
+        <!-- Submit Button -->
         <button
           type="submit"
-          class="w-full rounded-xl bg-rose-gold py-3 font-display text-sm font-bold text-midnight transition hover:bg-rose-light"
+          class="mt-4 w-full rounded-2xl bg-rose-gold py-4 font-display text-base font-bold text-midnight transition duration-200 hover:bg-rose-light hover:shadow-xl hover:shadow-rose-gold/25"
         >
-          Sign In
+          Log In
         </button>
       </form>
     </div>
