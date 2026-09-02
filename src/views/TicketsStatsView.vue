@@ -2,20 +2,23 @@
 // Imports
 import { computed, ref } from 'vue';
 
-import GraphComponent from '@/components/GraphComponent.vue';
+import FilterSelectorComponent from '@/components/FilterSelectorComponent.vue';
+import GraphComponent from '@/components/PieGraphComponent.vue';
+import type { SelectorOption } from '@/components/FilterSelectorComponent.vue';
 import type { TicketInterface } from '@/interfaces/TicketInterface.js';
 import { EventService } from '@/services/EventService.js';
 import { TicketService } from '@/services/TicketService.js';
 
-// Reactive variables
+// Variables reactivas
 const eventSelector = ref<string>('');
 
 // Variables
-const eventOptions: { eventId: string; title: string }[] =
-  TicketService.getUniqueTicketEvents().map((eventId) => ({
-    eventId,
-    title: EventService.getEventTitle(Number(eventId)),
-  }));
+const eventOptions: SelectorOption[] = EventService.getEvents().map((event) => ({
+  label: event.title,
+  value: String(event.id),
+}));
+
+const pieLabels = ['Tickets sold', 'Tickets available'];
 
 // Computed
 const filteredTickets = computed<TicketInterface[]>(() => {
@@ -24,6 +27,43 @@ const filteredTickets = computed<TicketInterface[]>(() => {
   }
 
   return TicketService.getTicketByEventId(Number(eventSelector.value));
+});
+
+const selectedEventId = computed<number | null>(() => {
+  if (!eventSelector.value) {
+    return null;
+  }
+
+  return Number(eventSelector.value);
+});
+
+const selectedEventTitle = computed<string>(() => {
+  if (!selectedEventId.value) {
+    return 'All events';
+  }
+
+  return EventService.getEventTitle(selectedEventId.value);
+});
+
+const ticketStatusChartData = computed<number[]>(() => {
+  if (!selectedEventId.value) {
+    const totals = EventService.getEvents().reduce(
+      (totals, event) => {
+        totals.sold += TicketService.getSoldTicketsCount(event.id);
+        totals.available += TicketService.getAvailableTickets(event.id);
+
+        return totals;
+      },
+      { sold: 0, available: 0 },
+    );
+
+    return [totals.sold, totals.available];
+  }
+
+  return [
+    TicketService.getSoldTicketsCount(selectedEventId.value),
+    TicketService.getAvailableTickets(selectedEventId.value),
+  ];
 });
 </script>
 
@@ -44,27 +84,15 @@ const filteredTickets = computed<TicketInterface[]>(() => {
 
       <!-- Event Selector -->
       <div class="w-full sm:w-auto">
-        <label
-          for="ticket-event-selector"
-          class="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] text-rose-gold"
-        >
-          Select event
-        </label>
-        <select
+        <FilterSelectorComponent
           id="ticket-event-selector"
           v-model="eventSelector"
-          class="w-full rounded-xl border border-white/15 bg-midnight-soft px-4 py-3 text-sm text-white outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30 sm:min-w-72"
-        >
-          <option value="" class="bg-midnight text-white">All Events</option>
-          <option
-            v-for="event in eventOptions"
-            :key="event.eventId"
-            :value="event.eventId"
-            class="bg-midnight text-white"
-          >
-            {{ event.title }}
-          </option>
-        </select>
+          label="Select event"
+          :options="eventOptions"
+          placeholder="All Events"
+          :placeholder-value="''"
+          class="sm:min-w-72"
+        />
       </div>
     </div>
 
@@ -72,10 +100,23 @@ const filteredTickets = computed<TicketInterface[]>(() => {
     <div class="mb-8 rounded-2xl border border-white/10 bg-midnight-soft p-6 shadow-xl">
       <div class="mb-4">
         <h3 class="font-display text-lg font-semibold text-white">Ticket Status Overview</h3>
-        <p class="text-xs text-ink-muted">General distribution overview</p>
+        <p class="text-xs text-ink-muted">
+          {{
+            selectedEventTitle === 'All events'
+              ? 'General distribution overview'
+              : selectedEventTitle
+          }}
+        </p>
       </div>
-      <div class="mx-auto max-w-xs">
-        <GraphComponent />
+      <div class="mx-auto max-w-md">
+        <GraphComponent
+          :data="ticketStatusChartData"
+          :labels="pieLabels"
+          :background-color="['#c9956c', '#7b5ea7']"
+          :border-color="'#111827'"
+          :legend-position="'bottom'"
+          :title="selectedEventTitle === 'All events' ? 'Overall sales' : 'Sales by event'"
+        />
       </div>
     </div>
 

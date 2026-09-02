@@ -13,11 +13,13 @@ withDefaults(
     modelValue: string | number;
     options: (string | SelectorOption)[];
     placeholder?: string;
+    placeholderValue?: string | number;
   }>(),
   {
     id: 'filter-selector',
     label: '',
     placeholder: 'All',
+    placeholderValue: '',
   },
 );
 
@@ -61,7 +63,7 @@ function getOptionLabel(option: string | SelectorOption): string {
         class="w-full appearance-none rounded-xl border border-white/15 bg-midnight-soft px-4 py-2.5 pr-10 text-sm text-white outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30"
         @change="handleSelect"
       >
-        <option v-if="placeholder" value="All" class="bg-midnight text-white">
+        <option v-if="placeholder" :value="placeholderValue" class="bg-midnight text-white">
           {{ placeholder }}
         </option>
         <option
