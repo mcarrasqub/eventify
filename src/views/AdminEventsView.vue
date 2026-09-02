@@ -133,6 +133,7 @@ function getVenueName(venueId: number): string {
               <th scope="col" class="px-6 py-4 text-left font-medium">Category</th>
               <th scope="col" class="px-6 py-4 text-left font-medium">Date & Time</th>
               <th scope="col" class="px-6 py-4 text-left font-medium">Venue</th>
+              <th scope="col" class="px-6 py-4 text-left font-medium">Price</th>
               <th scope="col" class="w-32 px-6 py-4 text-center font-medium">Status</th>
               <th scope="col" class="px-6 py-4 text-right font-medium">Actions</th>
             </tr>
@@ -142,7 +143,7 @@ function getVenueName(venueId: number): string {
           <tbody class="divide-y divide-white/5 font-sans">
             <!-- Empty State -->
             <tr v-if="filteredEvents.length === 0">
-              <td colspan="7" class="py-12 text-center">
+              <td colspan="8" class="py-12 text-center">
                 <div class="flex flex-col items-center justify-center gap-3">
                   <div
                     class="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-midnight text-ink-muted"
@@ -220,6 +221,13 @@ function getVenueName(venueId: number): string {
                   </p>
                   <p class="font-mono text-ink-muted">#{{ event.venueId }}</p>
                 </div>
+              </td>
+
+              <!-- Price -->
+              <td
+                class="px-6 py-4 text-left font-mono text-sm font-medium text-rose-gold align-middle"
+              >
+                ${{ event.price }}
               </td>
 
               <!-- Status Badge -->

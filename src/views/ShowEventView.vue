@@ -12,8 +12,6 @@ import { UserService } from '@/services/UserService.js';
 import { VenueService } from '@/services/VenueService.js';
 
 import type { CreateTicketDTO } from '@/dtos/TicketDTO.js';
-import type { EventInterface } from '@/interfaces/EventInterface.js';
-import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 
 // Variables
 const route = useRoute();

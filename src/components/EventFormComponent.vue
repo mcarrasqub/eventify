@@ -34,6 +34,7 @@ const category = ref<string>('Technology');
 const date = ref<string>('');
 const time = ref<string>('');
 const duration = ref<string>('');
+const price = ref<number>(50);
 const status = ref<string>('Active');
 const venueId = ref<number>(1);
 const imageURL = ref<string>('');
@@ -89,6 +90,7 @@ watch(
         date.value = props.event.date;
         time.value = props.event.time;
         duration.value = props.event.duration;
+        price.value = props.event.price;
         status.value = props.event.status;
         venueId.value = props.event.venueId;
         imageURL.value = props.event.imageURL;
@@ -109,6 +111,7 @@ function resetForm(): void {
   date.value = new Date().toISOString().split('T')[0] ?? '';
   time.value = '09:00 AM';
   duration.value = '2 hours';
+  price.value = 50;
   status.value = 'Active';
   venueId.value = venues.value[0]?.id ?? 1;
   imageURL.value =
@@ -142,6 +145,10 @@ function validateForm(): boolean {
     errorMessage.value = 'Event duration is required.';
     return false;
   }
+  if (price.value === undefined || price.value === null || price.value < 0) {
+    errorMessage.value = 'Event price must be a non-negative number.';
+    return false;
+  }
   if (!imageURL.value.trim()) {
     errorMessage.value = 'Event image URL is required.';
     return false;
@@ -166,6 +173,7 @@ function handleSubmit(): void {
       date: date.value,
       duration: duration.value,
       imageURL: imageURL.value,
+      price: Number(price.value),
       status: status.value,
       description: description.value,
       time: time.value,
@@ -190,6 +198,7 @@ function handleSubmit(): void {
       date: date.value,
       duration: duration.value,
       imageURL: imageURL.value,
+      price: Number(price.value),
       status: status.value,
       description: description.value,
       ticketIds: [],
@@ -320,8 +329,8 @@ function handleSubmit(): void {
           </div>
         </div>
 
-        <!-- Date, Time and Duration Row -->
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <!-- Date, Time, Duration and Price Row -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div class="flex flex-col gap-1.5">
             <label
               for="event-date"
@@ -368,6 +377,25 @@ function handleSubmit(): void {
               type="text"
               required
               placeholder="e.g. 3 hours"
+              class="w-full rounded-xl border border-white/15 bg-midnight px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label
+              for="event-price"
+              class="font-mono text-[10px] uppercase tracking-[0.2em] text-rose-gold"
+            >
+              Price ($) *
+            </label>
+            <input
+              id="event-price"
+              v-model.number="price"
+              type="number"
+              min="0"
+              step="0.01"
+              required
+              placeholder="e.g. 50"
               class="w-full rounded-xl border border-white/15 bg-midnight px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30"
             />
           </div>
