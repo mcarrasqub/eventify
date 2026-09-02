@@ -1,4 +1,4 @@
-// Imports
+// Internal Imports
 import type { CreateEventDTO, UpdateEventDTO } from '@/dtos/EventDTO.js';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { useEventStore } from '@/stores/eventstore.js';

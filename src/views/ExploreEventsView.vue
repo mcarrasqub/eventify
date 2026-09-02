@@ -1,8 +1,9 @@
 <script setup lang="ts">
-// Imports
+// External Imports
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
+// Internal Imports
 import EventComponent from '@/components/EventComponent.vue';
 import { EventService } from '@/services/EventService.js';
 

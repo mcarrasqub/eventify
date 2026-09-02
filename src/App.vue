@@ -1,8 +1,9 @@
 <script setup lang="ts">
-// Imports
+// External Imports
 import { computed } from 'vue';
 import { RouterLink, RouterView, useRouter } from 'vue-router';
 
+// Internal Imports
 import { UserService } from '@/services/UserService.js';
 
 // Variables

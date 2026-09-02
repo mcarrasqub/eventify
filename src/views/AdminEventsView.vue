@@ -1,7 +1,8 @@
 <script setup lang="ts">
-// Imports
+// External Imports
 import { computed, ref } from 'vue';
 
+// Internal Imports
 import EventFormComponent from '@/components/EventFormComponent.vue';
 import FilterSelectorComponent from '@/components/FilterSelectorComponent.vue';
 import type { EventInterface } from '@/interfaces/EventInterface.js';

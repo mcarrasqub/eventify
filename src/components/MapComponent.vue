@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// External Imports
+// Imports
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { onMounted, onUnmounted, ref } from 'vue';

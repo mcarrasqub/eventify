@@ -1,4 +1,4 @@
-// Imports
+// Internal Imports
 import type { CreateVenueDTO, UpdateVenueDTO } from '@/dtos/VenueDTO.js';
 import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { useVenueStore } from '@/stores/venuestore.js';

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-// Imports
+// External Imports
 import { computed, ref } from 'vue';
 
+// Internal Imports
 import GraphComponent from '@/components/GraphComponent.vue';
 import type { TicketInterface } from '@/interfaces/TicketInterface.js';
 import { EventService } from '@/services/EventService.js';

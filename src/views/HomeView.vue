@@ -1,7 +1,8 @@
 <script setup lang="ts">
-// Imports
+// External Imports
 import { computed } from 'vue';
 
+// Internal Imports
 import EventComponent from '@/components/EventComponent.vue';
 import { EventService } from '@/services/EventService.js';
 import { UserService } from '@/services/UserService.js';

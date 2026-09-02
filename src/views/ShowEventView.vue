@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// Imports
 // External Imports
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';

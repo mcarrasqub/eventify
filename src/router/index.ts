@@ -1,6 +1,8 @@
 // Imports
+// External Imports
 import { createRouter, createWebHistory } from 'vue-router';
 
+// Internal Imports
 import { UserService } from '@/services/UserService.js';
 import AdminEventsView from '@/views/AdminEventsView.vue';
 import AdminVenuesView from '@/views/AdminVenuesView.vue';

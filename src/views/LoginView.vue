@@ -1,8 +1,9 @@
 <script setup lang="ts">
-// Imports
+// External Imports
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+// Internal Imports
 import type { LoginDTO } from '@/dtos/UserDTO.js';
 import { UserService } from '@/services/UserService.js';
 
