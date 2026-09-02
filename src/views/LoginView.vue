@@ -27,7 +27,11 @@ function handleLogin(): void {
 
   const user = UserService.login(credentials.value);
   if (user) {
-    router.push('/');
+    if (user.isAdmin) {
+      router.push('/admin-events');
+    } else {
+      router.push('/');
+    }
   } else {
     errorMessage.value = 'Invalid credentials. Try mariana@example.com / password123';
   }

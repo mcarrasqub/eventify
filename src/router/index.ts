@@ -1,7 +1,9 @@
 // Imports
 import { createRouter, createWebHistory } from 'vue-router';
 
+import { UserService } from '@/services/UserService.js';
 import AdminEventsView from '@/views/AdminEventsView.vue';
+import AdminVenuesView from '@/views/AdminVenuesView.vue';
 import ExploreEventsView from '@/views/ExploreEventsView.vue';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
@@ -31,22 +33,22 @@ const router = createRouter({
       meta: { title: 'Log In' },
     },
     {
-      path: '/tickets_stats',
-      name: 'tickets_stats',
+      path: '/tickets-stats',
+      name: 'tickets-stats',
       component: TicketsStatsView,
-      meta: { title: 'Tickets Stats' },
+      meta: { title: 'Tickets Stats', requiresAuth: true, requiresAdmin: true },
     },
     {
       path: '/admin-events',
       name: 'admin-events',
       component: AdminEventsView,
-      meta: { title: 'Admin Events' },
+      meta: { title: 'Admin Events', requiresAuth: true, requiresAdmin: true },
     },
     {
       path: '/admin-venues',
       name: 'admin-venues',
-      component: () => import('@/views/AdminVenuesView.vue'),
-      meta: { title: 'Admin Venues' },
+      component: AdminVenuesView,
+      meta: { title: 'Admin Venues', requiresAuth: true, requiresAdmin: true },
     },
     {
       path: '/event/:id',
@@ -55,6 +57,27 @@ const router = createRouter({
       meta: { title: 'Event Details' },
     },
   ],
+});
+
+// Route Guard
+router.beforeEach((to, _from, next) => {
+  const currentUser = UserService.getCurrentUser();
+  const requiresAuth = to.meta.requiresAuth;
+  const requiresAdmin = to.meta.requiresAdmin;
+
+  if (requiresAuth && !currentUser) {
+    return next({ name: 'home' });
+  }
+
+  if (requiresAdmin && !currentUser?.isAdmin) {
+    return next({ name: 'home' });
+  }
+
+  if (to.name === 'login' && currentUser) {
+    return next(currentUser.isAdmin ? { name: 'admin-events' } : { name: 'home' });
+  }
+
+  next();
 });
 
 export default router;

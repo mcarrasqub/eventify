@@ -11,7 +11,7 @@ const router = useRouter();
 // Computed
 const currentUser = computed(() => UserService.getCurrentUser());
 
-// Métodos
+// Methods
 function handleLogout(): void {
   UserService.logout();
   router.push('/login');
@@ -40,52 +40,56 @@ function handleLogout(): void {
 
           <!-- Navigation Links -->
           <nav class="space-y-2">
-            <RouterLink
-              to="/"
-              class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
-              active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
-            >
-              <span class="font-mono text-xs">01</span>
-              <span>Home</span>
-            </RouterLink>
+            <!-- Regular User / Guest Navigation Links -->
+            <template v-if="!currentUser?.isAdmin">
+              <RouterLink
+                to="/"
+                class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
+                active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
+              >
+                <span class="font-mono text-xs">01</span>
+                <span>Home</span>
+              </RouterLink>
 
-            <RouterLink
-              to="/explore"
-              class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
-              active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
-            >
-              <span class="font-mono text-xs">02</span>
-              <span>Explore</span>
-            </RouterLink>
+              <RouterLink
+                to="/explore"
+                class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
+                active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
+              >
+                <span class="font-mono text-xs">02</span>
+                <span>Explore</span>
+              </RouterLink>
+            </template>
 
-            <!-- Admin-Only Route -->
-            <RouterLink
-              v-if="currentUser?.isAdmin"
-              to="/tickets_stats"
-              class="flex items-center gap-3 rounded-lg border border-rose-gold/20 bg-rose-gold/10 px-4 py-3 text-sm font-medium text-rose-light transition hover:bg-rose-gold/20"
-              active-class="border-rose-gold/50 bg-rose-gold/20 text-white"
-            >
-              <span class="font-mono text-xs">03</span>
-              <span>Tickets Statistics</span>
-            </RouterLink>
+            <!-- Admin-Only Navigation Links -->
+            <template v-else>
+              <RouterLink
+                to="/tickets-stats"
+                class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
+                active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
+              >
+                <span class="font-mono text-xs">01</span>
+                <span>Tickets Statistics</span>
+              </RouterLink>
 
-            <RouterLink
-              to="/admin-events"
-              class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
-              active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
-            >
-              <span class="font-mono text-xs">04</span>
-              <span>Admin Events</span>
-            </RouterLink>
+              <RouterLink
+                to="/admin-events"
+                class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
+                active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
+              >
+                <span class="font-mono text-xs">02</span>
+                <span>Admin Events</span>
+              </RouterLink>
 
-            <RouterLink
-              to="/admin-venues"
-              class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
-              active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
-            >
-              <span class="font-mono text-xs">05</span>
-              <span>Admin Venues</span>
-            </RouterLink>
+              <RouterLink
+                to="/admin-venues"
+                class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
+                active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
+              >
+                <span class="font-mono text-xs">03</span>
+                <span>Admin Venues</span>
+              </RouterLink>
+            </template>
           </nav>
         </div>
 
