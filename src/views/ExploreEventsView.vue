@@ -1,13 +1,18 @@
 <script setup lang="ts">
 // Imports
 import { computed, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 import EventComponent from '@/components/EventComponent.vue';
 import { EventService } from '@/services/EventService.js';
 
+// Variables
+const route = useRoute();
+
 // Reactive variables
 const searchQuery = ref<string>('');
-const categorySelector = ref<string>('All');
+const initialCategory = typeof route.query.category === 'string' ? route.query.category : 'All';
+const categorySelector = ref<string>(initialCategory);
 
 // Constants
 const categories = ['All', 'Technology', 'Music', 'Design', 'Gastronomy', 'Sports', 'Theater'];

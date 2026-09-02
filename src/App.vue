@@ -168,28 +168,6 @@ function handleLogout(): void {
 
       <!-- Main Layout Area -->
       <div class="flex min-w-0 flex-1 flex-col lg:ml-64">
-        <!-- Header -->
-        <header class="border-b border-white/10 bg-midnight/80 backdrop-blur">
-          <div class="flex items-center justify-between px-5 py-5 sm:px-8">
-            <div>
-              <p class="font-mono text-[10px] uppercase tracking-[0.25em] text-rose-gold">
-                Saturday, 12 October 2024
-              </p>
-              <h1 class="mt-1 font-display text-2xl font-bold text-white sm:text-3xl">
-                {{ $route.meta.title }}
-              </h1>
-            </div>
-            <div class="flex items-center gap-3">
-              <!-- Mobile Profile Avatar -->
-              <div
-                class="flex h-9 w-9 items-center justify-center rounded-full bg-deep-purple font-display text-sm text-white lg:hidden"
-              >
-                {{ currentUser ? currentUser.name.charAt(0).toUpperCase() : 'G' }}
-              </div>
-            </div>
-          </div>
-        </header>
-
         <!-- Main Content -->
         <main class="flex-1 overflow-y-auto px-5 py-7 sm:px-8 sm:py-10">
           <RouterView />
