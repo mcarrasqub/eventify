@@ -69,23 +69,12 @@ function handleLogout(): void {
               <span>Tickets Statistics</span>
             </RouterLink>
 
-            <!-- Login Route (When Not Logged In) -->
-            <RouterLink
-              v-if="!currentUser"
-              to="/login"
-              class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
-              active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
-            >
-              <span class="font-mono text-xs">04</span>
-              <span>Log In</span>
-            </RouterLink>
-
             <RouterLink
               to="/admin-events"
               class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
               active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
             >
-              <span class="font-mono text-xs">05</span>
+              <span class="font-mono text-xs">04</span>
               <span>Admin Events</span>
             </RouterLink>
 
@@ -94,7 +83,7 @@ function handleLogout(): void {
               class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
               active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
             >
-              <span class="font-mono text-xs">06</span>
+              <span class="font-mono text-xs">05</span>
               <span>Admin Venues</span>
             </RouterLink>
           </nav>
@@ -158,9 +147,10 @@ function handleLogout(): void {
 
             <RouterLink
               to="/login"
-              class="flex w-full items-center justify-center rounded-lg bg-rose-gold px-3 py-2 text-xs font-bold text-midnight transition hover:bg-rose-light"
+              class="flex w-full items-center justify-center gap-2 rounded-xl bg-rose-gold px-4 py-2.5 font-display text-xs font-bold text-midnight transition duration-200 hover:bg-rose-light hover:shadow-md hover:shadow-rose-gold/20"
             >
-              Log In
+              <span>Log In</span>
+              <span>→</span>
             </RouterLink>
           </div>
         </div>
