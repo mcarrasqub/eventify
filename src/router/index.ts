@@ -1,4 +1,3 @@
-// Imports
 // External Imports
 import { createRouter, createWebHistory } from 'vue-router';
 
