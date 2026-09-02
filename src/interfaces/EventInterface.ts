@@ -12,5 +12,5 @@ export interface EventInterface {
   price: number;
   status: string;
   venueId: number;
-  ticketIds?: number[];
+  ticketIds?: number[]; // este no es necesario, pero el ticketid si necesita el eventid
 }
