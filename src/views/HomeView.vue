@@ -31,7 +31,7 @@ const popularCategories = computed(() => {
       <img
         src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1600&h=900&fit=crop&auto=format"
         alt="Live event crowd"
-        class="absolute inset-0 h-full w-full object-cover opacity-35"
+        class="absolute inset-0 h-full w-full object-cover opacity-90"
       />
 
       <!-- Dark Gradient Overlay -->
@@ -97,28 +97,43 @@ const popularCategories = computed(() => {
     </div>
 
     <!-- Popular Categories Section -->
-    <div class="rounded-3xl border border-white/10 bg-midnight-soft/60 p-8 sm:p-12">
-      <div class="mb-10 text-center">
-        <p class="mb-1 font-mono text-xs uppercase tracking-widest text-rose-gold">
-          ✦ Browse by categories
-        </p>
-        <h2 class="font-display text-2xl font-bold text-white sm:text-3xl">Popular categories</h2>
-      </div>
+    <div class="relative overflow-hidden rounded-3xl border border-white/10 p-8 sm:p-12">
+      <!-- Background Image -->
+      <img
+        src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1600&h=900&fit=crop&auto=format"
+        alt="Live event crowd"
+        class="absolute inset-0 h-full w-full object-cover opacity-90"
+      />
 
-      <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-        <RouterLink
-          v-for="category in popularCategories"
-          :key="category.name"
-          :to="{ path: '/explore', query: { category: category.name } }"
-          class="group flex flex-col items-center justify-center gap-2 rounded-2xl border border-white/10 bg-midnight/80 p-5 text-center transition duration-300 hover:scale-105 hover:border-rose-gold/40 hover:bg-midnight"
-        >
-          <span class="text-base font-semibold text-white group-hover:text-rose-gold">{{
-            category.name
-          }}</span>
-          <span class="font-mono text-xs text-ink-muted"
-            >{{ category.count }} {{ category.count === 1 ? 'event' : 'events' }}</span
+      <!-- Dark Gradient Overlay -->
+      <div
+        class="absolute inset-0 bg-gradient-to-r from-midnight/95 via-midnight/70 to-midnight/95"
+      ></div>
+
+      <!-- Categories Content -->
+      <div class="relative z-10">
+        <div class="mb-10 text-center">
+          <p class="mb-1 font-mono text-xs uppercase tracking-widest text-rose-gold">
+            ✦ Browse by categories
+          </p>
+          <h2 class="font-display text-2xl font-bold text-white sm:text-3xl">Popular categories</h2>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+          <RouterLink
+            v-for="category in popularCategories"
+            :key="category.name"
+            :to="{ path: '/explore', query: { category: category.name } }"
+            class="group flex flex-col items-center justify-center gap-2 rounded-2xl border border-white/10 bg-midnight/80 p-5 text-center transition duration-300 hover:scale-105 hover:border-rose-gold/40 hover:bg-midnight"
           >
-        </RouterLink>
+            <span class="text-base font-semibold text-white group-hover:text-rose-gold">{{
+              category.name
+            }}</span>
+            <span class="font-mono text-xs text-ink-muted"
+              >{{ category.count }} {{ category.count === 1 ? 'event' : 'events' }}</span
+            >
+          </RouterLink>
+        </div>
       </div>
     </div>
   </section>

@@ -61,7 +61,7 @@ export class EventService {
   }
 
   static getFeaturedEvents(): EventInterface[] {
-    return this.getEvents().slice(0, 3);
+    return this.getEvents().slice(0, 6);
   }
 
   static getEventTitle(id: number): string {
