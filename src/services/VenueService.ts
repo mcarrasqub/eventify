@@ -6,15 +6,15 @@ import Utils from '@/utils/Utils.js';
 
 // Service Class
 export class VenueService {
-  static getVenues(): VenueInterface[] {
+  static getAll(): VenueInterface[] {
     return useVenueStore().venues;
   }
 
-  static getVenueById(id: number): VenueInterface | undefined {
+  static getById(id: number): VenueInterface | undefined {
     return useVenueStore().venues.find((venue) => venue.id === id);
   }
 
-  static createVenue(venueDTO: CreateVenueDTO): VenueInterface {
+  static create(venueDTO: CreateVenueDTO): VenueInterface {
     const store = useVenueStore();
 
     const newVenue: VenueInterface = {
@@ -27,7 +27,7 @@ export class VenueService {
     return newVenue;
   }
 
-  static updateVenue(id: number, venueDTO: UpdateVenueDTO): boolean {
+  static update(id: number, venueDTO: UpdateVenueDTO): boolean {
     const store = useVenueStore();
     const index = store.venues.findIndex((venue) => venue.id === id);
 
@@ -49,7 +49,7 @@ export class VenueService {
     return true;
   }
 
-  static deleteVenue(id: number): boolean {
+  static delete(id: number): boolean {
     const store = useVenueStore();
     const initialLength = store.venues.length;
     store.venues = store.venues.filter((venue) => venue.id !== id);
@@ -57,15 +57,15 @@ export class VenueService {
   }
 
   static getUniqueCities(): string[] {
-    const venues = this.getVenues();
+    const venues = this.getAll();
     const cities = venues.map((venue) => venue.city);
     return Array.from(new Set(cities));
   }
 
-  static getVenuesByCity(citySelector: string): VenueInterface[] {
+  static getByCity(citySelector: string): VenueInterface[] {
     if (!citySelector || citySelector === 'All') {
-      return this.getVenues();
+      return this.getAll();
     }
-    return this.getVenues().filter((venue) => venue.city === citySelector);
+    return this.getAll().filter((venue) => venue.city === citySelector);
   }
 }

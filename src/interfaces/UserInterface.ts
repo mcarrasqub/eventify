@@ -5,6 +5,7 @@ export interface UserInterface {
   email: string;
   password?: string;
   isAdmin: boolean;
+  role?: 'admin' | 'user';
   phone: string;
   eventIds?: number[];
   ticketIds?: number[];

@@ -2,20 +2,12 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-import type { UserResponseDTO } from '@/dtos/UserDTO.js';
+import type { UserInterface } from '@/interfaces/UserInterface.js';
 
 // Store Definition
 export const useUserStore = defineStore('user', () => {
-  // Reactive state
-  const currentUser = ref<UserResponseDTO | null>(null);
+  // State
+  const users = ref<UserInterface[]>([]);
 
-  // Actions
-  function setCurrentUser(user: UserResponseDTO | null): void {
-    currentUser.value = user;
-  }
-
-  return {
-    currentUser,
-    setCurrentUser,
-  };
+  return { users };
 });

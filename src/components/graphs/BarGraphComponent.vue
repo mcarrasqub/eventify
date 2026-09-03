@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Imports
+// External Imports
 import {
   BarController,
   BarElement,
@@ -32,13 +32,13 @@ const props = withDefaults(
   },
 );
 
-// Variables reactivas
+// Reactive State
 const chartCanvas = ref<HTMLCanvasElement | null>(null);
 
 // Variables
 let chartInstance: Chart<'bar'> | null = null;
 
-// Métodos
+// Methods
 function renderChart(): void {
   if (!chartCanvas.value) {
     return;

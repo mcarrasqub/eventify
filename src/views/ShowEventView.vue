@@ -5,12 +5,11 @@ import { useRoute } from 'vue-router';
 
 // Internal Imports
 import MapComponent from '@/components/MapComponent.vue';
+import type { CreateTicketDTO } from '@/dtos/TicketDTO.js';
+import { AuthService } from '@/services/AuthService.js';
 import { EventService } from '@/services/EventService.js';
 import { TicketService } from '@/services/TicketService.js';
-import { UserService } from '@/services/UserService.js';
 import { VenueService } from '@/services/VenueService.js';
-
-import type { CreateTicketDTO } from '@/dtos/TicketDTO.js';
 
 // Variables
 const route = useRoute();
@@ -21,21 +20,21 @@ const quantitySelector = ref<number>(1);
 const purchaseMessage = ref<string>('');
 
 // Computed
-const event = computed(() => EventService.getEventById(eventId)!);
+const event = computed(() => EventService.getById(eventId)!);
 
-const venue = computed(() => VenueService.getVenueById(event.value.venueId));
+const venue = computed(() => VenueService.getById(event.value.venueId));
 
 const availableTickets = computed<number>(() => TicketService.getAvailableTickets(event.value.id));
 
 const soldTickets = computed<number>(() => TicketService.getSoldTicketsCount(event.value.id));
 
-const ticketUnitPrice = computed<number>(() => EventService.getEventPriceById(event.value.id));
+const ticketUnitPrice = computed<number>(() => EventService.getPriceById(event.value.id));
 
 const totalCost = computed<number>(() => quantitySelector.value * ticketUnitPrice.value);
 
 // Methods
 function handlePurchase(): void {
-  const currentUser = UserService.getCurrentUser();
+  const currentUser = AuthService.getCurrentUser();
 
   if (!currentUser) {
     purchaseMessage.value = 'You must log in to acquire tickets.';
@@ -49,7 +48,7 @@ function handlePurchase(): void {
     userId: currentUser.id,
   };
 
-  const createdTickets = TicketService.createTicket(ticketDTO);
+  const createdTickets = TicketService.create(ticketDTO);
 
   if (createdTickets) {
     purchaseMessage.value = `Successfully acquired ${createdTickets.length} ticket(s) for "${event.value.title}"!`;
@@ -251,14 +250,14 @@ function handlePurchase(): void {
               v-if="purchaseMessage"
               :class="[
                 'flex flex-col gap-2 rounded-xl border p-3.5 text-xs leading-relaxed',
-                UserService.getCurrentUser()
+                AuthService.getCurrentUser()
                   ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
                   : 'border-rose-500/30 bg-rose-500/10 text-rose-300',
               ]"
             >
               <p>{{ purchaseMessage }}</p>
               <RouterLink
-                v-if="!UserService.getCurrentUser()"
+                v-if="!AuthService.getCurrentUser()"
                 to="/login"
                 class="inline-flex w-fit items-center gap-1 font-semibold text-rose-gold underline hover:text-rose-light"
               >

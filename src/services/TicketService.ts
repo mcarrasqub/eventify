@@ -8,36 +8,36 @@ import Utils from '@/utils/Utils.js';
 
 // Service Class
 export class TicketService {
-  static getTickets(): TicketInterface[] {
+  static getAll(): TicketInterface[] {
     return useTicketStore().tickets;
   }
 
-  static getTicketById(id: number): TicketInterface | undefined {
+  static getById(id: number): TicketInterface | undefined {
     return useTicketStore().tickets.find((ticket) => ticket.id === id);
   }
 
-  static getTicketByEventId(eventId: number): TicketInterface[] {
+  static getByEventId(eventId: number): TicketInterface[] {
     return useTicketStore().tickets.filter((ticket) => ticket.eventId === eventId);
   }
 
-  static getTicketsByUserId(userId: number): TicketInterface[] {
+  static getByUserId(userId: number): TicketInterface[] {
     return useTicketStore().tickets.filter((ticket) => ticket.userId === userId);
   }
 
   static getSoldTicketsCount(eventId: number): number {
-    return this.getTicketByEventId(eventId).length;
+    return this.getByEventId(eventId).length;
   }
 
   static getAvailableTickets(eventId: number): number {
-    const event = EventService.getEventById(eventId);
-    const venue = VenueService.getVenueById(event?.venueId ?? 0);
+    const event = EventService.getById(eventId);
+    const venue = VenueService.getById(event?.venueId ?? 0);
     const capacity = venue?.capacity ?? 0;
     const soldTickets = this.getSoldTicketsCount(eventId);
 
     return capacity - soldTickets;
   }
 
-  static createTicket(ticketDTO: CreateTicketDTO): TicketInterface[] | null {
+  static create(ticketDTO: CreateTicketDTO): TicketInterface[] | null {
     const availableTickets = TicketService.getAvailableTickets(ticketDTO.eventId);
 
     if (ticketDTO.quantity > availableTickets) {
@@ -63,7 +63,7 @@ export class TicketService {
   }
 
   static getUniqueTicketEvents(): string[] {
-    const tickets = TicketService.getTickets();
+    const tickets = TicketService.getAll();
     const events = tickets.map((ticket) => ticket.eventId.toString());
     const uniqueEvents = new Set(events);
 

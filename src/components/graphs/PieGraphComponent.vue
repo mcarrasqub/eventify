@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Imports
+// External Imports
 import { ArcElement, Chart, Legend, PieController, Tooltip } from 'chart.js';
 import type { ChartConfiguration } from 'chart.js';
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
@@ -16,13 +16,13 @@ const props = defineProps<{
   title?: string;
 }>();
 
-// Variables reactivas
+// Reactive State
 const chartCanvas = ref<HTMLCanvasElement | null>(null);
 
 // Variables
 let chartInstance: Chart<'pie'>;
 
-// Métodos
+// Methods
 function renderChart(): void {
   if (!chartCanvas.value) {
     return;

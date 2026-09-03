@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 
 // Internal Imports
 import type { LoginDTO } from '@/dtos/UserDTO.js';
-import { UserService } from '@/services/UserService.js';
+import { AuthService } from '@/services/AuthService.js';
 
 // Variables
 const router = useRouter();
@@ -26,10 +26,10 @@ function handleLogin(): void {
     return;
   }
 
-  const user = UserService.login(credentials.value);
+  const user = AuthService.login(credentials.value);
   if (user) {
-    if (user.isAdmin) {
-      router.push('/admin-events');
+    if (user.role === 'admin' || user.isAdmin) {
+      router.push('/admin/events');
     } else {
       router.push('/');
     }
