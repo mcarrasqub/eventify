@@ -4,15 +4,15 @@ import { computed } from 'vue';
 
 // Internal Imports
 import EventComponent from '@/components/EventComponent.vue';
+import { AuthService } from '@/services/AuthService.js';
 import { EventService } from '@/services/EventService.js';
-import { UserService } from '@/services/UserService.js';
 
 // Computed
-const currentUser = computed(() => UserService.getCurrentUser());
-const featuredEvents = computed(() => EventService.getFeaturedEvents());
+const currentUser = computed(() => AuthService.getCurrentUser());
+const featuredEvents = computed(() => EventService.getFeatured());
 
 const popularCategories = computed(() => {
-  const events = EventService.getEvents();
+  const events = EventService.getAll();
   const categoryNames = ['Technology', 'Music', 'Design', 'Gastronomy', 'Sports', 'Theater'];
 
   return categoryNames.map((name) => ({

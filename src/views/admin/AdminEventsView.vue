@@ -18,7 +18,7 @@ const isEventModalOpen = ref<boolean>(false);
 const selectedEvent = ref<EventInterface | null>(null);
 
 // Computed
-const allEvents = computed<EventInterface[]>(() => EventService.getEvents());
+const allEvents = computed<EventInterface[]>(() => EventService.getAll());
 
 const categoryOptions = computed<string[]>(() => ['All', ...EventService.getUniqueCategories()]);
 
@@ -50,12 +50,12 @@ function handleEditEvent(event: EventInterface): void {
 function handleDelete(id: number, title: string): void {
   const confirmed = window.confirm(`Are you sure you want to delete the event "${title}"?`);
   if (confirmed) {
-    EventService.deleteEvent(id);
+    EventService.delete(id);
   }
 }
 
 function getVenueName(venueId: number): string {
-  const venue = VenueService.getVenueById(venueId);
+  const venue = VenueService.getById(venueId);
   return venue ? venue.name : `Venue #${venueId}`;
 }
 </script>

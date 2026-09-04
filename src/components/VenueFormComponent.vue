@@ -108,9 +108,9 @@ function handleSubmit(): void {
       name: name.value,
     };
 
-    const updated = VenueService.updateVenue(props.venue.id, updateDTO);
+    const updated = VenueService.update(props.venue.id, updateDTO);
     if (updated) {
-      const refreshed = VenueService.getVenueById(props.venue.id);
+      const refreshed = VenueService.getById(props.venue.id);
       if (refreshed) {
         emit('saved', refreshed);
       }
@@ -130,7 +130,7 @@ function handleSubmit(): void {
       name: name.value,
     };
 
-    const newVenue = VenueService.createVenue(createDTO);
+    const newVenue = VenueService.create(createDTO);
     emit('saved', newVenue);
     handleClose();
   }

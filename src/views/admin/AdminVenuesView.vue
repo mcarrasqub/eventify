@@ -17,7 +17,7 @@ const isVenueModalOpen = ref<boolean>(false);
 const selectedVenue = ref<VenueInterface | null>(null);
 
 // Computed
-const allVenues = computed<VenueInterface[]>(() => VenueService.getVenues());
+const allVenues = computed<VenueInterface[]>(() => VenueService.getAll());
 
 const cityOptions = computed<string[]>(() => ['All', ...VenueService.getUniqueCities()]);
 
@@ -50,12 +50,12 @@ function handleEditVenue(venue: VenueInterface): void {
 function handleDeleteVenue(id: number, name: string): void {
   const confirmed = window.confirm(`Are you sure you want to delete the venue "${name}"?`);
   if (confirmed) {
-    VenueService.deleteVenue(id);
+    VenueService.delete(id);
   }
 }
 
 function getEventCount(venueId: number): number {
-  return EventService.getEventsByVenueId(venueId).length;
+  return EventService.getByVenueId(venueId).length;
 }
 </script>
 

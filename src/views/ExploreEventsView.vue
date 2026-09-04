@@ -20,7 +20,7 @@ const categories = ['All', 'Technology', 'Music', 'Design', 'Gastronomy', 'Sport
 
 // Computed
 const filteredEvents = computed(() =>
-  EventService.searchEvents(searchQuery.value, categorySelector.value),
+  EventService.search(searchQuery.value, categorySelector.value),
 );
 </script>
 

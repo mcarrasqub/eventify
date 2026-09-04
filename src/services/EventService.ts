@@ -7,26 +7,26 @@ import Utils from '@/utils/Utils.js';
 
 // Service Class
 export class EventService {
-  static getEvents(): EventInterface[] {
+  static getAll(): EventInterface[] {
     return useEventStore().events;
   }
 
-  static getEventById(id: number): EventInterface | undefined {
+  static getById(id: number): EventInterface | undefined {
     return useEventStore().events.find((event) => event.id === id);
   }
 
-  static getEventPriceById(id: number): number {
-    return this.getEventById(id)?.price ?? 0;
+  static getPriceById(id: number): number {
+    return this.getById(id)?.price ?? 0;
   }
 
-  static getEventRevenue(eventId: number): number {
-    const event = EventService.getEventById(eventId);
+  static getRevenue(eventId: number): number {
+    const event = EventService.getById(eventId);
     const soldTickets = TicketService.getSoldTicketsCount(eventId);
 
     return soldTickets * (event?.price ?? 0);
   }
 
-  static createEvent(eventDTO: CreateEventDTO): EventInterface {
+  static create(eventDTO: CreateEventDTO): EventInterface {
     const store = useEventStore();
 
     const newEvent: EventInterface = {
@@ -39,7 +39,7 @@ export class EventService {
     return newEvent;
   }
 
-  static updateEvent(id: number, eventDTO: UpdateEventDTO): boolean {
+  static update(id: number, eventDTO: UpdateEventDTO): boolean {
     const store = useEventStore();
     const index = store.events.findIndex((event) => event.id === id);
 
@@ -61,23 +61,23 @@ export class EventService {
     return true;
   }
 
-  static deleteEvent(id: number): boolean {
+  static delete(id: number): boolean {
     const store = useEventStore();
     const initialLength = store.events.length;
     store.events = store.events.filter((event) => event.id !== id);
     return store.events.length < initialLength;
   }
 
-  static getFeaturedEvents(): EventInterface[] {
-    return this.getEvents().slice(0, 6);
+  static getFeatured(): EventInterface[] {
+    return this.getAll().slice(0, 6);
   }
 
-  static getEventTitle(id: number): string {
-    return this.getEventById(id)?.title ?? 'Unknown Event';
+  static getTitle(id: number): string {
+    return this.getById(id)?.title ?? 'Unknown Event';
   }
 
-  static searchEvents(query: string, categorySelector: string): EventInterface[] {
-    return this.getEvents().filter((event) => {
+  static search(query: string, categorySelector: string): EventInterface[] {
+    return this.getAll().filter((event) => {
       const matchesQuery =
         event.title.toLowerCase().includes(query.toLowerCase()) ||
         event.description.toLowerCase().includes(query.toLowerCase());
@@ -86,32 +86,32 @@ export class EventService {
     });
   }
 
-  static getEventsByStatus(statusSelector: string): EventInterface[] {
+  static getByStatus(statusSelector: string): EventInterface[] {
     if (!statusSelector || statusSelector === 'All') {
-      return this.getEvents();
+      return this.getAll();
     }
-    return this.getEvents().filter((event) => event.status === statusSelector);
+    return this.getAll().filter((event) => event.status === statusSelector);
   }
 
-  static getEventsByCategory(categorySelector: string): EventInterface[] {
+  static getByCategory(categorySelector: string): EventInterface[] {
     if (!categorySelector || categorySelector === 'All') {
-      return this.getEvents();
+      return this.getAll();
     }
-    return this.getEvents().filter((event) => event.category === categorySelector);
+    return this.getAll().filter((event) => event.category === categorySelector);
   }
 
   static getUniqueCategories(): string[] {
-    const categories = this.getEvents().map((event) => event.category);
+    const categories = this.getAll().map((event) => event.category);
     return Array.from(new Set(categories));
   }
 
   static getUniqueStatuses(): string[] {
-    const statuses = this.getEvents().map((event) => event.status);
+    const statuses = this.getAll().map((event) => event.status);
     return Array.from(new Set(statuses));
   }
 
-  static getEventStatusCounts(): Record<string, number> {
-    const events = this.getEvents();
+  static getStatusCounts(): Record<string, number> {
+    const events = this.getAll();
     const counts: Record<string, number> = {
       Active: 0,
       Cancelled: 0,
@@ -131,7 +131,7 @@ export class EventService {
     return counts;
   }
 
-  static getEventsByVenueId(venueId: number): EventInterface[] {
-    return this.getEvents().filter((event) => event.venueId === venueId);
+  static getByVenueId(venueId: number): EventInterface[] {
+    return this.getAll().filter((event) => event.venueId === venueId);
   }
 }

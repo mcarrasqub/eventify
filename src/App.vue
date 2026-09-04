@@ -4,17 +4,17 @@ import { computed } from 'vue';
 import { RouterLink, RouterView, useRouter } from 'vue-router';
 
 // Internal Imports
-import { UserService } from '@/services/UserService.js';
+import { AuthService } from '@/services/AuthService.js';
 
 // Variables
 const router = useRouter();
 
 // Computed
-const currentUser = computed(() => UserService.getCurrentUser());
+const currentUser = computed(() => AuthService.getCurrentUser());
 
 // Methods
 function handleLogout(): void {
-  UserService.logout();
+  AuthService.logout();
   router.push('/login');
 }
 </script>
@@ -65,7 +65,7 @@ function handleLogout(): void {
             <!-- Admin-Only Navigation Links -->
             <template v-else>
               <RouterLink
-                to="/tickets-stats"
+                to="/admin/tickets-stats"
                 class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
                 active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
               >
@@ -74,7 +74,7 @@ function handleLogout(): void {
               </RouterLink>
 
               <RouterLink
-                to="/admin-events"
+                to="/admin/events"
                 class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
                 active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
               >
@@ -83,7 +83,7 @@ function handleLogout(): void {
               </RouterLink>
 
               <RouterLink
-                to="/admin-venues"
+                to="/admin/venues"
                 class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
                 active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
               >

@@ -2,36 +2,35 @@
 // External Imports
 import { computed, ref } from 'vue';
 
-import BarGraphComponent from '@/components/BarGraphComponent.vue';
+// Internal Imports
 import FilterSelectorComponent from '@/components/FilterSelectorComponent.vue';
-import GraphComponent from '@/components/PieGraphComponent.vue';
 import type { SelectorOption } from '@/components/FilterSelectorComponent.vue';
+import BarGraphComponent from '@/components/graphs/BarGraphComponent.vue';
+import GraphComponent from '@/components/graphs/PieGraphComponent.vue';
 import type { TicketInterface } from '@/interfaces/TicketInterface.js';
 import { EventService } from '@/services/EventService.js';
 import { TicketService } from '@/services/TicketService.js';
 
-// Variables reactivas
+// Reactive State
 const eventSelector = ref<string>('');
 
 // Variables
-const eventOptions: SelectorOption[] = EventService.getEvents().map((event) => ({
+const eventOptions: SelectorOption[] = EventService.getAll().map((event) => ({
   label: event.title,
   value: String(event.id),
 }));
 
 const pieLabels = ['Tickets sold', 'Tickets available'];
 
-const revenueLabels = computed<string[]>(() =>
-  EventService.getEvents().map((event) => event.title),
-);
+const revenueLabels = computed<string[]>(() => EventService.getAll().map((event) => event.title));
 
 // Computed
 const filteredTickets = computed<TicketInterface[]>(() => {
   if (!eventSelector.value) {
-    return TicketService.getTickets();
+    return TicketService.getAll();
   }
 
-  return TicketService.getTicketByEventId(Number(eventSelector.value));
+  return TicketService.getByEventId(Number(eventSelector.value));
 });
 
 const selectedEventId = computed<number | null>(() => {
@@ -47,12 +46,12 @@ const selectedEventTitle = computed<string>(() => {
     return 'All events';
   }
 
-  return EventService.getEventTitle(selectedEventId.value);
+  return EventService.getTitle(selectedEventId.value);
 });
 
 const ticketStatusChartData = computed<number[]>(() => {
   if (!selectedEventId.value) {
-    const totals = EventService.getEvents().reduce(
+    const totals = EventService.getAll().reduce(
       (totals, event) => {
         totals.sold += TicketService.getSoldTicketsCount(event.id);
         totals.available += TicketService.getAvailableTickets(event.id);
@@ -72,7 +71,7 @@ const ticketStatusChartData = computed<number[]>(() => {
 });
 
 const revenueChartData = computed<number[]>(() =>
-  EventService.getEvents().map((event) => EventService.getEventRevenue(event.id)),
+  EventService.getAll().map((event) => EventService.getRevenue(event.id)),
 );
 </script>
 
@@ -169,7 +168,7 @@ const revenueChartData = computed<number[]>(() =>
           <!-- Ticket Header -->
           <div class="mb-4 flex items-start justify-between gap-3">
             <h3 class="font-display text-xl font-semibold text-white">
-              {{ EventService.getEventTitle(ticket.eventId) }}
+              {{ EventService.getTitle(ticket.eventId) }}
             </h3>
             <span
               class="rounded-full border border-deep-purple/40 bg-deep-purple/20 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-purple-200"
@@ -197,7 +196,7 @@ const revenueChartData = computed<number[]>(() =>
             <div class="flex items-center justify-between text-sm">
               <span class="text-ink-muted">Price</span>
               <span class="font-mono text-base font-medium text-rose-light">
-                {{ EventService.getEventPriceById(ticket.eventId) }}
+                {{ EventService.getPriceById(ticket.eventId) }}
               </span>
             </div>
           </div>

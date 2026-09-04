@@ -69,7 +69,7 @@ const statusOptions: string[] = ['Active', 'Draft', 'Completed', 'Cancelled'];
 // Computed
 const isEditMode = computed<boolean>(() => !!props.event);
 
-const venues = computed<VenueInterface[]>(() => VenueService.getVenues());
+const venues = computed<VenueInterface[]>(() => VenueService.getAll());
 
 const categoryOptions = computed<string[]>(() => {
   const existingCategories = EventService.getUniqueCategories();
@@ -183,9 +183,9 @@ function handleSubmit(): void {
       venueId: Number(venueId.value),
     };
 
-    const updated = EventService.updateEvent(props.event.id, updateDTO);
+    const updated = EventService.update(props.event.id, updateDTO);
     if (updated) {
-      const refreshed = EventService.getEventById(props.event.id);
+      const refreshed = EventService.getById(props.event.id);
       if (refreshed) {
         emit('saved', refreshed);
       }
@@ -209,7 +209,7 @@ function handleSubmit(): void {
       venueId: Number(venueId.value),
     };
 
-    const newEvent = EventService.createEvent(createDTO);
+    const newEvent = EventService.create(createDTO);
     emit('saved', newEvent);
     handleClose();
   }
