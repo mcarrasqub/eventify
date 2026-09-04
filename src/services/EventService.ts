@@ -32,7 +32,6 @@ export class EventService {
     const newEvent: EventInterface = {
       ...eventDTO,
       id: Utils.generateNextId(store.events),
-      ticketIds: eventDTO.ticketIds ?? [],
     };
 
     store.events.push(newEvent);

@@ -12,5 +12,4 @@ export interface EventInterface {
   price: number;
   status: 'Active' | 'Cancelled' | 'Completed';
   venueId: number;
-  ticketIds?: number[];
 }

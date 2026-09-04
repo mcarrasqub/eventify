@@ -11,8 +11,6 @@ export const userSeeder: UserInterface[] = [
     isAdmin: true,
     role: 'admin',
     phone: '3001234567',
-    eventIds: [1, 2],
-    ticketIds: [1],
   },
   {
     id: 2,
@@ -22,7 +20,5 @@ export const userSeeder: UserInterface[] = [
     isAdmin: false,
     role: 'user',
     phone: '3009876543',
-    eventIds: [3],
-    ticketIds: [2],
   },
 ];

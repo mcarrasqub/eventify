@@ -13,7 +13,6 @@ export const venueSeeder: VenueInterface[] = [
     capacity: 1500,
     latitude: 4.629912473204121,
     longitude: -74.09285016916155,
-    eventIds: [1],
   },
   {
     id: 2,
@@ -25,7 +24,6 @@ export const venueSeeder: VenueInterface[] = [
     capacity: 3000,
     latitude: 6.2432250326929575,
     longitude: -75.57743584587902,
-    eventIds: [2],
   },
   {
     id: 3,
@@ -37,6 +35,5 @@ export const venueSeeder: VenueInterface[] = [
     capacity: 250,
     latitude: 3.4490760129625153,
     longitude: -76.5387579248174,
-    eventIds: [3],
   },
 ];

@@ -20,7 +20,6 @@ export class VenueService {
     const newVenue: VenueInterface = {
       ...venueDTO,
       id: Utils.generateNextId(store.venues),
-      eventIds: venueDTO.eventIds ?? [],
     };
 
     store.venues.push(newVenue);

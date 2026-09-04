@@ -7,6 +7,4 @@ export interface UserInterface {
   isAdmin: boolean;
   role?: 'admin' | 'user';
   phone: string;
-  eventIds?: number[];
-  ticketIds?: number[];
 }
