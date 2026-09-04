@@ -4,7 +4,7 @@ import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 // Internal Imports
-import EventComponent from '@/components/EventComponent.vue';
+import EventCardComponent from '@/components/EventCardComponent.vue';
 import { EventService } from '@/services/EventService.js';
 
 // Variables
@@ -63,7 +63,7 @@ const filteredEvents = computed(() =>
       v-if="filteredEvents.length > 0"
       class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
     >
-      <EventComponent v-for="event in filteredEvents" :key="event.id" :event="event" />
+      <EventCardComponent v-for="event in filteredEvents" :key="event.id" :event="event" />
     </div>
 
     <div

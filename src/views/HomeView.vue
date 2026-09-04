@@ -3,7 +3,7 @@
 import { computed } from 'vue';
 
 // Internal Imports
-import EventComponent from '@/components/EventComponent.vue';
+import EventCardComponent from '@/components/EventCardComponent.vue';
 import { AuthService } from '@/services/AuthService.js';
 import { EventService } from '@/services/EventService.js';
 
@@ -93,7 +93,7 @@ const popularCategories = computed(() => {
       </div>
 
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <EventComponent v-for="event in featuredEvents" :key="event.id" :event="event" />
+        <EventCardComponent v-for="event in featuredEvents" :key="event.id" :event="event" />
       </div>
     </div>
 
