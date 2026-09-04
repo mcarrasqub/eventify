@@ -107,7 +107,6 @@ function getVenueName(venueId: number): string {
         id="category-selector"
         v-model="categorySelector"
         label="Category"
-        placeholder="All Categories"
         :options="categoryOptions"
       />
 
@@ -115,7 +114,6 @@ function getVenueName(venueId: number): string {
         id="status-selector"
         v-model="statusSelector"
         label="Status"
-        placeholder="All Statuses"
         :options="statusOptions"
       />
     </div>
@@ -237,7 +235,6 @@ function getVenueName(venueId: number): string {
                   :class="[
                     'rounded-md px-2.5 py-1 text-xs font-semibold',
                     event.status === 'Active' && 'bg-emerald-500/10 text-emerald-400',
-                    event.status === 'Draft' && 'bg-amber-500/10 text-amber-400',
                     event.status === 'Completed' && 'bg-indigo-500/10 text-indigo-400',
                     event.status === 'Cancelled' && 'bg-rose-500/10 text-rose-400',
                   ]"

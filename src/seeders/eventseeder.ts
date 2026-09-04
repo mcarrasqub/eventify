@@ -17,7 +17,6 @@ export const eventSeeder: EventInterface[] = [
     price: 120,
     status: 'Active',
     venueId: 1,
-    ticketIds: [1, 3],
   },
   {
     id: 2,
@@ -31,9 +30,8 @@ export const eventSeeder: EventInterface[] = [
     time: '10:00 AM',
     duration: '6 hours',
     price: 75,
-    status: 'Inactive',
+    status: 'Completed',
     venueId: 1,
-    ticketIds: [],
   },
   {
     id: 3,
@@ -49,7 +47,6 @@ export const eventSeeder: EventInterface[] = [
     price: 85,
     status: 'Active',
     venueId: 2,
-    ticketIds: [2],
   },
   {
     id: 4,
@@ -63,9 +60,8 @@ export const eventSeeder: EventInterface[] = [
     time: '07:30 PM',
     duration: '3 hours',
     price: 50,
-    status: 'Inactive',
+    status: 'Cancelled',
     venueId: 2,
-    ticketIds: [],
   },
   {
     id: 5,
@@ -81,7 +77,6 @@ export const eventSeeder: EventInterface[] = [
     price: 65,
     status: 'Active',
     venueId: 3,
-    ticketIds: [],
   },
   {
     id: 6,
@@ -95,9 +90,8 @@ export const eventSeeder: EventInterface[] = [
     time: '11:00 AM',
     duration: '5 hours',
     price: 90,
-    status: 'Inactive',
+    status: 'Completed',
     venueId: 3,
-    ticketIds: [],
   },
   {
     id: 7,
@@ -113,7 +107,6 @@ export const eventSeeder: EventInterface[] = [
     price: 110,
     status: 'Active',
     venueId: 1,
-    ticketIds: [],
   },
   {
     id: 8,
@@ -127,9 +120,8 @@ export const eventSeeder: EventInterface[] = [
     time: '10:00 AM',
     duration: '4 hours',
     price: 40,
-    status: 'Inactive',
+    status: 'Completed',
     venueId: 2,
-    ticketIds: [],
   },
   {
     id: 9,
@@ -145,7 +137,6 @@ export const eventSeeder: EventInterface[] = [
     price: 45,
     status: 'Active',
     venueId: 1,
-    ticketIds: [],
   },
   {
     id: 10,
@@ -159,9 +150,8 @@ export const eventSeeder: EventInterface[] = [
     time: '02:00 PM',
     duration: '5 hours',
     price: 35,
-    status: 'Inactive',
+    status: 'Cancelled',
     venueId: 2,
-    ticketIds: [],
   },
   {
     id: 11,
@@ -177,7 +167,6 @@ export const eventSeeder: EventInterface[] = [
     price: 60,
     status: 'Active',
     venueId: 3,
-    ticketIds: [],
   },
   {
     id: 12,
@@ -191,8 +180,7 @@ export const eventSeeder: EventInterface[] = [
     time: '07:00 PM',
     duration: '3 hours',
     price: 55,
-    status: 'Inactive',
+    status: 'Completed',
     venueId: 3,
-    ticketIds: [],
   },
 ];

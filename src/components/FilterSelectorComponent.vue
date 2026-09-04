@@ -18,7 +18,7 @@ withDefaults(
   {
     id: 'filter-selector',
     label: '',
-    placeholder: 'All',
+    placeholder: '',
     placeholderValue: '',
   },
 );

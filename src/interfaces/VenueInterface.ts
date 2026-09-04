@@ -7,6 +7,5 @@ export interface VenueInterface {
   capacity: number;
   latitude?: number;
   longitude?: number;
-  eventIds?: number[];
   imageURL?: string;
 }

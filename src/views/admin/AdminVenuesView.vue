@@ -106,7 +106,6 @@ function getEventCount(venueId: number): number {
         id="city-selector"
         v-model="citySelector"
         label="City"
-        placeholder="All Cities"
         :options="cityOptions"
       />
     </div>

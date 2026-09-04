@@ -10,7 +10,6 @@ export interface EventInterface {
   time: string;
   duration: string;
   price: number;
-  status: string;
+  status: 'Active' | 'Cancelled' | 'Completed';
   venueId: number;
-  ticketIds?: number[]; // este no es necesario, pero el ticketid si necesita el eventid
 }
