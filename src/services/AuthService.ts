@@ -18,10 +18,7 @@ export class AuthService {
     }
 
     const { password: _password, ...userWithoutPassword } = user;
-    const userDTO: UserResponseDTO = {
-      ...userWithoutPassword,
-      role: userWithoutPassword.role ?? (userWithoutPassword.isAdmin ? 'admin' : 'user'),
-    };
+    const userDTO: UserResponseDTO = userWithoutPassword;
 
     useAuthStore().login(userDTO);
 
@@ -42,6 +39,6 @@ export class AuthService {
 
   static isAdmin(): boolean {
     const currentUser = useAuthStore().currentUser;
-    return currentUser?.role === 'admin' || currentUser?.isAdmin === true;
+    return currentUser?.role === 'admin';
   }
 }

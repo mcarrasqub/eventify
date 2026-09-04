@@ -4,7 +4,6 @@ export interface UserInterface {
   name: string;
   email: string;
   password?: string;
-  isAdmin: boolean;
-  role?: 'admin' | 'user';
+  role: 'admin' | 'user';
   phone: string;
 }

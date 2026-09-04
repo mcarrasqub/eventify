@@ -28,7 +28,7 @@ function handleLogin(): void {
 
   const user = AuthService.login(credentials.value);
   if (user) {
-    if (user.role === 'admin' || user.isAdmin) {
+    if (user.role === 'admin') {
       router.push('/admin/events');
     } else {
       router.push('/');

@@ -42,7 +42,7 @@ function handleLogout(): void {
           <!-- Navigation Links -->
           <nav class="space-y-2">
             <!-- Regular User / Guest Navigation Links -->
-            <template v-if="!currentUser?.isAdmin">
+            <template v-if="currentUser?.role !== 'admin'">
               <RouterLink
                 to="/"
                 class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
@@ -109,7 +109,7 @@ function handleLogout(): void {
                   <div class="flex items-center gap-2">
                     <p class="truncate text-sm font-semibold text-white">{{ currentUser.name }}</p>
                     <span
-                      v-if="currentUser.isAdmin"
+                      v-if="currentUser.role === 'admin'"
                       class="rounded bg-rose-gold/20 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-rose-gold"
                     >
                       Admin
