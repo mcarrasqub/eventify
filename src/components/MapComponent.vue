@@ -1,18 +1,18 @@
 <script setup lang="ts">
-// Imports
+// External Imports
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { onMounted, onUnmounted, ref } from 'vue';
 
 // Props
 const props = defineProps<{
+  address?: string;
   latitude?: number;
   longitude?: number;
-  name: string;
-  address: string;
+  name?: string;
 }>();
 
-// Reactive variables
+// Reactive State
 const mapContainer = ref<HTMLDivElement | null>(null);
 let mapInstance: L.Map | null = null;
 
@@ -22,7 +22,6 @@ onMounted(() => {
     return;
   }
 
-  // Default coordinates if not provided
   const lat = props.latitude ?? 4.60971;
   const lng = props.longitude ?? -74.08175;
 
@@ -35,16 +34,16 @@ onMounted(() => {
   }).addTo(mapInstance);
 
   const customIcon = L.icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    iconSize: [25, 41],
     iconAnchor: [12, 41],
+    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+    iconSize: [25, 41],
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
   });
 
-  const popupContent = `<div style="color: #111; font-family: sans-serif; font-size: 12px;"><strong>${props.name}</strong><br/>${props.address}</div>`;
+  const popupContent = `<div style="color: #111; font-family: sans-serif; font-size: 12px;"><strong>${props.name ?? 'Venue'}</strong><br/>${props.address ?? ''}</div>`;
 
   L.marker([lat, lng], { icon: customIcon }).addTo(mapInstance).bindPopup(popupContent).openPopup();
 });

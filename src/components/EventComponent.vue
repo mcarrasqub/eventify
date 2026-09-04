@@ -51,7 +51,14 @@ defineProps<{
 
       <!-- Status & Actions -->
       <div class="mt-5 flex items-center justify-between border-t border-white/10 pt-4">
-        <span class="rounded-md bg-emerald-500/10 px-2 py-1 text-xs font-semibold text-emerald-400">
+        <span
+          :class="[
+            'rounded-md px-2 py-1 text-xs font-semibold',
+            event.status === 'Active' && 'bg-emerald-500/10 text-emerald-400',
+            event.status === 'Completed' && 'bg-indigo-500/10 text-indigo-400',
+            event.status === 'Cancelled' && 'bg-rose-500/10 text-rose-400',
+          ]"
+        >
           {{ event.status }}
         </span>
         <RouterLink

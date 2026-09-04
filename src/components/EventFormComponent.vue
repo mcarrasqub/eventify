@@ -27,20 +27,6 @@ const emit = defineEmits<{
   (e: 'saved', event: EventInterface): void;
 }>();
 
-// Reactive State (Form & Errors)
-const title = ref<string>('');
-const description = ref<string>('');
-const type = ref<string>('Conference');
-const category = ref<string>('Technology');
-const date = ref<string>('');
-const time = ref<string>('');
-const duration = ref<string>('');
-const price = ref<number>(50);
-const status = ref<string>('Active');
-const venueId = ref<number>(1);
-const imageURL = ref<string>('');
-const errorMessage = ref<string>('');
-
 // Default Categories and Types
 const defaultCategories: string[] = [
   'Technology',
@@ -64,7 +50,7 @@ const defaultTypes: string[] = [
   'Exhibition',
 ];
 
-const statusOptions: string[] = ['Active', 'Draft', 'Completed', 'Cancelled'];
+const statusOptions: EventInterface['status'][] = ['Active', 'Cancelled', 'Completed'];
 
 // Computed
 const isEditMode = computed<boolean>(() => !!props.event);
@@ -77,6 +63,28 @@ const categoryOptions = computed<string[]>(() => {
   return merged.filter((cat) => cat.length > 0);
 });
 
+// Helper for initial form values
+function getInitialForm(): CreateEventDTO {
+  return {
+    category: '',
+    date: '',
+    description: '',
+    duration: '',
+    imageURL: '',
+    price: '' as unknown as number,
+    status: '' as unknown as EventInterface['status'],
+    ticketIds: [],
+    time: '',
+    title: '',
+    type: '',
+    venueId: '' as unknown as number,
+  };
+}
+
+// Reactive State (Form & UI)
+const form = ref<CreateEventDTO>(getInitialForm());
+const errorMessage = ref<string>('');
+
 // Watcher to synchronize form data when modal opens or event changes
 watch(
   () => [props.isOpen, props.event],
@@ -84,17 +92,21 @@ watch(
     if (props.isOpen) {
       errorMessage.value = '';
       if (props.event) {
-        title.value = props.event.title;
-        description.value = props.event.description;
-        type.value = props.event.type;
-        category.value = props.event.category;
-        date.value = props.event.date;
-        time.value = props.event.time;
-        duration.value = props.event.duration;
-        price.value = props.event.price;
-        status.value = props.event.status;
-        venueId.value = props.event.venueId;
-        imageURL.value = props.event.imageURL;
+        // Populate existing event data when in edit mode
+        form.value = {
+          category: props.event.category,
+          date: props.event.date,
+          description: props.event.description,
+          duration: props.event.duration,
+          imageURL: props.event.imageURL,
+          price: props.event.price,
+          status: props.event.status,
+          ticketIds: props.event.ticketIds ?? [],
+          time: props.event.time,
+          title: props.event.title,
+          type: props.event.type,
+          venueId: props.event.venueId,
+        };
       } else {
         resetForm();
       }
@@ -105,18 +117,7 @@ watch(
 
 // Methods
 function resetForm(): void {
-  title.value = '';
-  description.value = '';
-  type.value = 'Conference';
-  category.value = 'Technology';
-  date.value = new Date().toISOString().split('T')[0] ?? '';
-  time.value = '09:00 AM';
-  duration.value = '2 hours';
-  price.value = 50;
-  status.value = 'Active';
-  venueId.value = venues.value[0]?.id ?? 1;
-  imageURL.value =
-    'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=80';
+  form.value = getInitialForm();
   errorMessage.value = '';
 }
 
@@ -126,36 +127,53 @@ function handleClose(): void {
 }
 
 function validateForm(): boolean {
-  if (!title.value.trim()) {
+  if (!form.value.title.trim()) {
     errorMessage.value = 'Event title is required.';
     return false;
   }
-  if (!description.value.trim()) {
-    errorMessage.value = 'Event description is required.';
+  if (!form.value.type) {
+    errorMessage.value = 'Event type is required.';
     return false;
   }
-  if (!date.value.trim()) {
+  if (!form.value.category) {
+    errorMessage.value = 'Event category is required.';
+    return false;
+  }
+  if (!form.value.date.trim()) {
     errorMessage.value = 'Event date is required.';
     return false;
   }
-  if (!time.value.trim()) {
+  if (!form.value.time.trim()) {
     errorMessage.value = 'Event time is required.';
     return false;
   }
-  if (!duration.value.trim()) {
+  if (!form.value.duration.trim()) {
     errorMessage.value = 'Event duration is required.';
     return false;
   }
-  if (price.value === undefined || price.value === null || price.value < 0) {
+  if (
+    form.value.price === undefined ||
+    form.value.price === null ||
+    form.value.price === ('' as unknown as number) ||
+    Number(form.value.price) < 0
+  ) {
     errorMessage.value = 'Event price must be a non-negative number.';
     return false;
   }
-  if (!imageURL.value.trim()) {
+  if (!form.value.venueId) {
+    errorMessage.value = 'Please select a valid venue.';
+    return false;
+  }
+  if (!form.value.status) {
+    errorMessage.value = 'Event status is required.';
+    return false;
+  }
+  if (!form.value.imageURL.trim()) {
     errorMessage.value = 'Event image URL is required.';
     return false;
   }
-  if (!venueId.value) {
-    errorMessage.value = 'Please select a valid venue.';
+  if (!form.value.description.trim()) {
+    errorMessage.value = 'Event description is required.';
     return false;
   }
 
@@ -170,17 +188,17 @@ function handleSubmit(): void {
 
   if (isEditMode.value && props.event) {
     const updateDTO: UpdateEventDTO = {
-      category: category.value,
-      date: date.value,
-      duration: duration.value,
-      imageURL: imageURL.value,
-      price: Number(price.value),
-      status: status.value,
-      description: description.value,
-      time: time.value,
-      title: title.value,
-      type: type.value,
-      venueId: Number(venueId.value),
+      category: form.value.category,
+      date: form.value.date,
+      description: form.value.description,
+      duration: form.value.duration,
+      imageURL: form.value.imageURL,
+      price: Number(form.value.price),
+      status: form.value.status,
+      time: form.value.time,
+      title: form.value.title,
+      type: form.value.type,
+      venueId: Number(form.value.venueId),
     };
 
     const updated = EventService.update(props.event.id, updateDTO);
@@ -195,18 +213,18 @@ function handleSubmit(): void {
     }
   } else {
     const createDTO: CreateEventDTO = {
-      category: category.value,
-      date: date.value,
-      duration: duration.value,
-      imageURL: imageURL.value,
-      price: Number(price.value),
-      status: status.value,
-      description: description.value,
-      ticketIds: [],
-      time: time.value,
-      title: title.value,
-      type: type.value,
-      venueId: Number(venueId.value),
+      category: form.value.category,
+      date: form.value.date,
+      description: form.value.description,
+      duration: form.value.duration,
+      imageURL: form.value.imageURL,
+      price: Number(form.value.price),
+      status: form.value.status,
+      ticketIds: form.value.ticketIds ?? [],
+      time: form.value.time,
+      title: form.value.title,
+      type: form.value.type,
+      venueId: Number(form.value.venueId),
     };
 
     const newEvent = EventService.create(createDTO);
@@ -273,7 +291,7 @@ function handleSubmit(): void {
           </label>
           <input
             id="event-title"
-            v-model="title"
+            v-model="form.title"
             type="text"
             required
             placeholder="e.g. AI Innovation Summit 2025"
@@ -292,9 +310,11 @@ function handleSubmit(): void {
             </label>
             <select
               id="event-type"
-              v-model="type"
+              v-model="form.type"
+              required
               class="w-full rounded-xl border border-white/15 bg-midnight px-4 py-2.5 text-sm text-white outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30"
             >
+              <option value="" disabled class="bg-midnight text-white/50">Select type...</option>
               <option
                 v-for="typeOption in defaultTypes"
                 :key="typeOption"
@@ -315,9 +335,13 @@ function handleSubmit(): void {
             </label>
             <select
               id="event-category"
-              v-model="category"
+              v-model="form.category"
+              required
               class="w-full rounded-xl border border-white/15 bg-midnight px-4 py-2.5 text-sm text-white outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30"
             >
+              <option value="" disabled class="bg-midnight text-white/50">
+                Select category...
+              </option>
               <option
                 v-for="cat in categoryOptions"
                 :key="cat"
@@ -341,7 +365,7 @@ function handleSubmit(): void {
             </label>
             <input
               id="event-date"
-              v-model="date"
+              v-model="form.date"
               type="date"
               required
               class="w-full rounded-xl border border-white/15 bg-midnight px-4 py-2.5 text-sm text-white outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30"
@@ -357,7 +381,7 @@ function handleSubmit(): void {
             </label>
             <input
               id="event-time"
-              v-model="time"
+              v-model="form.time"
               type="text"
               required
               placeholder="e.g. 09:00 AM"
@@ -374,7 +398,7 @@ function handleSubmit(): void {
             </label>
             <input
               id="event-duration"
-              v-model="duration"
+              v-model="form.duration"
               type="text"
               required
               placeholder="e.g. 3 hours"
@@ -391,7 +415,7 @@ function handleSubmit(): void {
             </label>
             <input
               id="event-price"
-              v-model.number="price"
+              v-model.number="form.price"
               type="number"
               min="0"
               step="0.01"
@@ -413,9 +437,11 @@ function handleSubmit(): void {
             </label>
             <select
               id="event-venue"
-              v-model.number="venueId"
+              v-model.number="form.venueId"
+              required
               class="w-full rounded-xl border border-white/15 bg-midnight px-4 py-2.5 text-sm text-white outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30"
             >
+              <option value="" disabled class="bg-midnight text-white/50">Select venue...</option>
               <option
                 v-for="venueItem in venues"
                 :key="venueItem.id"
@@ -436,9 +462,11 @@ function handleSubmit(): void {
             </label>
             <select
               id="event-status"
-              v-model="status"
+              v-model="form.status"
+              required
               class="w-full rounded-xl border border-white/15 bg-midnight px-4 py-2.5 text-sm text-white outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30"
             >
+              <option value="" disabled class="bg-midnight text-white/50">Select status...</option>
               <option
                 v-for="stat in statusOptions"
                 :key="stat"
@@ -461,7 +489,7 @@ function handleSubmit(): void {
           </label>
           <input
             id="event-image"
-            v-model="imageURL"
+            v-model="form.imageURL"
             type="url"
             required
             placeholder="https://images.unsplash.com/..."
@@ -479,7 +507,7 @@ function handleSubmit(): void {
           </label>
           <textarea
             id="event-description"
-            v-model="description"
+            v-model="form.description"
             rows="3"
             required
             placeholder="Detailed description of the event..."

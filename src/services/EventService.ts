@@ -110,27 +110,6 @@ export class EventService {
     return Array.from(new Set(statuses));
   }
 
-  static getStatusCounts(): Record<string, number> {
-    const events = this.getAll();
-    const counts: Record<string, number> = {
-      Active: 0,
-      Cancelled: 0,
-      Completed: 0,
-      Draft: 0,
-    };
-
-    for (const event of events) {
-      const currentCount = counts[event.status];
-      if (typeof currentCount === 'number') {
-        counts[event.status] = currentCount + 1;
-      } else {
-        counts[event.status] = 1;
-      }
-    }
-
-    return counts;
-  }
-
   static getByVenueId(venueId: number): EventInterface[] {
     return this.getAll().filter((event) => event.venueId === venueId);
   }

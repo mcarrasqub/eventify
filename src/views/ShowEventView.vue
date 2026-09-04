@@ -122,7 +122,9 @@ function handlePurchase(): void {
                 <p
                   :class="[
                     'mt-1 font-mono text-xs font-bold uppercase',
-                    event.status === 'Active' ? 'text-emerald-400' : 'text-rose-400',
+                    event.status === 'Active' && 'text-emerald-400',
+                    event.status === 'Completed' && 'text-indigo-400',
+                    event.status === 'Cancelled' && 'text-rose-400',
                   ]"
                 >
                   {{ event.status }}

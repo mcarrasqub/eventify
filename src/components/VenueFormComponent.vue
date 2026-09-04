@@ -25,29 +25,47 @@ const emit = defineEmits<{
   (e: 'saved', venue: VenueInterface): void;
 }>();
 
-// Reactive State (Form & Errors)
-const name = ref<string>('');
-const city = ref<string>('');
-const address = ref<string>('');
-const capacity = ref<number>(500);
-const imageURL = ref<string>('');
+// Helper Functions
+// Generates an empty initial form state for new venue creation
+function getInitialForm(): CreateVenueDTO {
+  return {
+    address: '',
+    capacity: '' as unknown as number,
+    city: '',
+    eventIds: [],
+    imageURL: '',
+    latitude: '' as unknown as number,
+    longitude: '' as unknown as number,
+    name: '',
+  };
+}
+
+// Reactive State (Form & UI)
+const form = ref<CreateVenueDTO>(getInitialForm());
 const errorMessage = ref<string>('');
 
 // Computed
 const isEditMode = computed<boolean>(() => !!props.venue);
 
-// Watcher to synchronize form data when modal opens or venue changes
+// Watchers
+// Synchronize form state whenever modal opens or active venue prop changes
 watch(
   () => [props.isOpen, props.venue],
   () => {
     if (props.isOpen) {
       errorMessage.value = '';
       if (props.venue) {
-        name.value = props.venue.name;
-        city.value = props.venue.city;
-        address.value = props.venue.address;
-        capacity.value = props.venue.capacity;
-        imageURL.value = props.venue.imageURL ?? '';
+        // Populate existing venue data when in edit mode
+        form.value = {
+          address: props.venue.address,
+          capacity: props.venue.capacity,
+          city: props.venue.city,
+          eventIds: props.venue.eventIds ?? [],
+          imageURL: props.venue.imageURL ?? '',
+          latitude: props.venue.latitude ?? ('' as unknown as number),
+          longitude: props.venue.longitude ?? ('' as unknown as number),
+          name: props.venue.name,
+        };
       } else {
         resetForm();
       }
@@ -58,12 +76,7 @@ watch(
 
 // Methods
 function resetForm(): void {
-  name.value = '';
-  city.value = '';
-  address.value = '';
-  capacity.value = 500;
-  imageURL.value =
-    'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=600&auto=format&fit=crop&q=80';
+  form.value = getInitialForm();
   errorMessage.value = '';
 }
 
@@ -73,21 +86,57 @@ function handleClose(): void {
 }
 
 function validateForm(): boolean {
-  if (!name.value.trim()) {
+  if (!form.value.name.trim()) {
     errorMessage.value = 'Venue name is required.';
     return false;
   }
-  if (!city.value.trim()) {
+  if (!form.value.city.trim()) {
     errorMessage.value = 'Venue city is required.';
     return false;
   }
-  if (!address.value.trim()) {
+  if (!form.value.address.trim()) {
     errorMessage.value = 'Venue address is required.';
     return false;
   }
-  if (!capacity.value || capacity.value <= 0) {
+  if (
+    form.value.capacity === undefined ||
+    form.value.capacity === null ||
+    form.value.capacity === ('' as unknown as number) ||
+    Number(form.value.capacity) <= 0
+  ) {
     errorMessage.value = 'Capacity must be greater than 0.';
     return false;
+  }
+
+  // Validate optional geographic coordinates
+  const lat = form.value.latitude;
+  const lng = form.value.longitude;
+  const hasLat = lat !== undefined && lat !== null && lat !== ('' as unknown as number);
+  const hasLng = lng !== undefined && lng !== null && lng !== ('' as unknown as number);
+
+  // Both latitude and longitude must be provided together
+  if (hasLat && !hasLng) {
+    errorMessage.value = 'Please provide longitude along with latitude.';
+    return false;
+  }
+  if (!hasLat && hasLng) {
+    errorMessage.value = 'Please provide latitude along with longitude.';
+    return false;
+  }
+
+  // Check valid geographic range: Latitude [-90, 90], Longitude [-180, 180]
+  if (hasLat && hasLng) {
+    const numLat = Number(lat);
+    const numLng = Number(lng);
+
+    if (isNaN(numLat) || numLat < -90 || numLat > 90) {
+      errorMessage.value = 'Latitude must be a valid number between -90 and 90.';
+      return false;
+    }
+    if (isNaN(numLng) || numLng < -180 || numLng > 180) {
+      errorMessage.value = 'Longitude must be a valid number between -180 and 180.';
+      return false;
+    }
   }
 
   errorMessage.value = '';
@@ -99,13 +148,30 @@ function handleSubmit(): void {
     return;
   }
 
+  // Parse coordinates into numeric values if provided
+  const parsedLatitude =
+    form.value.latitude !== undefined &&
+    form.value.latitude !== null &&
+    form.value.latitude !== ('' as unknown as number)
+      ? Number(form.value.latitude)
+      : undefined;
+
+  const parsedLongitude =
+    form.value.longitude !== undefined &&
+    form.value.longitude !== null &&
+    form.value.longitude !== ('' as unknown as number)
+      ? Number(form.value.longitude)
+      : undefined;
+
   if (isEditMode.value && props.venue) {
     const updateDTO: UpdateVenueDTO = {
-      address: address.value,
-      capacity: Number(capacity.value),
-      city: city.value,
-      imageURL: imageURL.value.trim() || undefined,
-      name: name.value,
+      address: form.value.address,
+      capacity: Number(form.value.capacity),
+      city: form.value.city,
+      imageURL: form.value.imageURL?.trim() || undefined,
+      latitude: parsedLatitude,
+      longitude: parsedLongitude,
+      name: form.value.name,
     };
 
     const updated = VenueService.update(props.venue.id, updateDTO);
@@ -119,15 +185,16 @@ function handleSubmit(): void {
       errorMessage.value = 'Could not update the venue. Please try again.';
     }
   } else {
+    // Create new venue record
     const createDTO: CreateVenueDTO = {
-      address: address.value,
-      capacity: Number(capacity.value),
-      city: city.value,
-      eventIds: [],
-      imageURL:
-        imageURL.value.trim() ||
-        'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=600&auto=format&fit=crop&q=80',
-      name: name.value,
+      address: form.value.address,
+      capacity: Number(form.value.capacity),
+      city: form.value.city,
+      eventIds: form.value.eventIds ?? [],
+      imageURL: form.value.imageURL?.trim() || undefined,
+      latitude: parsedLatitude,
+      longitude: parsedLongitude,
+      name: form.value.name,
     };
 
     const newVenue = VenueService.create(createDTO);
@@ -194,7 +261,7 @@ function handleSubmit(): void {
           </label>
           <input
             id="venue-name"
-            v-model="name"
+            v-model="form.name"
             type="text"
             required
             placeholder="e.g. Grand Convention Center"
@@ -213,7 +280,7 @@ function handleSubmit(): void {
             </label>
             <input
               id="venue-city"
-              v-model="city"
+              v-model="form.city"
               type="text"
               required
               placeholder="e.g. Bogotá, Medellín"
@@ -230,7 +297,7 @@ function handleSubmit(): void {
             </label>
             <input
               id="venue-capacity"
-              v-model.number="capacity"
+              v-model.number="form.capacity"
               type="number"
               min="1"
               required
@@ -250,12 +317,53 @@ function handleSubmit(): void {
           </label>
           <input
             id="venue-address"
-            v-model="address"
+            v-model="form.address"
             type="text"
             required
             placeholder="e.g. Calle 100 # 15-20"
             class="w-full rounded-xl border border-white/15 bg-midnight px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30"
           />
+        </div>
+
+        <!-- Coordinates Row (Latitude and Longitude) -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="flex flex-col gap-1.5">
+            <label
+              for="venue-latitude"
+              class="font-mono text-[10px] uppercase tracking-[0.2em] text-rose-gold"
+            >
+              Latitude
+            </label>
+            <input
+              id="venue-latitude"
+              v-model.number="form.latitude"
+              type="number"
+              step="any"
+              min="-90"
+              max="90"
+              placeholder="e.g. 4.60971"
+              class="w-full rounded-xl border border-white/15 bg-midnight px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label
+              for="venue-longitude"
+              class="font-mono text-[10px] uppercase tracking-[0.2em] text-rose-gold"
+            >
+              Longitude
+            </label>
+            <input
+              id="venue-longitude"
+              v-model.number="form.longitude"
+              type="number"
+              step="any"
+              min="-180"
+              max="180"
+              placeholder="e.g. -74.08175"
+              class="w-full rounded-xl border border-white/15 bg-midnight px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30"
+            />
+          </div>
         </div>
 
         <!-- Image URL -->
@@ -268,7 +376,7 @@ function handleSubmit(): void {
           </label>
           <input
             id="venue-image"
-            v-model="imageURL"
+            v-model="form.imageURL"
             type="url"
             placeholder="https://images.unsplash.com/..."
             class="w-full rounded-xl border border-white/15 bg-midnight px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30"
