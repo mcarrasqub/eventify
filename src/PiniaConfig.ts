@@ -2,10 +2,10 @@
 import { createPinia } from 'pinia';
 import { watch } from 'vue';
 
-import { eventSeeder } from '@/stores/eventseeder.js';
-import { ticketSeeder } from '@/stores/ticketseeder.js';
-import { userSeeder } from '@/stores/userseeder.js';
-import { venueSeeder } from '@/stores/venueseeder.js';
+import { eventSeeder } from '@/seeders/eventseeder.js';
+import { ticketSeeder } from '@/seeders/ticketseeder.js';
+import { userSeeder } from '@/seeders/userseeder.js';
+import { venueSeeder } from '@/seeders/venueseeder.js';
 
 // Configuration Class
 export default class PiniaConfig {
