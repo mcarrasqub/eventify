@@ -4,10 +4,21 @@ import type { RouteRecordRaw } from 'vue-router';
 // Internal Imports
 import AdminEventsView from '@/views/admin/AdminEventsView.vue';
 import AdminVenuesView from '@/views/admin/AdminVenuesView.vue';
+import EventsStatsView from '@/views/admin/EventsStatsView.vue';
 import TicketsStatsView from '@/views/admin/TicketsStatsView.vue';
 
 // Admin Routes Definition
 export const adminRoutes: RouteRecordRaw[] = [
+  {
+    path: '/admin/events-stats',
+    name: 'events-stats',
+    component: EventsStatsView,
+    meta: {
+      title: 'Events Stats',
+      requiresAuth: true,
+      requiresAdmin: true,
+    },
+  },
   {
     path: '/admin/tickets-stats',
     name: 'tickets-stats',

@@ -65,11 +65,20 @@ function handleLogout(): void {
             <!-- Admin-Only Navigation Links -->
             <template v-else>
               <RouterLink
-                to="/admin/tickets-stats"
+                to="/admin/events-stats"
                 class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
                 active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
               >
                 <span class="font-mono text-xs">01</span>
+                <span>Events Statistics</span>
+              </RouterLink>
+
+              <RouterLink
+                to="/admin/tickets-stats"
+                class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
+                active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
+              >
+                <span class="font-mono text-xs">02</span>
                 <span>Tickets Statistics</span>
               </RouterLink>
 
@@ -78,7 +87,7 @@ function handleLogout(): void {
                 class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
                 active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
               >
-                <span class="font-mono text-xs">02</span>
+                <span class="font-mono text-xs">03</span>
                 <span>Admin Events</span>
               </RouterLink>
 
@@ -87,7 +96,7 @@ function handleLogout(): void {
                 class="flex items-center gap-3 rounded-lg border border-white/10 px-4 py-3 text-sm font-medium text-ink-muted transition hover:border-rose-gold/20 hover:bg-rose-gold/10 hover:text-white"
                 active-class="border-rose-gold/30 bg-rose-gold/10 text-white"
               >
-                <span class="font-mono text-xs">03</span>
+                <span class="font-mono text-xs">04</span>
                 <span>Admin Venues</span>
               </RouterLink>
             </template>

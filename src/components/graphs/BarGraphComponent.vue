@@ -15,22 +15,13 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 Chart.register(BarController, BarElement, CategoryScale, Legend, LinearScale, Tooltip);
 
 // Props
-const props = withDefaults(
-  defineProps<{
-    backgroundColor?: string[];
-    borderColor?: string;
-    data?: number[];
-    labels?: string[];
-    title?: string;
-  }>(),
-  {
-    backgroundColor: () => ['#c9956c'],
-    borderColor: '#0f172a',
-    data: () => [0],
-    labels: () => ['Event'],
-    title: '',
-  },
-);
+const props = defineProps<{
+  backgroundColor: string[];
+  borderColor: string;
+  data: number[];
+  labels: string[];
+  title: string;
+}>();
 
 // Reactive State
 const chartCanvas = ref<HTMLCanvasElement | null>(null);
