@@ -15,12 +15,15 @@ import { TicketService } from '@/services/TicketService.js';
 const eventSelector = ref<string>('');
 
 // Variables
-const eventOptions: SelectorOption[] = EventService.getAll().map((event) => ({
-  label: event.title,
-  value: String(event.id),
-}));
-
 const pieLabels = ['Tickets sold', 'Tickets available'];
+
+// Computed
+const eventOptions = computed<SelectorOption[]>(() =>
+  EventService.getAll().map((event) => ({
+    label: event.title,
+    value: String(event.id),
+  })),
+);
 
 const revenueLabels = computed<string[]>(() => EventService.getAll().map((event) => event.title));
 
@@ -78,30 +81,14 @@ const revenueChartData = computed<number[]>(() =>
 <template>
   <!-- Tickets Stats Section -->
   <section class="mx-auto max-w-7xl">
-    <!-- View Header & Selector -->
-    <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-      <!-- Title & Description -->
-      <div>
-        <p class="mb-2 font-mono text-[10px] uppercase tracking-[0.24em] text-ink-muted">
-          Ticket control center
-        </p>
-        <h2 class="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
-          Admin Tickets
-        </h2>
-      </div>
-
-      <!-- Event Selector -->
-      <div class="w-full sm:w-auto">
-        <FilterSelectorComponent
-          id="ticket-event-selector"
-          v-model="eventSelector"
-          label="Select event"
-          :options="eventOptions"
-          placeholder="All Events"
-          :placeholder-value="''"
-          class="sm:min-w-72"
-        />
-      </div>
+    <!-- View Header -->
+    <div class="mb-8">
+      <p class="mb-2 font-mono text-[10px] uppercase tracking-[0.24em] text-ink-muted">
+        Ticket control center
+      </p>
+      <h2 class="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+        Admin Tickets
+      </h2>
     </div>
 
     <!-- Revenue Overview / Bar Graph -->
@@ -134,10 +121,29 @@ const revenueChartData = computed<number[]>(() =>
       </div>
     </div>
 
+    <!-- Filter Selector -->
+    <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h3 class="font-display text-xl font-semibold text-white">Filter Tickets</h3>
+        <p class="text-xs text-ink-muted">Select an event to filter tickets</p>
+      </div>
+      <div class="w-full sm:w-auto">
+        <FilterSelectorComponent
+          id="ticket-event-selector"
+          v-model="eventSelector"
+          label="Select event"
+          :options="eventOptions"
+          placeholder="All Events"
+          :placeholder-value="''"
+          class="sm:min-w-72"
+        />
+      </div>
+    </div>
+
     <!-- Statistics Overview / Graph -->
     <div class="mb-8 rounded-2xl border border-white/10 bg-midnight-soft p-6 shadow-xl">
       <div class="mb-4">
-        <h3 class="font-display text-lg font-semibold text-white">Ticket Status Overview</h3>
+        <h3 class="font-display text-lg font-semibold text-white">Ticket Overview</h3>
         <p class="text-xs text-ink-muted">
           {{
             selectedEventTitle === 'All events'
@@ -180,8 +186,8 @@ const revenueChartData = computed<number[]>(() =>
           <!-- Ticket Image -->
           <div class="mb-4 overflow-hidden rounded-xl border border-white/10">
             <img
-              src="https://picsum.photos/seed/picsum/536/354"
-              alt="Ticket image"
+              :src="EventService.getImageUrl(ticket.eventId)"
+              :alt="EventService.getTitle(ticket.eventId)"
               class="h-44 w-full object-cover transition duration-500 group-hover:scale-105"
             />
           </div>
