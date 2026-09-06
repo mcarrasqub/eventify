@@ -47,7 +47,7 @@ function handleEditEvent(event: EventInterface): void {
   isEventModalOpen.value = true;
 }
 
-function handleDelete(id: number, title: string): void {
+function handleDeleteEvent(id: number, title: string): void {
   const confirmed = window.confirm(`Are you sure you want to delete the event "${title}"?`);
   if (confirmed) {
     EventService.delete(id);
@@ -256,7 +256,7 @@ function getVenueName(venueId: number): string {
                   <button
                     type="button"
                     class="rounded-lg border border-rose-500/20 bg-rose-500/10 px-3 py-1.5 text-xs font-semibold text-rose-400 transition hover:bg-rose-500 hover:text-white"
-                    @click="handleDelete(event.id, event.title)"
+                    @click="handleDeleteEvent(event.id, event.title)"
                   >
                     Delete
                   </button>
