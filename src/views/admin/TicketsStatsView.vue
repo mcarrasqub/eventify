@@ -164,6 +164,13 @@ const revenueChartData = computed<number[]>(() =>
       </div>
     </div>
 
+    <!-- Sold Tickets Header -->
+    <div class="mb-6">
+      <h3 class="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
+        Sold Tickets - {{ selectedEventTitle }}
+      </h3>
+    </div>
+
     <!-- Tickets Grid -->
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
       <div v-for="ticket in filteredTickets" :key="ticket.id">
