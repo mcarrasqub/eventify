@@ -75,6 +75,10 @@ export class EventService {
     return this.getById(id)?.title ?? 'Unknown Event';
   }
 
+  static getImageUrl(id: number): string {
+    return this.getById(id)?.imageURL ?? '';
+  }
+
   static search(query: string, categorySelector: string): EventInterface[] {
     return this.getAll().filter((event) => {
       const matchesQuery =

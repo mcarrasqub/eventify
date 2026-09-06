@@ -67,4 +67,8 @@ export class VenueService {
     }
     return this.getAll().filter((venue) => venue.city === citySelector);
   }
+
+  static getByEventId(eventId: number): VenueInterface | undefined {
+    return this.getAll().find((venue) => venue.id === eventId);
+  }
 }
