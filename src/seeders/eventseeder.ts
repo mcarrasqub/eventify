@@ -183,4 +183,19 @@ export const eventSeeder: EventInterface[] = [
     status: 'Completed',
     venueId: 3,
   },
+  {
+    id: 13,
+    imageURL:
+      'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=600&auto=format&fit=crop&q=80',
+    title: 'International Web Developers Conference 2026',
+    description: 'Keynotes, networking, and technical workshops for modern software engineering.',
+    type: 'Conference',
+    category: 'Technology',
+    date: '2026-11-15',
+    time: '08:30 AM',
+    duration: '8 hours',
+    price: 150,
+    status: 'Active',
+    venueId: 1,
+  },
 ];
