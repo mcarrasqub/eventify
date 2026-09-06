@@ -18,7 +18,7 @@ const eventDistributionByCity = computed<{
   const cityCounts = new Map<string, number>();
 
   eventsList.value.forEach((event) => {
-    const venue = VenueService.getByEventId(event.venueId);
+    const venue = VenueService.getById(event.venueId);
     const cityName = venue?.city ?? 'Unknown';
     cityCounts.set(cityName, (cityCounts.get(cityName) || 0) + 1);
   });

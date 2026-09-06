@@ -60,15 +60,4 @@ export class VenueService {
     const cities = venues.map((venue) => venue.city);
     return Array.from(new Set(cities));
   }
-
-  static getByCity(citySelector: string): VenueInterface[] {
-    if (!citySelector || citySelector === 'All') {
-      return this.getAll();
-    }
-    return this.getAll().filter((venue) => venue.city === citySelector);
-  }
-
-  static getByEventId(eventId: number): VenueInterface | undefined {
-    return this.getAll().find((venue) => venue.id === eventId);
-  }
 }

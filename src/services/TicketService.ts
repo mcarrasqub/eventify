@@ -20,10 +20,6 @@ export class TicketService {
     return useTicketStore().tickets.filter((ticket) => ticket.eventId === eventId);
   }
 
-  static getByUserId(userId: number): TicketInterface[] {
-    return useTicketStore().tickets.filter((ticket) => ticket.userId === userId);
-  }
-
   static getSoldTicketsCount(eventId: number): number {
     return this.getByEventId(eventId).length;
   }
@@ -60,13 +56,5 @@ export class TicketService {
     }
 
     return createdTickets;
-  }
-
-  static getUniqueTicketEvents(): string[] {
-    const tickets = TicketService.getAll();
-    const events = tickets.map((ticket) => ticket.eventId.toString());
-    const uniqueEvents = new Set(events);
-
-    return Array.from(uniqueEvents);
   }
 }

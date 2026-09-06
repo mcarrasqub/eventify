@@ -89,20 +89,6 @@ export class EventService {
     });
   }
 
-  static getByStatus(statusSelector: string): EventInterface[] {
-    if (!statusSelector || statusSelector === 'All') {
-      return this.getAll();
-    }
-    return this.getAll().filter((event) => event.status === statusSelector);
-  }
-
-  static getByCategory(categorySelector: string): EventInterface[] {
-    if (!categorySelector || categorySelector === 'All') {
-      return this.getAll();
-    }
-    return this.getAll().filter((event) => event.category === categorySelector);
-  }
-
   static getUniqueCategories(): string[] {
     const categories = this.getAll().map((event) => event.category);
     return Array.from(new Set(categories));
