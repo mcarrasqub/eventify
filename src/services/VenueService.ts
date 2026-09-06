@@ -6,14 +6,7 @@ import Utils from '@/utils/Utils.js';
 
 // Service Class
 export class VenueService {
-  static getAll(): VenueInterface[] {
-    return useVenueStore().venues;
-  }
-
-  static getById(id: number): VenueInterface | undefined {
-    return useVenueStore().venues.find((venue) => venue.id === id);
-  }
-
+  // CRUD Methods
   static create(venueDTO: CreateVenueDTO): VenueInterface {
     const store = useVenueStore();
 
@@ -53,6 +46,15 @@ export class VenueService {
     const initialLength = store.venues.length;
     store.venues = store.venues.filter((venue) => venue.id !== id);
     return store.venues.length < initialLength;
+  }
+
+  // Getters
+  static getAll(): VenueInterface[] {
+    return useVenueStore().venues;
+  }
+
+  static getById(id: number): VenueInterface | undefined {
+    return useVenueStore().venues.find((venue) => venue.id === id);
   }
 
   static getUniqueCities(): string[] {

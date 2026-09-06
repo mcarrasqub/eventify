@@ -8,31 +8,7 @@ import Utils from '@/utils/Utils.js';
 
 // Service Class
 export class TicketService {
-  static getAll(): TicketInterface[] {
-    return useTicketStore().tickets;
-  }
-
-  static getById(id: number): TicketInterface | undefined {
-    return useTicketStore().tickets.find((ticket) => ticket.id === id);
-  }
-
-  static getByEventId(eventId: number): TicketInterface[] {
-    return useTicketStore().tickets.filter((ticket) => ticket.eventId === eventId);
-  }
-
-  static getSoldTicketsCount(eventId: number): number {
-    return this.getByEventId(eventId).length;
-  }
-
-  static getAvailableTickets(eventId: number): number {
-    const event = EventService.getById(eventId);
-    const venue = VenueService.getById(event?.venueId ?? 0);
-    const capacity = venue?.capacity ?? 0;
-    const soldTickets = this.getSoldTicketsCount(eventId);
-
-    return capacity - soldTickets;
-  }
-
+  // CRUD Methods
   static create(ticketDTO: CreateTicketDTO): TicketInterface[] | null {
     const availableTickets = TicketService.getAvailableTickets(ticketDTO.eventId);
 
@@ -56,5 +32,31 @@ export class TicketService {
     }
 
     return createdTickets;
+  }
+
+  // Getters
+  static getAll(): TicketInterface[] {
+    return useTicketStore().tickets;
+  }
+
+  static getById(id: number): TicketInterface | undefined {
+    return useTicketStore().tickets.find((ticket) => ticket.id === id);
+  }
+
+  static getByEventId(eventId: number): TicketInterface[] {
+    return useTicketStore().tickets.filter((ticket) => ticket.eventId === eventId);
+  }
+
+  static getAvailableTickets(eventId: number): number {
+    const event = EventService.getById(eventId);
+    const venue = VenueService.getById(event?.venueId ?? 0);
+    const capacity = venue?.capacity ?? 0;
+    const soldTickets = this.getSoldTicketsCount(eventId);
+
+    return capacity - soldTickets;
+  }
+
+  static getSoldTicketsCount(eventId: number): number {
+    return this.getByEventId(eventId).length;
   }
 }

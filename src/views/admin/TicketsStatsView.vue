@@ -202,7 +202,7 @@ const revenueChartData = computed<number[]>(() =>
             <div class="flex items-center justify-between text-sm">
               <span class="text-ink-muted">Price</span>
               <span class="font-mono text-base font-medium text-rose-light">
-                {{ EventService.getPriceById(ticket.eventId) }}
+                {{ EventService.getPrice(ticket.eventId) }}
               </span>
             </div>
           </div>

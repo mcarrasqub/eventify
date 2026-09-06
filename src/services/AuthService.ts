@@ -5,6 +5,7 @@ import { useUserStore } from '@/stores/userstore.js';
 
 // Service Class
 export class AuthService {
+  // Authentication Methods
   static login(credentials: LoginDTO): UserResponseDTO | null {
     const userStore = useUserStore();
 
@@ -29,16 +30,8 @@ export class AuthService {
     useAuthStore().logout();
   }
 
+  // Getters
   static getCurrentUser(): UserResponseDTO | null {
     return useAuthStore().currentUser;
-  }
-
-  static isAuthenticated(): boolean {
-    return useAuthStore().isAuthenticated();
-  }
-
-  static isAdmin(): boolean {
-    const currentUser = useAuthStore().currentUser;
-    return currentUser?.role === 'admin';
   }
 }

@@ -7,25 +7,7 @@ import Utils from '@/utils/Utils.js';
 
 // Service Class
 export class EventService {
-  static getAll(): EventInterface[] {
-    return useEventStore().events;
-  }
-
-  static getById(id: number): EventInterface | undefined {
-    return useEventStore().events.find((event) => event.id === id);
-  }
-
-  static getPriceById(id: number): number {
-    return this.getById(id)?.price ?? 0;
-  }
-
-  static getRevenue(eventId: number): number {
-    const event = EventService.getById(eventId);
-    const soldTickets = TicketService.getSoldTicketsCount(eventId);
-
-    return soldTickets * (event?.price ?? 0);
-  }
-
+  // CRUD Methods
   static create(eventDTO: CreateEventDTO): EventInterface {
     const store = useEventStore();
 
@@ -36,6 +18,16 @@ export class EventService {
 
     store.events.push(newEvent);
     return newEvent;
+  }
+
+  static search(query: string, categorySelector: string): EventInterface[] {
+    return this.getAll().filter((event) => {
+      const matchesQuery =
+        event.title.toLowerCase().includes(query.toLowerCase()) ||
+        event.description.toLowerCase().includes(query.toLowerCase());
+      const matchesCategory = categorySelector === 'All' || event.category === categorySelector;
+      return matchesQuery && matchesCategory;
+    });
   }
 
   static update(id: number, eventDTO: UpdateEventDTO): boolean {
@@ -67,26 +59,40 @@ export class EventService {
     return store.events.length < initialLength;
   }
 
-  static getFeatured(): EventInterface[] {
-    return this.getAll().slice(0, 6);
+  // Getters
+  static getAll(): EventInterface[] {
+    return useEventStore().events;
   }
 
-  static getTitle(id: number): string {
-    return this.getById(id)?.title ?? 'Unknown Event';
+  static getById(id: number): EventInterface | undefined {
+    return useEventStore().events.find((event) => event.id === id);
   }
 
   static getImageUrl(id: number): string {
     return this.getById(id)?.imageURL ?? '';
   }
 
-  static search(query: string, categorySelector: string): EventInterface[] {
-    return this.getAll().filter((event) => {
-      const matchesQuery =
-        event.title.toLowerCase().includes(query.toLowerCase()) ||
-        event.description.toLowerCase().includes(query.toLowerCase());
-      const matchesCategory = categorySelector === 'All' || event.category === categorySelector;
-      return matchesQuery && matchesCategory;
-    });
+  static getTitle(id: number): string {
+    return this.getById(id)?.title ?? 'Unknown Event';
+  }
+
+  static getPrice(id: number): number {
+    return this.getById(id)?.price ?? 0;
+  }
+
+  static getByVenueId(venueId: number): EventInterface[] {
+    return this.getAll().filter((event) => event.venueId === venueId);
+  }
+
+  static getFeatured(): EventInterface[] {
+    return this.getAll().slice(0, 6);
+  }
+
+  static getRevenue(eventId: number): number {
+    const event = EventService.getById(eventId);
+    const soldTickets = TicketService.getSoldTicketsCount(eventId);
+
+    return soldTickets * (event?.price ?? 0);
   }
 
   static getUniqueCategories(): string[] {
@@ -97,9 +103,5 @@ export class EventService {
   static getUniqueStatuses(): string[] {
     const statuses = this.getAll().map((event) => event.status);
     return Array.from(new Set(statuses));
-  }
-
-  static getByVenueId(venueId: number): EventInterface[] {
-    return this.getAll().filter((event) => event.venueId === venueId);
   }
 }

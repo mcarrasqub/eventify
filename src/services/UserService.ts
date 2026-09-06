@@ -4,6 +4,7 @@ import { useUserStore } from '@/stores/userstore.js';
 
 // Service Class
 export class UserService {
+  // Getters
   static getAll(): UserInterface[] {
     const userStore = useUserStore();
     return userStore.users;

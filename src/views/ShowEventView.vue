@@ -28,7 +28,7 @@ const availableTickets = computed<number>(() => TicketService.getAvailableTicket
 
 const soldTickets = computed<number>(() => TicketService.getSoldTicketsCount(event.value.id));
 
-const ticketUnitPrice = computed<number>(() => EventService.getPriceById(event.value.id));
+const ticketUnitPrice = computed<number>(() => EventService.getPrice(event.value.id));
 
 const totalCost = computed<number>(() => quantitySelector.value * ticketUnitPrice.value);
 
