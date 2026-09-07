@@ -10,6 +10,12 @@ import Utils from '@/utils/Utils.js';
 export class TicketService {
   // CRUD Methods
   static create(ticketDTO: CreateTicketDTO): TicketInterface[] | null {
+    const event = EventService.getById(ticketDTO.eventId);
+
+    if (!event || event.status !== 'Active') {
+      return null;
+    }
+
     const availableTickets = TicketService.getAvailableTickets(ticketDTO.eventId);
 
     if (ticketDTO.quantity > availableTickets) {
@@ -51,12 +57,12 @@ export class TicketService {
     const event = EventService.getById(eventId);
     const venue = VenueService.getById(event?.venueId ?? 0);
     const capacity = venue?.capacity ?? 0;
-    const soldTickets = this.getSoldTicketsCount(eventId);
+    const soldTickets = TicketService.getSoldTicketsCount(eventId);
 
     return capacity - soldTickets;
   }
 
   static getSoldTicketsCount(eventId: number): number {
-    return this.getByEventId(eventId).length;
+    return TicketService.getByEventId(eventId).length;
   }
 }

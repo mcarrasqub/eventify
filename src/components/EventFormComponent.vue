@@ -4,7 +4,7 @@ import { computed, ref, watch } from 'vue';
 
 // Internal Imports
 import type { CreateEventDTO, UpdateEventDTO } from '@/dtos/EventDTO.js';
-import type { EventInterface } from '@/interfaces/EventInterface.js';
+import type { EventInterface, EventStatus } from '@/interfaces/EventInterface.js';
 import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { EventService } from '@/services/EventService.js';
 import { VenueService } from '@/services/VenueService.js';
@@ -31,9 +31,12 @@ const emit = defineEmits<{
 const defaultCategories: string[] = [
   'Technology',
   'Music',
+  'Design',
+  'Gastronomy',
+  'Sports',
+  'Theater',
   'Business',
   'Art',
-  'Sports',
   'Education',
   'Entertainment',
   'Food & Drink',
@@ -50,7 +53,7 @@ const defaultTypes: string[] = [
   'Exhibition',
 ];
 
-const statusOptions: EventInterface['status'][] = ['Active', 'Cancelled', 'Completed'];
+const statusOptions: EventStatus[] = ['Active', 'Cancelled', 'Completed'];
 
 // Computed
 const isEditMode = computed<boolean>(() => !!props.event);
@@ -72,7 +75,7 @@ function getInitialForm(): CreateEventDTO {
     duration: '',
     imageURL: '',
     price: '' as unknown as number,
-    status: '' as unknown as EventInterface['status'],
+    status: '' as unknown as EventStatus,
     time: '',
     title: '',
     type: '',

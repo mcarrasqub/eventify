@@ -1,3 +1,6 @@
+// Types
+export type EventStatus = 'Active' | 'Cancelled' | 'Completed';
+
 // Interface Definition
 export interface EventInterface {
   id: number;
@@ -10,6 +13,6 @@ export interface EventInterface {
   time: string;
   duration: string;
   price: number;
-  status: 'Active' | 'Cancelled' | 'Completed';
+  status: EventStatus;
   venueId: number;
 }

@@ -112,7 +112,6 @@ function validateForm(): boolean {
   const hasLat = lat !== undefined && lat !== null && lat !== ('' as unknown as number);
   const hasLng = lng !== undefined && lng !== null && lng !== ('' as unknown as number);
 
-  // Both latitude and longitude must be provided together
   if (hasLat && !hasLng) {
     errorMessage.value = 'Please provide longitude along with latitude.';
     return false;
@@ -122,7 +121,7 @@ function validateForm(): boolean {
     return false;
   }
 
-  // Check valid geographic range: Latitude [-90, 90], Longitude [-180, 180]
+  // Check valid geographic range
   if (hasLat && hasLng) {
     const numLat = Number(lat);
     const numLng = Number(lng);

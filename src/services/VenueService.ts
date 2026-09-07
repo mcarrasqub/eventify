@@ -58,7 +58,7 @@ export class VenueService {
   }
 
   static getUniqueCities(): string[] {
-    const venues = this.getAll();
+    const venues = VenueService.getAll();
     const cities = venues.map((venue) => venue.city);
     return Array.from(new Set(cities));
   }

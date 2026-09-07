@@ -21,7 +21,7 @@ export class EventService {
   }
 
   static search(query: string, categorySelector: string): EventInterface[] {
-    return this.getAll().filter((event) => {
+    return EventService.getAll().filter((event) => {
       const matchesQuery =
         event.title.toLowerCase().includes(query.toLowerCase()) ||
         event.description.toLowerCase().includes(query.toLowerCase());
@@ -69,23 +69,23 @@ export class EventService {
   }
 
   static getImageUrl(id: number): string {
-    return this.getById(id)?.imageURL ?? '';
+    return EventService.getById(id)?.imageURL ?? '';
   }
 
   static getTitle(id: number): string {
-    return this.getById(id)?.title ?? 'Unknown Event';
+    return EventService.getById(id)?.title ?? 'Unknown Event';
   }
 
   static getPrice(id: number): number {
-    return this.getById(id)?.price ?? 0;
+    return EventService.getById(id)?.price ?? 0;
   }
 
   static getByVenueId(venueId: number): EventInterface[] {
-    return this.getAll().filter((event) => event.venueId === venueId);
+    return EventService.getAll().filter((event) => event.venueId === venueId);
   }
 
   static getFeatured(): EventInterface[] {
-    return this.getAll().slice(0, 6);
+    return EventService.getAll().slice(0, 6);
   }
 
   static getRevenue(eventId: number): number {
@@ -96,12 +96,12 @@ export class EventService {
   }
 
   static getUniqueCategories(): string[] {
-    const categories = this.getAll().map((event) => event.category);
+    const categories = EventService.getAll().map((event) => event.category);
     return Array.from(new Set(categories));
   }
 
   static getUniqueStatuses(): string[] {
-    const statuses = this.getAll().map((event) => event.status);
+    const statuses = EventService.getAll().map((event) => event.status);
     return Array.from(new Set(statuses));
   }
 }

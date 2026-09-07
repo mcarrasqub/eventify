@@ -11,6 +11,6 @@ export class UserService {
   }
 
   static getById(id: number): UserInterface | undefined {
-    return this.getAll().find((user) => user.id === id);
+    return UserService.getAll().find((user) => user.id === id);
   }
 }

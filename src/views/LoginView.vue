@@ -34,7 +34,7 @@ function handleLogin(): void {
       router.push('/');
     }
   } else {
-    errorMessage.value = 'Invalid credentials. Try mariana@example.com / password123';
+    errorMessage.value = 'Invalid credentials.';
   }
 }
 </script>

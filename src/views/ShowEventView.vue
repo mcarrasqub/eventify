@@ -32,6 +32,10 @@ const ticketUnitPrice = computed<number>(() => EventService.getPrice(event.value
 
 const totalCost = computed<number>(() => quantitySelector.value * ticketUnitPrice.value);
 
+const canPurchase = computed<boolean>(
+  () => event.value?.status === 'Active' && availableTickets.value > 0,
+);
+
 // Methods
 function handlePurchase(): void {
   const currentUser = AuthService.getCurrentUser();
@@ -214,10 +218,10 @@ function handlePurchase(): void {
               <select
                 id="ticket-quantity-selector"
                 v-model.number="quantitySelector"
-                :disabled="availableTickets === 0"
+                :disabled="!canPurchase"
                 class="w-full rounded-xl border border-white/15 bg-midnight px-4 py-3 text-sm text-white outline-none transition focus:border-rose-gold focus:ring-2 focus:ring-rose-gold/30 disabled:opacity-50"
               >
-                <option v-if="availableTickets === 0" :value="0" class="bg-midnight text-white">
+                <option v-if="!canPurchase" :value="0" class="bg-midnight text-white">
                   0 tickets
                 </option>
                 <option
@@ -240,11 +244,14 @@ function handlePurchase(): void {
             <!-- Purchase Button -->
             <button
               type="button"
-              :disabled="availableTickets === 0"
+              :disabled="!canPurchase"
               @click="handlePurchase"
               class="w-full rounded-xl bg-rose-gold py-3.5 font-display text-sm font-bold text-midnight transition hover:bg-rose-light disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {{ availableTickets === 0 ? 'Sold Out' : 'Acquire Tickets' }}
+              <template v-if="event.status === 'Cancelled'">Event Cancelled</template>
+              <template v-else-if="event.status === 'Completed'">Event Completed</template>
+              <template v-else-if="availableTickets === 0">Sold Out</template>
+              <template v-else>Acquire Tickets</template>
             </button>
 
             <!-- Feedback Alert -->

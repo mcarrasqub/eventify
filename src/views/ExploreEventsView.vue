@@ -16,7 +16,20 @@ const initialCategory = typeof route.query.category === 'string' ? route.query.c
 const categorySelector = ref<string>(initialCategory);
 
 // Constants
-const categories = ['All', 'Technology', 'Music', 'Design', 'Gastronomy', 'Sports', 'Theater'];
+const categories = [
+  'All',
+  'Technology',
+  'Music',
+  'Design',
+  'Gastronomy',
+  'Sports',
+  'Theater',
+  'Business',
+  'Art',
+  'Education',
+  'Entertainment',
+  'Food & Drink',
+];
 
 // Computed
 const filteredEvents = computed(() =>
@@ -43,17 +56,17 @@ const filteredEvents = computed(() =>
 
       <div class="flex flex-wrap gap-2">
         <button
-          v-for="cat in categories"
-          :key="cat"
-          @click="categorySelector = cat"
+          v-for="category in categories"
+          :key="category"
+          @click="categorySelector = category"
           :class="[
             'rounded-lg px-4 py-2 text-xs font-semibold transition',
-            categorySelector === cat
+            categorySelector === category
               ? 'bg-rose-gold text-midnight'
               : 'border border-white/10 bg-midnight-soft text-ink-muted hover:border-white/30 hover:text-white',
           ]"
         >
-          {{ cat }}
+          {{ category }}
         </button>
       </div>
     </div>
