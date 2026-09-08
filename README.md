@@ -51,10 +51,45 @@ No es necesario copiar `node_modules`; esa carpeta se genera automáticamente co
 | `npm run lint`       | Ejecuta Oxlint y ESLint.                                 |
 | `npm run format`     | Formatea los archivos de `src/` con Prettier.            |
 
-## Tecnologías principales
+## Tecnologías principales y Librerías
 
-- Vue 3 y TypeScript
-- Vite
-- Vue Router
-- Pinia
-- Tailwind CSS
+- **Vue 3** (Composition API con `<script setup>`) y **TypeScript**
+- **Vite** (Build tool y servidor de desarrollo)
+- **Vue Router** (Gestión de rutas y control de acceso)
+- **Pinia** (Gestión de estado global)
+- **Tailwind CSS v4** (Diseño e interfaz de usuario)
+- **Chart.js** (Visualización de gráficos analíticos y estadísticas)
+- **Leaflet** (Mapas interactivos para la ubicación de sedes/venues)
+
+## Estructura del Proyecto
+
+```text
+src/
+├── assets/          # Estilos y recursos multimedia
+├── components/      # Componentes reutilizables (formularios, tarjetas, gráficos, mapas)
+├── dtos/            # Data Transfer Objects (DTOs)
+├── interfaces/      # Interfaces y contratos de tipos en TypeScript
+├── router/          # Configuración de Vue Router y guardias de navegación
+├── seeders/         # Datos iniciales (mock data) para pruebas
+├── services/        # Servicios con lógica de negocio y consumo de datos
+├── stores/          # Stores de Pinia para la gestión del estado
+├── utils/           # Funciones utilitarias y formateadores
+└── views/           # Vistas principales de la aplicación (Públicas y de Administración)
+```
+
+## Despliegue con Docker
+
+El proyecto incluye un `Dockerfile` y configuración de `Nginx` para empaquetar la aplicación en producción:
+
+1. **Construir la imagen de Docker:**
+
+```sh
+docker build -t eventify .
+```
+
+2. **Ejecutar el contenedor:**
+
+```sh
+docker run -d -p 80:80 eventify
+```
+
