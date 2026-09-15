@@ -1,0 +1,37 @@
+name: CI Eventify
+
+on:
+  push:
+    branches: [ main, master, 'feature/**' ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Lint y formato
+        run: npm run lint
+
+      - name: Verificación de tipos TypeScript
+        run: npm run type-check
+
+      - name: Test
+        run: npm test
+
+      - name: Compilar proyecto (Build)
+        run: npm run build-only
