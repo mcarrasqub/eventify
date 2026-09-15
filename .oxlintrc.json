@@ -6,5 +6,11 @@
   },
   "categories": {
     "correctness": "error"
-  }
+  },
+  "rules": {
+    "eslint/no-unused-vars": "warn",
+    "typescript/no-explicit-any": "warn",
+    "unicorn/no-new-buffer": "error"
+  },
+  "ignorePatterns": ["dist/**", "dist-ssr/**", "coverage/**", "node_modules/**"]
 }
