@@ -37,7 +37,19 @@ __screenshots__/
 # Vite
 *.timestamp-*-*.mjs
 
+# Environments
+.env
+.env.*
+!.env.example
+frontend/.env
+backend/.env
+
+# SQLite Database
+*.sqlite
+*.sqlite3
+*.db
+backend/*.sqlite
+
 # Agents
 .agents/
 .github/
-
