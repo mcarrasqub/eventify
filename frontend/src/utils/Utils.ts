@@ -1,5 +1,6 @@
 export default class Utils {
-  static generateNextId<T extends { id: number }>(items: T[]): number {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static generateNextId(items: any[]): number {
     return items.reduce((maxId, item) => Math.max(maxId, item.id), 0) + 1;
   }
 }
