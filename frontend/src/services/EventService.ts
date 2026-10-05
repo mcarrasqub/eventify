@@ -68,18 +68,6 @@ export class EventService {
     return useEventStore().events.find((event) => event.id === id);
   }
 
-  static getImageUrl(id: number): string {
-    return EventService.getById(id)?.imageURL ?? '';
-  }
-
-  static getTitle(id: number): string {
-    return EventService.getById(id)?.title ?? 'Unknown Event';
-  }
-
-  static getPrice(id: number): number {
-    return EventService.getById(id)?.price ?? 0;
-  }
-
   static getByVenueId(venueId: number): EventInterface[] {
     return EventService.getAll().filter((event) => event.venueId === venueId);
   }

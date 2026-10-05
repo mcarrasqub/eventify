@@ -49,7 +49,7 @@ const selectedEventTitle = computed<string>(() => {
     return 'All events';
   }
 
-  return EventService.getTitle(selectedEventId.value);
+  return EventService.getById(selectedEventId.value)?.title ?? 'Unknown Event';
 });
 
 const ticketStatusChartData = computed<number[]>(() => {
@@ -181,7 +181,7 @@ const revenueChartData = computed<number[]>(() =>
           <!-- Ticket Header -->
           <div class="mb-4 flex items-start justify-between gap-3">
             <h3 class="font-display text-xl font-semibold text-white">
-              {{ EventService.getTitle(ticket.eventId) }}
+              {{ EventService.getById(ticket.eventId)?.title ?? 'Unknown Event' }}
             </h3>
             <span
               class="rounded-full border border-deep-purple/40 bg-deep-purple/20 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-purple-200"
@@ -193,8 +193,8 @@ const revenueChartData = computed<number[]>(() =>
           <!-- Ticket Image -->
           <div class="mb-4 overflow-hidden rounded-xl border border-white/10">
             <img
-              :src="EventService.getImageUrl(ticket.eventId)"
-              :alt="EventService.getTitle(ticket.eventId)"
+              :src="EventService.getById(ticket.eventId)?.imageURL ?? ''"
+              :alt="EventService.getById(ticket.eventId)?.title ?? 'Unknown Event'"
               class="h-44 w-full object-cover transition duration-500 group-hover:scale-105"
             />
           </div>
@@ -209,7 +209,7 @@ const revenueChartData = computed<number[]>(() =>
             <div class="flex items-center justify-between text-sm">
               <span class="text-ink-muted">Price</span>
               <span class="font-mono text-base font-medium text-rose-light">
-                {{ EventService.getPrice(ticket.eventId) }}
+                {{ EventService.getById(ticket.eventId)?.price ?? 0 }}
               </span>
             </div>
           </div>
