@@ -1,10 +1,17 @@
 // Imports
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import type { Relation } from 'typeorm';
-import { Ticket } from '../../tickets/entities/ticket.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import type { Relation } from "typeorm";
+import { Ticket } from "../../tickets/entities/ticket.entity";
 
 // Entity Definition
-@Entity('users')
+@Entity("users")
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -18,8 +25,8 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ type: 'varchar', default: 'user' })
-  role: 'admin' | 'user';
+  @Column({ type: "varchar", default: "user" })
+  role: "admin" | "user";
 
   @Column({ nullable: true })
   phone: string;

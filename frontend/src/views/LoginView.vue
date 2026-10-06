@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // External Imports
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 
 // Internal Imports
 import type { LoginDTO } from '@/dtos/UserDTO.js';
@@ -18,7 +18,7 @@ const credentials = ref<LoginDTO>({
 const errorMessage = ref<string>('');
 
 // Methods
-function handleLogin(): void {
+async function handleLogin(): Promise<void> {
   errorMessage.value = '';
 
   if (!credentials.value.email || !credentials.value.password) {
@@ -26,15 +26,15 @@ function handleLogin(): void {
     return;
   }
 
-  const user = AuthService.login(credentials.value);
-  if (user) {
+  try {
+    const user = await AuthService.login(credentials.value);
     if (user.role === 'admin') {
       router.push('/admin/events');
     } else {
       router.push('/');
     }
-  } else {
-    errorMessage.value = 'Invalid credentials.';
+  } catch {
+    errorMessage.value = 'Invalid email or password. Please check your credentials and try again.';
   }
 }
 </script>
@@ -133,6 +133,17 @@ function handleLogin(): void {
         >
           Log In
         </button>
+
+        <!-- Register Link -->
+        <p class="pt-2 text-center text-sm text-ink-muted">
+          Don't have an account?
+          <RouterLink
+            to="/register"
+            class="font-semibold text-rose-gold transition hover:text-rose-light hover:underline"
+          >
+            Create an account
+          </RouterLink>
+        </p>
       </form>
     </div>
   </div>

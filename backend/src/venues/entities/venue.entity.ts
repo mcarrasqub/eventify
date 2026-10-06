@@ -1,10 +1,17 @@
 // Imports
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import type { Relation } from 'typeorm';
-import { Event } from '../../events/entities/event.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import type { Relation } from "typeorm";
+import { Event } from "../../events/entities/event.entity";
 
 // Entity Definition
-@Entity('venues')
+@Entity("venues")
 export class Venue {
   @PrimaryGeneratedColumn()
   id: number;
@@ -21,13 +28,13 @@ export class Venue {
   @Column()
   address: string;
 
-  @Column('int')
+  @Column("int")
   capacity: number;
 
-  @Column('float', { nullable: true })
+  @Column("float", { nullable: true })
   latitude: number;
 
-  @Column('float', { nullable: true })
+  @Column("float", { nullable: true })
   longitude: number;
 
   @OneToMany(() => Event, (event) => event.venue)

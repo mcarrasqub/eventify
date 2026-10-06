@@ -7,6 +7,7 @@ import { adminRoutes } from '@/router/adminRoutes.js';
 import ExploreEventsView from '@/views/ExploreEventsView.vue';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
+import RegisterView from '@/views/RegisterView.vue';
 import ShowEventView from '@/views/ShowEventView.vue';
 
 //Public Routes
@@ -30,6 +31,12 @@ const router = createRouter({
       name: 'login',
       component: LoginView,
       meta: { title: 'Log In', guestOnly: true },
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView,
+      meta: { title: 'Sign Up', guestOnly: true },
     },
     {
       path: '/event/:id',
