@@ -159,13 +159,22 @@ function handleLogout(): void {
               </div>
             </div>
 
-            <RouterLink
-              to="/login"
-              class="flex w-full items-center justify-center gap-2 rounded-xl bg-rose-gold px-4 py-2.5 font-display text-xs font-bold text-midnight transition duration-200 hover:bg-rose-light hover:shadow-md hover:shadow-rose-gold/20"
-            >
-              <span>Log In</span>
-              <span>→</span>
-            </RouterLink>
+            <div class="flex flex-col gap-2">
+              <RouterLink
+                to="/login"
+                class="flex w-full items-center justify-center gap-2 rounded-xl bg-rose-gold px-4 py-2.5 font-display text-xs font-bold text-midnight transition duration-200 hover:bg-rose-light hover:shadow-md hover:shadow-rose-gold/20"
+              >
+                <span>Log In</span>
+                <span>→</span>
+              </RouterLink>
+
+              <RouterLink
+                to="/register"
+                class="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 font-display text-xs font-medium text-white transition hover:border-rose-gold/30 hover:bg-white/10"
+              >
+                <span>Create Account</span>
+              </RouterLink>
+            </div>
           </div>
         </div>
       </aside>

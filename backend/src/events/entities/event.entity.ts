@@ -1,20 +1,18 @@
 // Imports
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import type { Relation } from 'typeorm';
-import { Ticket } from '../../tickets/entities/ticket.entity';
-import { Venue } from '../../venues/entities/venue.entity';
+} from "typeorm";
+import type { Relation } from "typeorm";
+import { Ticket } from "../../tickets/entities/ticket.entity";
+import { Venue } from "../../venues/entities/venue.entity";
 
 // Entity Definition
-@Entity('events')
+@Entity("events")
 export class Event {
   @PrimaryGeneratedColumn()
   id: number;
@@ -25,7 +23,7 @@ export class Event {
   @Column()
   title: string;
 
-  @Column('text')
+  @Column("text")
   description: string;
 
   @Column()
@@ -43,25 +41,22 @@ export class Event {
   @Column()
   duration: string;
 
-  @Column('float')
+  @Column("float")
   price: number;
 
-  @Column({ default: 'Active' })
-  status: 'Active' | 'Cancelled' | 'Completed';
+  @Column({ default: "Active" })
+  status: "Active" | "Cancelled" | "Completed";
 
   @Column()
   venueId: number;
 
-  @ManyToOne(() => Venue, (venue) => venue.events, { onDelete: 'CASCADE', eager: true })
-  @JoinColumn({ name: 'venueId' })
+  @ManyToOne(() => Venue, (venue) => venue.events, {
+    onDelete: "CASCADE",
+    eager: true,
+  })
+  @JoinColumn({ name: "venueId" })
   venue: Relation<Venue>;
 
   @OneToMany(() => Ticket, (ticket) => ticket.event)
   tickets: Relation<Ticket[]>;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

@@ -1,37 +1,60 @@
+// External Imports
+import axios from 'axios';
+
 // Internal Imports
-import type { LoginDTO, UserResponseDTO } from '@/dtos/UserDTO.js';
+import type { LoginDTO, RegisterDTO, UserResponseDTO } from '@/dtos/UserDTO.js';
 import { useAuthStore } from '@/stores/authstore.js';
-import { useUserStore } from '@/stores/userstore.js';
+
+// Base API URL
+const AUTH_API_URL = `${import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000'}/api/auth`;
+
+// Interface for Auth Backend Response
+interface AuthBackendResponse {
+  accessToken: string;
+  user: UserResponseDTO;
+}
 
 // Service Class
 export class AuthService {
   // Authentication Methods
-  static login(credentials: LoginDTO): UserResponseDTO | null {
-    const userStore = useUserStore();
+  static async login(credentials: LoginDTO): Promise<UserResponseDTO> {
+    const response = await axios.post<AuthBackendResponse>(`${AUTH_API_URL}/login`, credentials);
+    const { accessToken, user } = response.data;
 
-    const user = userStore.users.find(
-      (existingUser) =>
-        existingUser.email === credentials.email && existingUser.password === credentials.password,
-    );
+    const authStore = useAuthStore();
+    authStore.setAuth(accessToken, user);
 
-    if (!user) {
-      return null;
-    }
+    return user;
+  }
 
-    const { password: _password, ...userWithoutPassword } = user;
-    const userDTO: UserResponseDTO = userWithoutPassword;
+  static async register(userData: RegisterDTO): Promise<UserResponseDTO> {
+    const response = await axios.post<AuthBackendResponse>(`${AUTH_API_URL}/register`, userData);
+    const { accessToken, user } = response.data;
 
-    useAuthStore().login(userDTO);
+    const authStore = useAuthStore();
+    authStore.setAuth(accessToken, user);
 
-    return userDTO;
+    return user;
   }
 
   static logout(): void {
-    useAuthStore().logout();
+    const authStore = useAuthStore();
+    authStore.logout();
   }
 
   // Getters
   static getCurrentUser(): UserResponseDTO | null {
-    return useAuthStore().currentUser;
+    const authStore = useAuthStore();
+    return authStore.currentUser;
+  }
+
+  static getToken(): string | null {
+    const authStore = useAuthStore();
+    return authStore.token;
+  }
+
+  static isAuthenticated(): boolean {
+    const authStore = useAuthStore();
+    return authStore.isAuthenticated();
   }
 }

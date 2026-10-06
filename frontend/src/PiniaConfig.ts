@@ -4,7 +4,6 @@ import { watch } from 'vue';
 
 import { eventSeeder } from '@/seeders/eventseeder.js';
 import { ticketSeeder } from '@/seeders/ticketseeder.js';
-import { userSeeder } from '@/seeders/userseeder.js';
 import { venueSeeder } from '@/seeders/venueseeder.js';
 
 // Configuration Class
@@ -24,10 +23,6 @@ export default class PiniaConfig {
 
         ticket: {
           tickets: ticketSeeder,
-        },
-
-        user: {
-          users: userSeeder,
         },
 
         venue: {
