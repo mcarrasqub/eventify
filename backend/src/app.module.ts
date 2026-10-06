@@ -8,6 +8,7 @@ import { JwtAuthGuard } from "./auth/guards/jwt-auth.guard";
 import { RolesGuard } from "./auth/guards/roles.guard";
 import { SeedModule } from "./database/seeds/seed.module";
 import { UsersModule } from "./users/users.module";
+import { VenuesModule } from "./venues/venues.module";
 
 // Module Definition
 @Module({
@@ -23,6 +24,7 @@ import { UsersModule } from "./users/users.module";
       synchronize: true,
     }),
     UsersModule,
+    VenuesModule,
     AuthModule,
     SeedModule,
   ],
