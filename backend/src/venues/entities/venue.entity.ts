@@ -1,12 +1,5 @@
 // Imports
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import type { Relation } from "typeorm";
 import { Event } from "../../events/entities/event.entity";
 
@@ -39,10 +32,4 @@ export class Venue {
 
   @OneToMany(() => Event, (event) => event.venue)
   events: Relation<Event[]>;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

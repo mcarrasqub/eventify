@@ -1,13 +1,11 @@
 // Imports
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from "typeorm";
 import type { Relation } from "typeorm";
 import { Ticket } from "../../tickets/entities/ticket.entity";
@@ -61,10 +59,4 @@ export class Event {
 
   @OneToMany(() => Ticket, (ticket) => ticket.event)
   tickets: Relation<Ticket[]>;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }
