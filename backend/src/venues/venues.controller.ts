@@ -1,4 +1,4 @@
-// Imports
+// External Imports
 import {
   Body,
   Controller,
@@ -11,9 +11,11 @@ import {
   Patch,
   Post,
 } from "@nestjs/common";
+
+// Internal Imports
+import { CreateVenueDto } from "./dto/create-venue.dto";
 import { Public } from "../auth/decorators/public.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
-import { CreateVenueDto } from "./dto/create-venue.dto";
 import { UpdateVenueDto } from "./dto/update-venue.dto";
 import { Venue } from "./entities/venue.entity";
 import { VenuesService } from "./venues.service";

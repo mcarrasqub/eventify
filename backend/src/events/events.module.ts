@@ -1,9 +1,11 @@
-// Imports
+// External Imports
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+
+// Internal Imports
 import { Event } from "./entities/event.entity";
 import { EventsController } from "./events.controller";
 import { EventsService } from "./events.service";
-import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
 import { Venue } from "../venues/entities/venue.entity";
 
 // Module Definition

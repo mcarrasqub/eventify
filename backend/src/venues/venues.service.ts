@@ -1,4 +1,4 @@
-// Imports
+// External Imports
 import {
   ConflictException,
   Injectable,
@@ -6,6 +6,8 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+
+// Internal Imports
 import type { CreateVenueDto } from "./dto/create-venue.dto";
 import type { UpdateVenueDto } from "./dto/update-venue.dto";
 import { Venue } from "./entities/venue.entity";

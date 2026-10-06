@@ -1,4 +1,4 @@
-// Imports
+// External Imports
 import {
   Body,
   Controller,
@@ -12,6 +12,8 @@ import {
   Post,
   Query,
 } from "@nestjs/common";
+
+// Internal Imports
 import { CreateEventDto } from "./dto/create-event.dto";
 import { Event } from "./entities/event.entity";
 import { EventsService } from "./events.service";

@@ -1,9 +1,11 @@
-// Imports
-import type { CreateEventDto } from "./dto/create-event.dto";
-import { Event } from "./entities/event.entity";
+// External Imports
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+
+// Internal Imports
+import type { CreateEventDto } from "./dto/create-event.dto";
+import { Event } from "./entities/event.entity";
 import type { UpdateEventDto } from "./dto/update-event.dto";
 import { Venue } from "../venues/entities/venue.entity";
 
