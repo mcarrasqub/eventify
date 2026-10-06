@@ -1,6 +1,8 @@
-// Imports
+// External Imports
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import type { Relation } from "typeorm";
+
+// Internal Imports
 import { Event } from "../../events/entities/event.entity";
 
 // Entity Definition
