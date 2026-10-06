@@ -38,8 +38,12 @@ export class EventsService {
       .createQueryBuilder("event")
       .leftJoinAndSelect("event.venue", "venue");
 
-    if (category && category !== "All") {
-      queryBuilder.andWhere("event.category = :category", { category });
+    if (category && category.trim() !== "" && category !== "All") {
+      const catLower = category.trim().toLowerCase();
+      queryBuilder.andWhere(
+        "(LOWER(event.category) = :catLower OR LOWER(event.type) = :catLower)",
+        { catLower },
+      );
     }
 
     if (query && query.trim() !== "") {
