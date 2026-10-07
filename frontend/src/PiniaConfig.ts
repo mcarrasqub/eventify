@@ -1,10 +1,9 @@
-// Imports
+// External Imports
 import { createPinia } from 'pinia';
 import { watch } from 'vue';
 
-import { eventSeeder } from '@/seeders/eventseeder.js';
+// Internal Imports
 import { ticketSeeder } from '@/seeders/ticketseeder.js';
-import { venueSeeder } from '@/seeders/venueseeder.js';
 
 // Configuration Class
 export default class PiniaConfig {
@@ -15,18 +14,10 @@ export default class PiniaConfig {
     if (savedState) {
       pinia.state.value = JSON.parse(savedState);
     } else {
-      // initialize the state with the seeders
+      // initialize state for client-side stores
       pinia.state.value = {
-        event: {
-          events: eventSeeder,
-        },
-
         ticket: {
           tickets: ticketSeeder,
-        },
-
-        venue: {
-          venues: venueSeeder,
         },
       };
 

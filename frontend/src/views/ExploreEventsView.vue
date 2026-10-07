@@ -1,11 +1,13 @@
 <script setup lang="ts">
 // External Imports
-import { computed, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 // Internal Imports
 import EventCardComponent from '@/components/EventCardComponent.vue';
+import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
+import { getErrorMessage } from '@/utils/errorHandler.js';
 
 // Variables
 const route = useRoute();
@@ -14,6 +16,9 @@ const route = useRoute();
 const searchQuery = ref<string>('');
 const initialCategory = typeof route.query.category === 'string' ? route.query.category : 'All';
 const categorySelector = ref<string>(initialCategory);
+const events = ref<EventInterface[]>([]);
+const isLoading = ref<boolean>(true);
+const errorMessage = ref<string>('');
 
 // Constants
 const categories = [
@@ -31,10 +36,26 @@ const categories = [
   'Food & Drink',
 ];
 
-// Computed
-const filteredEvents = computed(() =>
-  EventService.search(searchQuery.value, categorySelector.value),
-);
+async function loadEvents(): Promise<void> {
+  isLoading.value = true;
+  errorMessage.value = '';
+  try {
+    events.value = await EventService.search(searchQuery.value, categorySelector.value);
+  } catch (err: unknown) {
+    errorMessage.value = getErrorMessage(err, 'Failed to load events.');
+    console.error(err);
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+onMounted(() => {
+  loadEvents();
+});
+
+watch([searchQuery, categorySelector], () => {
+  loadEvents();
+});
 </script>
 
 <template>
@@ -71,12 +92,22 @@ const filteredEvents = computed(() =>
       </div>
     </div>
 
-    <!-- Results Grid -->
+    <!-- Loading State -->
+    <div v-if="isLoading" class="py-12 text-center font-mono text-sm text-ink-muted">
+      Loading events...
+    </div>
+
+    <!-- Error State -->
     <div
-      v-if="filteredEvents.length > 0"
-      class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      v-else-if="errorMessage"
+      class="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-center text-sm text-rose-400"
     >
-      <EventCardComponent v-for="event in filteredEvents" :key="event.id" :event="event" />
+      {{ errorMessage }}
+    </div>
+
+    <!-- Results Grid -->
+    <div v-else-if="events.length > 0" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <EventCardComponent v-for="event in events" :key="event.id" :event="event" />
     </div>
 
     <div

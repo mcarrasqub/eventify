@@ -1,23 +1,42 @@
 <script setup lang="ts">
 // External Imports
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 // Internal Imports
-import EventCardComponent from '@/components/EventCardComponent.vue';
 import { AuthService } from '@/services/AuthService.js';
+import EventCardComponent from '@/components/EventCardComponent.vue';
+import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
+import { getErrorMessage } from '@/utils/errorHandler.js';
 
-// Computed
+// Reactive State
 const currentUser = computed(() => AuthService.getCurrentUser());
-const featuredEvents = computed(() => EventService.getFeatured());
+const featuredEvents = ref<EventInterface[]>([]);
+const allEvents = ref<EventInterface[]>([]);
+const isLoading = ref<boolean>(true);
+const errorMessage = ref<string>('');
+
+onMounted(async () => {
+  isLoading.value = true;
+  errorMessage.value = '';
+  try {
+    const [featured, all] = await Promise.all([EventService.getFeatured(), EventService.getAll()]);
+    featuredEvents.value = featured;
+    allEvents.value = all;
+  } catch (err: unknown) {
+    errorMessage.value = getErrorMessage(err, 'Failed to load home page events.');
+    console.error(err);
+  } finally {
+    isLoading.value = false;
+  }
+});
 
 const popularCategories = computed(() => {
-  const events = EventService.getAll();
   const categoryNames = ['Technology', 'Music', 'Design', 'Gastronomy', 'Sports', 'Theater'];
 
   return categoryNames.map((name) => ({
     name,
-    count: events.filter((event) => event.category === name).length,
+    count: allEvents.value.filter((event) => event.category === name).length,
   }));
 });
 </script>
@@ -77,6 +96,14 @@ const popularCategories = computed(() => {
       </div>
     </div>
 
+    <!-- Error State -->
+    <div
+      v-if="errorMessage"
+      class="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-center text-sm text-rose-400"
+    >
+      {{ errorMessage }}
+    </div>
+
     <!-- Featured Events Section -->
     <div>
       <div class="mb-8 flex items-end justify-between">
@@ -92,8 +119,16 @@ const popularCategories = computed(() => {
         </RouterLink>
       </div>
 
-      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div v-if="isLoading" class="py-12 text-center font-mono text-sm text-ink-muted">
+        Loading featured events...
+      </div>
+
+      <div v-else-if="featuredEvents.length > 0" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <EventCardComponent v-for="event in featuredEvents" :key="event.id" :event="event" />
+      </div>
+
+      <div v-else class="rounded-xl border border-white/10 bg-midnight-soft p-8 text-center text-sm text-ink-muted">
+        No featured events found.
       </div>
     </div>
 

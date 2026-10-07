@@ -64,3 +64,5 @@ export class EventService {
     return Array.from(new Set(statuses));
   }
 }
+
+

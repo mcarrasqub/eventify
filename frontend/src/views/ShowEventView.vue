@@ -1,32 +1,58 @@
 <script setup lang="ts">
 // External Imports
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 // Internal Imports
-import MapComponent from '@/components/MapComponent.vue';
-import type { CreateTicketDTO } from '@/dtos/TicketDTO.js';
 import { AuthService } from '@/services/AuthService.js';
+import type { CreateTicketDTO } from '@/dtos/TicketDTO.js';
+import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
+import { getErrorMessage } from '@/utils/errorHandler.js';
+import MapComponent from '@/components/MapComponent.vue';
 import { TicketService } from '@/services/TicketService.js';
+import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { VenueService } from '@/services/VenueService.js';
 
 // Variables
 const route = useRoute();
 const eventId = Number(route.params.id);
 
-// Reactive variables
+// Reactive State
+const event = ref<EventInterface | null>(null);
+const venue = ref<VenueInterface | null>(null);
+const isLoading = ref<boolean>(true);
+const errorMessage = ref<string>('');
 const quantitySelector = ref<number>(1);
 const purchaseMessage = ref<string>('');
 
-// Computed
-const event = computed(() => EventService.getById(eventId)!);
+onMounted(async () => {
+  isLoading.value = true;
+  errorMessage.value = '';
+  try {
+    const fetchedEvent = await EventService.getById(eventId);
+    event.value = fetchedEvent;
+    if (fetchedEvent && fetchedEvent.venueId) {
+      venue.value = await VenueService.getById(fetchedEvent.venueId);
+    }
+  } catch (err: unknown) {
+    errorMessage.value = getErrorMessage(err, 'Failed to load event details.');
+    console.error(err);
+  } finally {
+    isLoading.value = false;
+  }
+});
 
-const venue = computed(() => VenueService.getById(event.value.venueId));
+const soldTickets = computed<number>(() => {
+  if (!event.value) return 0;
+  return TicketService.getSoldTicketsCount(event.value.id);
+});
 
-const availableTickets = computed<number>(() => TicketService.getAvailableTickets(event.value.id));
-
-const soldTickets = computed<number>(() => TicketService.getSoldTicketsCount(event.value.id));
+const availableTickets = computed<number>(() => {
+  if (!venue.value) return 0;
+  const capacity = venue.value.capacity ?? 0;
+  return Math.max(0, capacity - soldTickets.value);
+});
 
 const ticketUnitPrice = computed<number>(() => event.value?.price ?? 0);
 
@@ -45,6 +71,10 @@ function handlePurchase(): void {
     return;
   }
 
+  if (!event.value) {
+    return;
+  }
+
   const ticketDTO: CreateTicketDTO = {
     eventId: event.value.id,
     quantity: quantitySelector.value,
@@ -52,9 +82,20 @@ function handlePurchase(): void {
     userId: currentUser.id,
   };
 
-  const createdTickets = TicketService.create(ticketDTO);
+  const storeTickets = TicketService.getAll();
+  const createdTickets = [];
+  for (let i = 0; i < ticketDTO.quantity; i++) {
+    const newTicket = {
+      id: storeTickets.length + 1,
+      status: ticketDTO.status,
+      eventId: ticketDTO.eventId,
+      userId: ticketDTO.userId,
+    };
+    storeTickets.push(newTicket);
+    createdTickets.push(newTicket);
+  }
 
-  if (createdTickets) {
+  if (createdTickets.length > 0) {
     purchaseMessage.value = `Successfully acquired ${createdTickets.length} ticket(s) for "${event.value.title}"!`;
   } else {
     purchaseMessage.value = 'Could not complete the purchase. Please check ticket availability.';
@@ -75,8 +116,21 @@ function handlePurchase(): void {
       </RouterLink>
     </div>
 
+    <!-- Loading State -->
+    <div v-if="isLoading" class="py-12 text-center font-mono text-sm text-ink-muted">
+      Loading event details...
+    </div>
+
+    <!-- Error State -->
+    <div
+      v-else-if="errorMessage || !event"
+      class="rounded-xl border border-rose-500/30 bg-rose-500/10 p-6 text-center text-sm text-rose-400"
+    >
+      {{ errorMessage || 'Event not found.' }}
+    </div>
+
     <!-- Main Grid -->
-    <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
+    <div v-else class="grid grid-cols-1 gap-12 lg:grid-cols-3">
       <!-- Left Column: Details & Map -->
       <div class="space-y-8 lg:col-span-2">
         <!-- Event Main Card -->
