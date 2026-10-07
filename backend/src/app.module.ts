@@ -7,6 +7,7 @@ import { AuthModule } from "./auth/auth.module";
 import { JwtAuthGuard } from "./auth/guards/jwt-auth.guard";
 import { RolesGuard } from "./auth/guards/roles.guard";
 import { SeedModule } from "./database/seeds/seed.module";
+import { TicketsModule } from "./tickets/tickets.module";
 import { UsersModule } from "./users/users.module";
 
 // Module Definition
@@ -24,6 +25,7 @@ import { UsersModule } from "./users/users.module";
     }),
     UsersModule,
     AuthModule,
+    TicketsModule,
     SeedModule,
   ],
   controllers: [],
