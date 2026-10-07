@@ -21,10 +21,21 @@ const eventId = Number(route.params.id);
 // Reactive State
 const event = ref<EventInterface | null>(null);
 const venue = ref<VenueInterface | null>(null);
+const availableTickets = ref<number>(0);
 const isLoading = ref<boolean>(true);
 const errorMessage = ref<string>('');
 const quantitySelector = ref<number>(1);
 const purchaseMessage = ref<string>('');
+
+const fetchAvailableTickets = async (): Promise<void> => {
+  if (eventId) {
+    try {
+      availableTickets.value = await TicketService.getAvailableTickets(eventId);
+    } catch (err: unknown) {
+      console.error('Failed to load available tickets:', err);
+    }
+  }
+};
 
 onMounted(async () => {
   isLoading.value = true;
@@ -35,6 +46,7 @@ onMounted(async () => {
     if (fetchedEvent && fetchedEvent.venueId) {
       venue.value = await VenueService.getById(fetchedEvent.venueId);
     }
+    await fetchAvailableTickets();
   } catch (err: unknown) {
     errorMessage.value = getErrorMessage(err, 'Failed to load event details.');
     console.error(err);
@@ -44,14 +56,8 @@ onMounted(async () => {
 });
 
 const soldTickets = computed<number>(() => {
-  if (!event.value) return 0;
-  return TicketService.getSoldTicketsCount(event.value.id);
-});
-
-const availableTickets = computed<number>(() => {
-  if (!venue.value) return 0;
-  const capacity = venue.value.capacity ?? 0;
-  return Math.max(0, capacity - soldTickets.value);
+  const capacity = venue.value?.capacity ?? 0;
+  return Math.max(0, capacity - availableTickets.value);
 });
 
 const ticketUnitPrice = computed<number>(() => event.value?.price ?? 0);
@@ -74,13 +80,14 @@ async function handlePurchase(): Promise<void> {
   }
 
   try {
-    const createdTickets = await TicketService.purchase(
-      event.value.id,
-      quantitySelector.value,
-    );
+    const createdTickets = await TicketService.purchase({
+      eventId: event.value.id,
+      quantity: quantitySelector.value,
+    });
 
     if (createdTickets && createdTickets.length > 0) {
       purchaseMessage.value = `Successfully acquired ${createdTickets.length} ticket(s) for "${event.value.title}"!`;
+      await fetchAvailableTickets();
     } else {
       purchaseMessage.value = 'Could not complete the purchase. Please check ticket availability.';
     }
