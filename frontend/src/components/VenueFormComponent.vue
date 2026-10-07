@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue';
 
 // Internal Imports
 import type { CreateVenueDTO, UpdateVenueDTO } from '@/dtos/VenueDTO.js';
+import { getErrorMessage } from '@/utils/errorHandler.js';
 import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { VenueService } from '@/services/VenueService.js';
 
@@ -26,7 +27,6 @@ const emit = defineEmits<{
 }>();
 
 // Helper Functions
-// Generates an empty initial form state for new venue creation
 function getInitialForm(): CreateVenueDTO {
   return {
     address: '',
@@ -42,19 +42,18 @@ function getInitialForm(): CreateVenueDTO {
 // Reactive State (Form & UI)
 const form = ref<CreateVenueDTO>(getInitialForm());
 const errorMessage = ref<string>('');
+const isSubmitting = ref<boolean>(false);
 
 // Computed
 const isEditMode = computed<boolean>(() => !!props.venue);
 
 // Watchers
-// Synchronize form state whenever modal opens or active venue prop changes
 watch(
   () => [props.isOpen, props.venue],
   () => {
     if (props.isOpen) {
       errorMessage.value = '';
       if (props.venue) {
-        // Populate existing venue data when in edit mode
         form.value = {
           address: props.venue.address,
           capacity: props.venue.capacity,
@@ -106,7 +105,6 @@ function validateForm(): boolean {
     return false;
   }
 
-  // Validate optional geographic coordinates
   const lat = form.value.latitude;
   const lng = form.value.longitude;
   const hasLat = lat !== undefined && lat !== null && lat !== ('' as unknown as number);
@@ -121,7 +119,6 @@ function validateForm(): boolean {
     return false;
   }
 
-  // Check valid geographic range
   if (hasLat && hasLng) {
     const numLat = Number(lat);
     const numLng = Number(lng);
@@ -140,12 +137,14 @@ function validateForm(): boolean {
   return true;
 }
 
-function handleSubmit(): void {
+async function handleSubmit(): Promise<void> {
   if (!validateForm()) {
     return;
   }
 
-  // Parse coordinates into numeric values if provided
+  isSubmitting.value = true;
+  errorMessage.value = '';
+
   const parsedLatitude =
     form.value.latitude !== undefined &&
     form.value.latitude !== null &&
@@ -160,42 +159,41 @@ function handleSubmit(): void {
       ? Number(form.value.longitude)
       : undefined;
 
-  if (isEditMode.value && props.venue) {
-    const updateDTO: UpdateVenueDTO = {
-      address: form.value.address,
-      capacity: Number(form.value.capacity),
-      city: form.value.city,
-      imageURL: form.value.imageURL?.trim() || undefined,
-      latitude: parsedLatitude,
-      longitude: parsedLongitude,
-      name: form.value.name,
-    };
+  try {
+    if (isEditMode.value && props.venue) {
+      const updateDTO: UpdateVenueDTO = {
+        address: form.value.address,
+        capacity: Number(form.value.capacity),
+        city: form.value.city,
+        imageURL: form.value.imageURL?.trim() || undefined,
+        latitude: parsedLatitude,
+        longitude: parsedLongitude,
+        name: form.value.name,
+      };
 
-    const updated = VenueService.update(props.venue.id, updateDTO);
-    if (updated) {
-      const refreshed = VenueService.getById(props.venue.id);
-      if (refreshed) {
-        emit('saved', refreshed);
-      }
+      const updated = await VenueService.update(props.venue.id, updateDTO);
+      emit('saved', updated);
       handleClose();
     } else {
-      errorMessage.value = 'Could not update the venue. Please try again.';
-    }
-  } else {
-    // Create new venue record
-    const createDTO: CreateVenueDTO = {
-      address: form.value.address,
-      capacity: Number(form.value.capacity),
-      city: form.value.city,
-      imageURL: form.value.imageURL?.trim() || undefined,
-      latitude: parsedLatitude,
-      longitude: parsedLongitude,
-      name: form.value.name,
-    };
+      const createDTO: CreateVenueDTO = {
+        address: form.value.address,
+        capacity: Number(form.value.capacity),
+        city: form.value.city,
+        imageURL: form.value.imageURL?.trim() || undefined,
+        latitude: parsedLatitude,
+        longitude: parsedLongitude,
+        name: form.value.name,
+      };
 
-    const newVenue = VenueService.create(createDTO);
-    emit('saved', newVenue);
-    handleClose();
+      const newVenue = await VenueService.create(createDTO);
+      emit('saved', newVenue);
+      handleClose();
+    }
+  } catch (err: unknown) {
+    errorMessage.value = getErrorMessage(err, 'Could not save the venue.');
+    console.error(err);
+  } finally {
+    isSubmitting.value = false;
   }
 }
 </script>
@@ -390,9 +388,10 @@ function handleSubmit(): void {
           </button>
           <button
             type="submit"
-            class="rounded-xl bg-rose-gold px-6 py-2.5 font-display text-sm font-bold text-midnight transition hover:bg-rose-light"
+            :disabled="isSubmitting"
+            class="rounded-xl bg-rose-gold px-6 py-2.5 font-display text-sm font-bold text-midnight transition hover:bg-rose-light disabled:opacity-50"
           >
-            {{ isEditMode ? 'Save Changes' : 'Create Venue' }}
+            {{ isSubmitting ? 'Saving...' : isEditMode ? 'Save Changes' : 'Create Venue' }}
           </button>
         </div>
       </form>

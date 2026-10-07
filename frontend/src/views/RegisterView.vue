@@ -70,9 +70,11 @@ async function handleRegister(): Promise<void> {
       typeof error === 'object' &&
       error !== null &&
       'response' in error &&
-      typeof (error as { response?: { data?: { message?: string | string[] } } }).response?.data?.message !== 'undefined'
+      typeof (error as { response?: { data?: { message?: string | string[] } } }).response?.data
+        ?.message !== 'undefined'
     ) {
-      const serverMessage = (error as { response: { data: { message: string | string[] } } }).response.data.message;
+      const serverMessage = (error as { response: { data: { message: string | string[] } } })
+        .response.data.message;
       errorMessage.value = Array.isArray(serverMessage)
         ? serverMessage.join(', ')
         : String(serverMessage);

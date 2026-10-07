@@ -1,15 +1,22 @@
 <script setup lang="ts">
 // External Imports
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 // Internal Imports
 import EventFormComponent from '@/components/EventFormComponent.vue';
 import FilterSelectorComponent from '@/components/FilterSelectorComponent.vue';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
+import { getErrorMessage } from '@/utils/errorHandler.js';
+import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { VenueService } from '@/services/VenueService.js';
 
-// Reactive State (Search, Selectors and Modals)
+// Reactive State (Data, UI, Search, Selectors and Modals)
+const allEvents = ref<EventInterface[]>([]);
+const allVenues = ref<VenueInterface[]>([]);
+const isLoading = ref<boolean>(true);
+const errorMessage = ref<string>('');
+
 const searchQuery = ref<string>('');
 const categorySelector = ref<string>('All');
 const statusSelector = ref<string>('All');
@@ -17,18 +24,47 @@ const statusSelector = ref<string>('All');
 const isEventModalOpen = ref<boolean>(false);
 const selectedEvent = ref<EventInterface | null>(null);
 
-// Computed
-const allEvents = computed<EventInterface[]>(() => EventService.getAll());
+// Fetch data from backend API
+async function loadData(): Promise<void> {
+  isLoading.value = true;
+  errorMessage.value = '';
+  try {
+    const [fetchedEvents, fetchedVenues] = await Promise.all([
+      EventService.getAll(),
+      VenueService.getAll(),
+    ]);
+    allEvents.value = fetchedEvents;
+    allVenues.value = fetchedVenues;
+  } catch (err: unknown) {
+    errorMessage.value = getErrorMessage(err, 'Failed to load events.');
+    console.error(err);
+  } finally {
+    isLoading.value = false;
+  }
+}
 
-const categoryOptions = computed<string[]>(() => ['All', ...EventService.getUniqueCategories()]);
+onMounted(() => {
+  loadData();
+});
 
-const statusOptions = computed<string[]>(() => ['All', ...EventService.getUniqueStatuses()]);
+// Computed Filters
+const categoryOptions = computed<string[]>(() => [
+  'All',
+  ...EventService.getUniqueCategories(allEvents.value),
+]);
+
+const statusOptions = computed<string[]>(() => [
+  'All',
+  ...EventService.getUniqueStatuses(allEvents.value),
+]);
 
 const filteredEvents = computed<EventInterface[]>(() => {
   return allEvents.value.filter((event) => {
+    const query = searchQuery.value.toLowerCase().trim();
     const matchesQuery =
-      event.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      event.description.toLowerCase().includes(searchQuery.value.toLowerCase());
+      query === '' ||
+      event.title.toLowerCase().includes(query) ||
+      event.description.toLowerCase().includes(query);
     const matchesCategory =
       categorySelector.value === 'All' || event.category === categorySelector.value;
     const matchesStatus = statusSelector.value === 'All' || event.status === statusSelector.value;
@@ -47,16 +83,28 @@ function handleEditEvent(event: EventInterface): void {
   isEventModalOpen.value = true;
 }
 
-function handleDeleteEvent(id: number, title: string): void {
+async function handleDeleteEvent(id: number, title: string): Promise<void> {
   const confirmed = window.confirm(`Are you sure you want to delete the event "${title}"?`);
-  if (confirmed) {
-    EventService.delete(id);
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    await EventService.delete(id);
+    await loadData();
+  } catch (err: unknown) {
+    alert(getErrorMessage(err, `Could not delete event "${title}".`));
+    console.error(err);
   }
 }
 
 function getVenueName(venueId: number): string {
-  const venue = VenueService.getById(venueId);
+  const venue = allVenues.value.find((v) => v.id === venueId);
   return venue ? venue.name : `Venue #${venueId}`;
+}
+
+function handleEventSaved(): void {
+  loadData();
 }
 </script>
 
@@ -83,6 +131,14 @@ function getVenueName(venueId: number): string {
           <span>Create Event</span>
         </button>
       </div>
+    </div>
+
+    <!-- Error State -->
+    <div
+      v-if="errorMessage"
+      class="mb-6 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-400"
+    >
+      {{ errorMessage }}
     </div>
 
     <!-- Search Bar and Filter Selectors -->
@@ -118,8 +174,16 @@ function getVenueName(venueId: number): string {
       />
     </div>
 
+    <!-- Loading State -->
+    <div v-if="isLoading" class="py-12 text-center font-mono text-sm text-ink-muted">
+      Loading events...
+    </div>
+
     <!-- Events Table -->
-    <div class="overflow-hidden rounded-2xl border border-white/10 bg-midnight-soft shadow-xl">
+    <div
+      v-else
+      class="overflow-hidden rounded-2xl border border-white/10 bg-midnight-soft shadow-xl"
+    >
       <div class="overflow-x-auto">
         <table class="w-full border-collapse text-left text-sm text-white">
           <!-- Table Header -->
@@ -273,6 +337,7 @@ function getVenueName(venueId: number): string {
       :is-open="isEventModalOpen"
       :event="selectedEvent"
       @close="isEventModalOpen = false"
+      @saved="handleEventSaved"
     />
   </section>
 </template>

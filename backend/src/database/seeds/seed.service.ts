@@ -107,8 +107,8 @@ export class SeedService implements OnApplicationBootstrap {
       title: "Concierto Filarmónica de Medellín",
       description:
         "Espectacular noche de música clásica y sinfónica con la orquesta filarmónica.",
-      type: "Music",
-      category: "Concerts",
+      type: "Concert",
+      category: "Music",
       date: "2026-11-20",
       time: "20:00",
       duration: "2h",
@@ -137,8 +137,8 @@ export class SeedService implements OnApplicationBootstrap {
       title: "Festival Rock & Pop Colombia",
       description:
         "Bandas nacionales e internacionales reunidas en una jornada única.",
-      type: "Music",
-      category: "Festivals",
+      type: "Festival",
+      category: "Music",
       date: "2026-11-28",
       time: "16:00",
       duration: "6h",
@@ -152,7 +152,7 @@ export class SeedService implements OnApplicationBootstrap {
       title: "Noche de Stand Up Comedy",
       description:
         "Los mejores comediantes del país en una noche llena de risas.",
-      type: "Theatre",
+      type: "Conference",
       category: "Comedy",
       date: "2026-12-12",
       time: "19:30",
