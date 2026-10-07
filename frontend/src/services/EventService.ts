@@ -1,95 +1,66 @@
 // Internal Imports
 import type { CreateEventDTO, UpdateEventDTO } from '@/dtos/EventDTO.js';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
-import { TicketService } from '@/services/TicketService.js';
-import { useEventStore } from '@/stores/eventstore.js';
-import Utils from '@/utils/Utils.js';
+import httpClient from '@/utils/httpClient.js';
 
 // Service Class
 export class EventService {
   // CRUD Methods
-  static create(eventDTO: CreateEventDTO): EventInterface {
-    const store = useEventStore();
-
-    const newEvent: EventInterface = {
-      ...eventDTO,
-      id: Utils.generateNextId(store.events),
-    };
-
-    store.events.push(newEvent);
-    return newEvent;
+  static async create(eventDTO: CreateEventDTO): Promise<EventInterface> {
+    const response = await httpClient.post<EventInterface>('/events', eventDTO);
+    return response.data;
   }
 
-  static search(query: string, categorySelector: string): EventInterface[] {
-    return EventService.getAll().filter((event) => {
-      const matchesQuery =
-        event.title.toLowerCase().includes(query.toLowerCase()) ||
-        event.description.toLowerCase().includes(query.toLowerCase());
-      const matchesCategory = categorySelector === 'All' || event.category === categorySelector;
-      return matchesQuery && matchesCategory;
-    });
-  }
-
-  static update(id: number, eventDTO: UpdateEventDTO): boolean {
-    const store = useEventStore();
-    const index = store.events.findIndex((event) => event.id === id);
-
-    if (index === -1) {
-      return false;
+  static async search(query: string, categorySelector: string): Promise<EventInterface[]> {
+    const params: Record<string, string> = {};
+    if (query.trim()) {
+      params.query = query.trim();
+    }
+    if (categorySelector && categorySelector !== 'All') {
+      params.category = categorySelector;
     }
 
-    const currentEvent = store.events[index];
-    if (!currentEvent) {
-      return false;
-    }
-
-    store.events[index] = {
-      ...currentEvent,
-      ...eventDTO,
-      id,
-    };
-
-    return true;
+    const response = await httpClient.get<EventInterface[]>('/events', { params });
+    return response.data;
   }
 
-  static delete(id: number): boolean {
-    const store = useEventStore();
-    const initialLength = store.events.length;
-    store.events = store.events.filter((event) => event.id !== id);
-    return store.events.length < initialLength;
+  static async update(id: number, eventDTO: UpdateEventDTO): Promise<EventInterface> {
+    const response = await httpClient.patch<EventInterface>(`/events/${id}`, eventDTO);
+    return response.data;
+  }
+
+  static async delete(id: number): Promise<void> {
+    await httpClient.delete(`/events/${id}`);
   }
 
   // Getters
-  static getAll(): EventInterface[] {
-    return useEventStore().events;
+  static async getAll(): Promise<EventInterface[]> {
+    const response = await httpClient.get<EventInterface[]>('/events');
+    return response.data;
   }
 
-  static getById(id: number): EventInterface | undefined {
-    return useEventStore().events.find((event) => event.id === id);
+  static async getById(id: number): Promise<EventInterface> {
+    const response = await httpClient.get<EventInterface>(`/events/${id}`);
+    return response.data;
   }
 
-  static getByVenueId(venueId: number): EventInterface[] {
-    return EventService.getAll().filter((event) => event.venueId === venueId);
+  static async getByVenueId(venueId: number): Promise<EventInterface[]> {
+    const events = await EventService.getAll();
+    return events.filter((event) => event.venueId === venueId);
   }
 
-  static getFeatured(): EventInterface[] {
-    return EventService.getAll().slice(0, 6);
+  static async getFeatured(): Promise<EventInterface[]> {
+    const events = await EventService.getAll();
+    return events.slice(0, 6);
   }
 
-  static getRevenue(eventId: number): number {
-    const event = EventService.getById(eventId);
-    const soldTickets = TicketService.getSoldTicketsCount(eventId);
-
-    return soldTickets * (event?.price ?? 0);
-  }
-
-  static getUniqueCategories(): string[] {
-    const categories = EventService.getAll().map((event) => event.category);
+  static getUniqueCategories(events: EventInterface[]): string[] {
+    const categories = events.map((event) => event.category);
     return Array.from(new Set(categories));
   }
 
-  static getUniqueStatuses(): string[] {
-    const statuses = EventService.getAll().map((event) => event.status);
+  static getUniqueStatuses(events: EventInterface[]): string[] {
+    const statuses = events.map((event) => event.status);
     return Array.from(new Set(statuses));
   }
 }
