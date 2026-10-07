@@ -1,7 +1,5 @@
-// Imports
-import type { TicketInterface } from '@/interfaces/TicketInterface.js';
-
 // DTO Definitions
-export type CreateTicketDTO = Omit<TicketInterface, 'id'> & {
+export interface CreateTicketDTO {
+  eventId: number;
   quantity: number;
-};
+}

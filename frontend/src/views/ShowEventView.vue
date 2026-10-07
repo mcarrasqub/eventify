@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // External Imports
+import axios from 'axios';
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 // Internal Imports
 import MapComponent from '@/components/MapComponent.vue';
-import type { CreateTicketDTO } from '@/dtos/TicketDTO.js';
 import { AuthService } from '@/services/AuthService.js';
 import { EventService } from '@/services/EventService.js';
 import { TicketService } from '@/services/TicketService.js';
@@ -37,7 +37,7 @@ const canPurchase = computed<boolean>(
 );
 
 // Methods
-function handlePurchase(): void {
+async function handlePurchase(): Promise<void> {
   const currentUser = AuthService.getCurrentUser();
 
   if (!currentUser) {
@@ -45,19 +45,24 @@ function handlePurchase(): void {
     return;
   }
 
-  const ticketDTO: CreateTicketDTO = {
-    eventId: event.value.id,
-    quantity: quantitySelector.value,
-    status: 'UNUSED',
-    userId: currentUser.id,
-  };
+  try {
+    const createdTickets = await TicketService.purchase(
+      event.value.id,
+      quantitySelector.value,
+    );
 
-  const createdTickets = TicketService.create(ticketDTO);
-
-  if (createdTickets) {
-    purchaseMessage.value = `Successfully acquired ${createdTickets.length} ticket(s) for "${event.value.title}"!`;
-  } else {
-    purchaseMessage.value = 'Could not complete the purchase. Please check ticket availability.';
+    if (createdTickets && createdTickets.length > 0) {
+      purchaseMessage.value = `Successfully acquired ${createdTickets.length} ticket(s) for "${event.value.title}"!`;
+    } else {
+      purchaseMessage.value = 'Could not complete the purchase. Please check ticket availability.';
+    }
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.data?.message) {
+      const msg = error.response.data.message;
+      purchaseMessage.value = Array.isArray(msg) ? msg.join(', ') : msg;
+    } else {
+      purchaseMessage.value = 'Could not complete the purchase. Please check ticket availability.';
+    }
   }
 }
 </script>
