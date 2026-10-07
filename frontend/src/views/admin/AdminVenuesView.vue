@@ -1,25 +1,57 @@
 <script setup lang="ts">
 // External Imports
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 // Internal Imports
 import FilterSelectorComponent from '@/components/FilterSelectorComponent.vue';
 import VenueFormComponent from '@/components/VenueFormComponent.vue';
-import type { VenueInterface } from '@/interfaces/VenueInterface.js';
+import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
+import { getErrorMessage } from '@/utils/errorHandler.js';
+import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { VenueService } from '@/services/VenueService.js';
 
-// Reactive State (Search, Selectors and Modals)
+// Reactive State (Data, UI, Search, Selectors and Modals)
+const allVenues = ref<VenueInterface[]>([]);
+const allEvents = ref<EventInterface[]>([]);
+const isLoading = ref<boolean>(true);
+const errorMessage = ref<string>('');
+
 const searchQuery = ref<string>('');
 const citySelector = ref<string>('All');
 
 const isVenueModalOpen = ref<boolean>(false);
 const selectedVenue = ref<VenueInterface | null>(null);
 
-// Computed
-const allVenues = computed<VenueInterface[]>(() => VenueService.getAll());
+// Fetch data from backend API
+async function loadData(): Promise<void> {
+  isLoading.value = true;
+  errorMessage.value = '';
+  try {
+    const [fetchedVenues, fetchedEvents] = await Promise.all([
+      VenueService.getAll(),
+      EventService.getAll(),
+    ]);
+    allVenues.value = fetchedVenues;
+    allEvents.value = fetchedEvents;
+  } catch (err: unknown) {
+    errorMessage.value = getErrorMessage(err, 'Failed to load venues.');
+    console.error(err);
+  } finally {
+    isLoading.value = false;
+  }
+}
 
-const cityOptions = computed<string[]>(() => ['All', ...VenueService.getUniqueCities()]);
+
+onMounted(() => {
+  loadData();
+});
+
+// Computed Filters
+const cityOptions = computed<string[]>(() => [
+  'All',
+  ...VenueService.getUniqueCities(allVenues.value),
+]);
 
 const filteredVenues = computed<VenueInterface[]>(() => {
   return allVenues.value.filter((venue) => {
@@ -47,15 +79,27 @@ function handleEditVenue(venue: VenueInterface): void {
   isVenueModalOpen.value = true;
 }
 
-function handleDeleteVenue(id: number, name: string): void {
+async function handleDeleteVenue(id: number, name: string): Promise<void> {
   const confirmed = window.confirm(`Are you sure you want to delete the venue "${name}"?`);
-  if (confirmed) {
-    VenueService.delete(id);
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    await VenueService.delete(id);
+    await loadData();
+  } catch (err: unknown) {
+    alert(getErrorMessage(err, `Could not delete venue "${name}".`));
+    console.error(err);
   }
 }
 
 function getEventCount(venueId: number): number {
-  return EventService.getByVenueId(venueId).length;
+  return allEvents.value.filter((event) => event.venueId === venueId).length;
+}
+
+function handleVenueSaved(): void {
+  loadData();
 }
 </script>
 
@@ -84,6 +128,14 @@ function getEventCount(venueId: number): number {
       </div>
     </div>
 
+    <!-- Error State -->
+    <div
+      v-if="errorMessage"
+      class="mb-6 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-400"
+    >
+      {{ errorMessage }}
+    </div>
+
     <!-- Search Bar and Filter Selectors -->
     <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div class="flex flex-col gap-1.5">
@@ -110,8 +162,16 @@ function getEventCount(venueId: number): number {
       />
     </div>
 
+    <!-- Loading State -->
+    <div v-if="isLoading" class="py-12 text-center font-mono text-sm text-ink-muted">
+      Loading venues...
+    </div>
+
     <!-- Venues Table -->
-    <div class="overflow-hidden rounded-2xl border border-white/10 bg-midnight-soft shadow-xl">
+    <div
+      v-else
+      class="overflow-hidden rounded-2xl border border-white/10 bg-midnight-soft shadow-xl"
+    >
       <div class="overflow-x-auto">
         <table class="w-full border-collapse text-left text-sm text-white">
           <!-- Table Header -->
@@ -242,6 +302,7 @@ function getEventCount(venueId: number): number {
       :is-open="isVenueModalOpen"
       :venue="selectedVenue"
       @close="isVenueModalOpen = false"
+      @saved="handleVenueSaved"
     />
   </section>
 </template>

@@ -5,9 +5,11 @@ import { computed, ref, watch } from 'vue';
 // Internal Imports
 import type { CreateEventDTO, UpdateEventDTO } from '@/dtos/EventDTO.js';
 import type { EventInterface, EventStatus } from '@/interfaces/EventInterface.js';
-import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { EventService } from '@/services/EventService.js';
+import { getErrorMessage } from '@/utils/errorHandler.js';
+import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { VenueService } from '@/services/VenueService.js';
+
 
 // Props
 const props = withDefaults(
@@ -58,11 +60,15 @@ const statusOptions: EventStatus[] = ['Active', 'Cancelled', 'Completed'];
 // Computed
 const isEditMode = computed<boolean>(() => !!props.event);
 
-const venues = computed<VenueInterface[]>(() => VenueService.getAll());
+// Reactive State (Form & UI)
+const form = ref<CreateEventDTO>(getInitialForm());
+const errorMessage = ref<string>('');
+const isSubmitting = ref<boolean>(false);
+const venues = ref<VenueInterface[]>([]);
+const existingCategories = ref<string[]>([]);
 
 const categoryOptions = computed<string[]>(() => {
-  const existingCategories = EventService.getUniqueCategories();
-  const merged = Array.from(new Set([...defaultCategories, ...existingCategories]));
+  const merged = Array.from(new Set([...defaultCategories, ...existingCategories.value]));
   return merged.filter((cat) => cat.length > 0);
 });
 
@@ -83,14 +89,10 @@ function getInitialForm(): CreateEventDTO {
   };
 }
 
-// Reactive State (Form & UI)
-const form = ref<CreateEventDTO>(getInitialForm());
-const errorMessage = ref<string>('');
-
 // Watcher to synchronize form data when modal opens or event changes
 watch(
   () => [props.isOpen, props.event],
-  () => {
+  async () => {
     if (props.isOpen) {
       errorMessage.value = '';
       if (props.event) {
@@ -110,6 +112,17 @@ watch(
         };
       } else {
         resetForm();
+      }
+
+      try {
+        const [fetchedVenues, fetchedEvents] = await Promise.all([
+          VenueService.getAll(),
+          EventService.getAll(),
+        ]);
+        venues.value = fetchedVenues;
+        existingCategories.value = EventService.getUniqueCategories(fetchedEvents);
+      } catch (err: unknown) {
+        console.error('Failed to load form options:', err);
       }
     }
   },
@@ -182,54 +195,60 @@ function validateForm(): boolean {
   return true;
 }
 
-function handleSubmit(): void {
+async function handleSubmit(): Promise<void> {
   if (!validateForm()) {
     return;
   }
 
-  if (isEditMode.value && props.event) {
-    const updateDTO: UpdateEventDTO = {
-      category: form.value.category,
-      date: form.value.date,
-      description: form.value.description,
-      duration: form.value.duration,
-      imageURL: form.value.imageURL,
-      price: Number(form.value.price),
-      status: form.value.status,
-      time: form.value.time,
-      title: form.value.title,
-      type: form.value.type,
-      venueId: Number(form.value.venueId),
-    };
+  isSubmitting.value = true;
+  errorMessage.value = '';
 
-    const updated = EventService.update(props.event.id, updateDTO);
-    if (updated) {
-      const refreshed = EventService.getById(props.event.id);
-      if (refreshed) {
-        emit('saved', refreshed);
-      }
+  try {
+    if (isEditMode.value && props.event) {
+      const updateDTO: UpdateEventDTO = {
+        category: form.value.category,
+        date: form.value.date,
+        description: form.value.description,
+        duration: form.value.duration,
+        imageURL: form.value.imageURL,
+        price: Number(form.value.price),
+        status: form.value.status,
+        time: form.value.time,
+        title: form.value.title,
+        type: form.value.type,
+        venueId: Number(form.value.venueId),
+      };
+
+      const updated = await EventService.update(props.event.id, updateDTO);
+      emit('saved', updated);
       handleClose();
     } else {
-      errorMessage.value = 'Could not update the event. Please try again.';
-    }
-  } else {
-    const createDTO: CreateEventDTO = {
-      category: form.value.category,
-      date: form.value.date,
-      description: form.value.description,
-      duration: form.value.duration,
-      imageURL: form.value.imageURL,
-      price: Number(form.value.price),
-      status: form.value.status,
-      time: form.value.time,
-      title: form.value.title,
-      type: form.value.type,
-      venueId: Number(form.value.venueId),
-    };
+      const createDTO: CreateEventDTO = {
+        category: form.value.category,
+        date: form.value.date,
+        description: form.value.description,
+        duration: form.value.duration,
+        imageURL: form.value.imageURL,
+        price: Number(form.value.price),
+        status: form.value.status,
+        time: form.value.time,
+        title: form.value.title,
+        type: form.value.type,
+        venueId: Number(form.value.venueId),
+      };
 
-    const newEvent = EventService.create(createDTO);
-    emit('saved', newEvent);
-    handleClose();
+      const newEvent = await EventService.create(createDTO);
+      emit('saved', newEvent);
+      handleClose();
+    }
+  } catch (err: unknown) {
+    errorMessage.value = getErrorMessage(
+      err,
+      isEditMode.value ? 'Could not update the event.' : 'Could not create the event.',
+    );
+    console.error(err);
+  } finally {
+    isSubmitting.value = false;
   }
 }
 </script>
@@ -526,9 +545,10 @@ function handleSubmit(): void {
           </button>
           <button
             type="submit"
-            class="rounded-xl bg-rose-gold px-6 py-2.5 font-display text-sm font-bold text-midnight transition hover:bg-rose-light"
+            :disabled="isSubmitting"
+            class="rounded-xl bg-rose-gold px-6 py-2.5 font-display text-sm font-bold text-midnight transition hover:bg-rose-light disabled:opacity-50"
           >
-            {{ isEditMode ? 'Save Changes' : 'Create Event' }}
+            {{ isSubmitting ? 'Saving...' : isEditMode ? 'Save Changes' : 'Create Event' }}
           </button>
         </div>
       </form>

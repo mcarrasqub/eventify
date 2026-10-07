@@ -1,4 +1,4 @@
-// Imports
+// External Imports
 import { createPinia } from 'pinia';
 
 
@@ -11,18 +11,10 @@ export default class PiniaConfig {
     if (savedState) {
       pinia.state.value = JSON.parse(savedState);
     } else {
-      // initialize the state with the seeders
+      // initialize state for client-side stores
       pinia.state.value = {
-        event: {
-          events: eventSeeder,
-        },
-
         ticket: {
           tickets: [],
-        },
-
-        venue: {
-          venues: venueSeeder,
         },
       };
 

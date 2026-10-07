@@ -1,64 +1,37 @@
 // Internal Imports
 import type { CreateVenueDTO, UpdateVenueDTO } from '@/dtos/VenueDTO.js';
+import httpClient from '@/utils/httpClient.js';
 import type { VenueInterface } from '@/interfaces/VenueInterface.js';
-import { useVenueStore } from '@/stores/venuestore.js';
-import Utils from '@/utils/Utils.js';
 
 // Service Class
 export class VenueService {
   // CRUD Methods
-  static create(venueDTO: CreateVenueDTO): VenueInterface {
-    const store = useVenueStore();
-
-    const newVenue: VenueInterface = {
-      ...venueDTO,
-      id: Utils.generateNextId(store.venues),
-    };
-
-    store.venues.push(newVenue);
-    return newVenue;
+  static async create(venueDTO: CreateVenueDTO): Promise<VenueInterface> {
+    const response = await httpClient.post<VenueInterface>('/venues', venueDTO);
+    return response.data;
   }
 
-  static update(id: number, venueDTO: UpdateVenueDTO): boolean {
-    const store = useVenueStore();
-    const index = store.venues.findIndex((venue) => venue.id === id);
-
-    if (index === -1) {
-      return false;
-    }
-
-    const currentVenue = store.venues[index];
-    if (!currentVenue) {
-      return false;
-    }
-
-    store.venues[index] = {
-      ...currentVenue,
-      ...venueDTO,
-      id,
-    };
-
-    return true;
+  static async update(id: number, venueDTO: UpdateVenueDTO): Promise<VenueInterface> {
+    const response = await httpClient.patch<VenueInterface>(`/venues/${id}`, venueDTO);
+    return response.data;
   }
 
-  static delete(id: number): boolean {
-    const store = useVenueStore();
-    const initialLength = store.venues.length;
-    store.venues = store.venues.filter((venue) => venue.id !== id);
-    return store.venues.length < initialLength;
+  static async delete(id: number): Promise<void> {
+    await httpClient.delete(`/venues/${id}`);
   }
 
   // Getters
-  static getAll(): VenueInterface[] {
-    return useVenueStore().venues;
+  static async getAll(): Promise<VenueInterface[]> {
+    const response = await httpClient.get<VenueInterface[]>('/venues');
+    return response.data;
   }
 
-  static getById(id: number): VenueInterface | undefined {
-    return useVenueStore().venues.find((venue) => venue.id === id);
+  static async getById(id: number): Promise<VenueInterface> {
+    const response = await httpClient.get<VenueInterface>(`/venues/${id}`);
+    return response.data;
   }
 
-  static getUniqueCities(): string[] {
-    const venues = VenueService.getAll();
+  static getUniqueCities(venues: VenueInterface[]): string[] {
     const cities = venues.map((venue) => venue.city);
     return Array.from(new Set(cities));
   }
