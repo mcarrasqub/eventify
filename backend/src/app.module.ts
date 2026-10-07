@@ -1,14 +1,16 @@
 // Imports
-import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
-import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
+import { ConfigModule } from "@nestjs/config";
+import { EventsModule } from "./events/events.module";
 import { JwtAuthGuard } from "./auth/guards/jwt-auth.guard";
+import { Module } from "@nestjs/common";
 import { RolesGuard } from "./auth/guards/roles.guard";
 import { SeedModule } from "./database/seeds/seed.module";
 import { TicketsModule } from "./tickets/tickets.module";
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { UsersModule } from "./users/users.module";
+import { VenuesModule } from "./venues/venues.module";
 
 // Module Definition
 @Module({
@@ -23,10 +25,12 @@ import { UsersModule } from "./users/users.module";
       autoLoadEntities: true,
       synchronize: true,
     }),
-    UsersModule,
     AuthModule,
-    TicketsModule,
+    EventsModule,
     SeedModule,
+    TicketsModule,
+    UsersModule,
+    VenuesModule,
   ],
   controllers: [],
   providers: [
