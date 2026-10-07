@@ -2,6 +2,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -48,6 +49,10 @@ export class TicketsService {
       where: { id: eventId },
       relations: ["venue"],
     });
+
+    if (!event) {
+      throw new NotFoundException("Event not found");
+    }
 
     if (event.status !== "Active") {
       throw new BadRequestException("Event is not active for ticket purchase");
