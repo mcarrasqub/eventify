@@ -1,12 +1,7 @@
-// External Imports
-import axios from 'axios';
-
 // Internal Imports
+import { BaseService } from '@/services/BaseService.js';
 import type { LoginDTO, RegisterDTO, UserResponseDTO } from '@/dtos/UserDTO.js';
 import { useAuthStore } from '@/stores/authstore.js';
-
-// Base API URL
-const AUTH_API_URL = `${import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000'}/api/auth`;
 
 // Interface for Auth Backend Response
 interface AuthBackendResponse {
@@ -15,11 +10,11 @@ interface AuthBackendResponse {
 }
 
 // Service Class
-export class AuthService {
+export class AuthService extends BaseService {
   // Authentication Methods
   static async login(credentials: LoginDTO): Promise<UserResponseDTO> {
-    const response = await axios.post<AuthBackendResponse>(`${AUTH_API_URL}/login`, credentials);
-    const { accessToken, user } = response.data;
+    const response = await this.post<AuthBackendResponse>('/auth/login', credentials);
+    const { accessToken, user } = response;
 
     const authStore = useAuthStore();
     authStore.setAuth(accessToken, user);
@@ -28,8 +23,8 @@ export class AuthService {
   }
 
   static async register(userData: RegisterDTO): Promise<UserResponseDTO> {
-    const response = await axios.post<AuthBackendResponse>(`${AUTH_API_URL}/register`, userData);
-    const { accessToken, user } = response.data;
+    const response = await this.post<AuthBackendResponse>('/auth/register', userData);
+    const { accessToken, user } = response;
 
     const authStore = useAuthStore();
     authStore.setAuth(accessToken, user);
@@ -58,3 +53,4 @@ export class AuthService {
     return authStore.isAuthenticated();
   }
 }
+
