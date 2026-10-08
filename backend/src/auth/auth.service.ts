@@ -1,9 +1,10 @@
 // External Imports
 import * as bcrypt from "bcrypt";
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 // Internal Imports
+import { AuthValidator } from "./auth.validator";
 import type { JwtPayload } from "./strategies/jwt.strategy";
 import type { LoginDto } from "./dto/login.dto";
 import type { RegisterDto } from "./dto/register.dto";
@@ -28,6 +29,7 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly authValidator: AuthValidator,
   ) {}
 
   async validateUser(email: string, pass: string): Promise<User | null> {
@@ -45,10 +47,11 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto): Promise<AuthResponse> {
-    const user = await this.validateUser(loginDto.email, loginDto.password);
-    if (!user) {
-      throw new UnauthorizedException("Invalid email or password");
-    }
+    const userCandidate = await this.validateUser(
+      loginDto.email,
+      loginDto.password,
+    );
+    const user = this.authValidator.validateUserCredentials(userCandidate);
 
     const payload: JwtPayload = {
       sub: user.id,

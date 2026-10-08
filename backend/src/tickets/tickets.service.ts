@@ -1,9 +1,5 @@
 // External Imports
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
@@ -13,6 +9,7 @@ import { Event } from "../events/entities/event.entity";
 import type { EventRevenueDto } from "./dto/event-revenue.dto";
 import { Ticket } from "./entities/ticket.entity";
 import type { TicketDistributionDto } from "./dto/ticket-distribution.dto";
+import { TicketsValidator } from "./tickets.validator";
 
 // Service Class
 @Injectable()
@@ -23,6 +20,7 @@ export class TicketsService {
     private readonly ticketRepository: Repository<Ticket>,
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
+    private readonly ticketsValidator: TicketsValidator,
   ) {}
 
   // Methods
@@ -51,19 +49,17 @@ export class TicketsService {
         relations: ["venue"],
       });
 
-      if (!event) {
-        throw new NotFoundException("Event not found");
-      }
+      this.ticketsValidator.validateEventExists(event);
 
       const sold = await this.ticketRepository.count({
-        where: { eventId: event.id },
+        where: { eventId: event!.id },
       });
-      const capacity = event.venue?.capacity ?? 0;
+      const capacity = event!.venue?.capacity ?? 0;
       const available = Math.max(0, capacity - sold);
 
       return {
-        eventId: event.id,
-        eventTitle: event.title,
+        eventId: event!.id,
+        eventTitle: event!.title,
         sold,
         available,
       };
@@ -99,15 +95,13 @@ export class TicketsService {
       relations: ["venue"],
     });
 
-    if (!event) {
-      throw new NotFoundException("Event not found");
-    }
+    this.ticketsValidator.validateEventExists(event);
 
     const sold = await this.ticketRepository.count({
       where: { eventId },
     });
 
-    const capacity = event.venue?.capacity ?? 0;
+    const capacity = event!.venue?.capacity ?? 0;
     return Math.max(0, capacity - sold);
   }
 
@@ -130,28 +124,19 @@ export class TicketsService {
   ): Promise<Ticket[]> {
     const { eventId, quantity } = createTicketDto;
 
-    if (!quantity || quantity <= 0 || !Number.isInteger(quantity)) {
-      throw new BadRequestException("Quantity must be a positive integer.");
-    }
+    this.ticketsValidator.validateQuantity(quantity);
 
     const event = await this.eventRepository.findOne({
       where: { id: eventId },
       relations: ["venue"],
     });
 
-    if (!event) {
-      throw new NotFoundException("Event not found");
-    }
-
-    if (event.status !== "Active") {
-      throw new BadRequestException("Event is not active for ticket purchase");
-    }
+    this.ticketsValidator.validateEventExists(event);
+    this.ticketsValidator.validateEventActive(event!);
 
     const available = await this.getAvailable(eventId);
 
-    if (quantity > available) {
-      throw new BadRequestException("Not enough tickets available");
-    }
+    this.ticketsValidator.validateAvailableTickets(quantity, available);
 
     const ticketsToCreate: Ticket[] = [];
     for (let i = 0; i < quantity; i++) {

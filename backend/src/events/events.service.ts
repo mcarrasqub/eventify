@@ -1,6 +1,6 @@
 // External Imports
 import { InjectRepository } from "@nestjs/typeorm";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
 
 // Internal Imports
@@ -8,6 +8,7 @@ import type { CreateEventDto } from "./dto/create-event.dto";
 import { Event } from "./entities/event.entity";
 import type { EventSummaryDto } from "./dto/event-summary.dto";
 import type { EventsByCityDto } from "./dto/events-by-city.dto";
+import { EventsValidator } from "./events.validator";
 import type { UpdateEventDto } from "./dto/update-event.dto";
 import { Venue } from "../venues/entities/venue.entity";
 
@@ -20,6 +21,7 @@ export class EventsService {
     private readonly eventsRepository: Repository<Event>,
     @InjectRepository(Venue)
     private readonly venuesRepository: Repository<Venue>,
+    private readonly eventsValidator: EventsValidator,
   ) {}
 
   // Methods
@@ -122,22 +124,14 @@ export class EventsService {
       relations: ["venue"],
     });
 
-    if (!event) {
-      throw new NotFoundException(`Event with ID ${id} not found`);
-    }
-
-    return event;
+    return this.eventsValidator.validateEventExists(event, id);
   }
 
   async create(createEventDto: CreateEventDto): Promise<Event> {
     const venue = await this.venuesRepository.findOneBy({
       id: createEventDto.venueId,
     });
-    if (!venue) {
-      throw new NotFoundException(
-        `Venue with ID ${createEventDto.venueId} not found`,
-      );
-    }
+    this.eventsValidator.validateVenueExists(venue, createEventDto.venueId);
 
     const newEvent = this.eventsRepository.create(createEventDto);
     return await this.eventsRepository.save(newEvent);
@@ -150,11 +144,7 @@ export class EventsService {
       const venue = await this.venuesRepository.findOneBy({
         id: updateEventDto.venueId,
       });
-      if (!venue) {
-        throw new NotFoundException(
-          `Venue with ID ${updateEventDto.venueId} not found`,
-        );
-      }
+      this.eventsValidator.validateVenueExists(venue, updateEventDto.venueId);
     }
 
     Object.assign(event, updateEventDto);

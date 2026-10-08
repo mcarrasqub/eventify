@@ -6,13 +6,15 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Event } from "./entities/event.entity";
 import { EventsController } from "./events.controller";
 import { EventsService } from "./events.service";
+import { EventsValidator } from "./events.validator";
 import { Venue } from "../venues/entities/venue.entity";
 
 // Module Definition
 @Module({
   imports: [TypeOrmModule.forFeature([Event, Venue])],
   controllers: [EventsController],
-  providers: [EventsService],
-  exports: [EventsService],
+  providers: [EventsService, EventsValidator],
+  exports: [EventsService, EventsValidator],
 })
 export class EventsModule {}
+

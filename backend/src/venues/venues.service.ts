@@ -1,9 +1,5 @@
 // External Imports
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
@@ -11,6 +7,7 @@ import { Repository } from "typeorm";
 import type { CreateVenueDto } from "./dto/create-venue.dto";
 import type { UpdateVenueDto } from "./dto/update-venue.dto";
 import { Venue } from "./entities/venue.entity";
+import { VenuesValidator } from "./venues.validator";
 
 // Service Definition
 @Injectable()
@@ -18,6 +15,7 @@ export class VenuesService {
   constructor(
     @InjectRepository(Venue)
     private readonly venuesRepository: Repository<Venue>,
+    private readonly venuesValidator: VenuesValidator,
   ) {}
 
   async findAll(): Promise<Venue[]> {
@@ -32,11 +30,7 @@ export class VenuesService {
       relations: ["events"],
     });
 
-    if (!venue) {
-      throw new NotFoundException(`Venue with ID ${id} not found`);
-    }
-
-    return venue;
+    return this.venuesValidator.validateVenueExists(venue, id);
   }
 
   async create(createVenueDto: CreateVenueDto): Promise<Venue> {
@@ -52,12 +46,7 @@ export class VenuesService {
 
   async remove(id: number): Promise<void> {
     const venue = await this.findOne(id);
-
-    if (venue.events && venue.events.length > 0) {
-      throw new ConflictException(
-        `Cannot delete venue with ID ${id} because it has ${venue.events.length} associated event(s).`,
-      );
-    }
+    this.venuesValidator.validateNoAssociatedEvents(venue);
 
     await this.venuesRepository.remove(venue);
   }
