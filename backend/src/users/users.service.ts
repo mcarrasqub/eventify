@@ -1,12 +1,14 @@
-// Imports
+// External Imports
+import * as bcrypt from "bcrypt";
 import {
   ConflictException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
+
+// Internal Imports
 import type { CreateUserDto } from "./dto/create-user.dto";
 import type { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./entities/user.entity";

@@ -1,6 +1,6 @@
-// Imports
-import { SetMetadata } from "@nestjs/common";
+// External Imports
 import type { CustomDecorator } from "@nestjs/common";
+import { SetMetadata } from "@nestjs/common";
 
 // Public Key Constant
 export const IS_PUBLIC_KEY = "isPublic";

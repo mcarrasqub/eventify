@@ -1,4 +1,4 @@
-// Imports
+// External Imports
 import {
   Body,
   Controller,
@@ -8,15 +8,17 @@ import {
   Post,
   Query,
 } from "@nestjs/common";
+
+// Internal Imports
+import { CreateTicketDto } from "./dto/create-ticket.dto";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
+import type { EventRevenueDto } from "./dto/event-revenue.dto";
 import { Public } from "../auth/decorators/public.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
-import type { User } from "../users/entities/user.entity";
-import { CreateTicketDto } from "./dto/create-ticket.dto";
-import type { EventRevenueDto } from "./dto/event-revenue.dto";
-import type { TicketDistributionDto } from "./dto/ticket-distribution.dto";
 import type { Ticket } from "./entities/ticket.entity";
+import type { TicketDistributionDto } from "./dto/ticket-distribution.dto";
 import { TicketsService } from "./tickets.service";
+import type { User } from "../users/entities/user.entity";
 
 // Controller Definition
 @Controller("tickets")

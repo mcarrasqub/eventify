@@ -1,4 +1,4 @@
-// Imports
+// External Imports
 import {
   BadRequestException,
   Injectable,
@@ -6,11 +6,13 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Event } from "../events/entities/event.entity";
+
+// Internal Imports
 import { CreateTicketDto } from "./dto/create-ticket.dto";
+import { Event } from "../events/entities/event.entity";
 import type { EventRevenueDto } from "./dto/event-revenue.dto";
-import type { TicketDistributionDto } from "./dto/ticket-distribution.dto";
 import { Ticket } from "./entities/ticket.entity";
+import type { TicketDistributionDto } from "./dto/ticket-distribution.dto";
 
 // Service Class
 @Injectable()

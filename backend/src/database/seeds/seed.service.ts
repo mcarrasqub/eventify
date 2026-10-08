@@ -1,9 +1,11 @@
-// Imports
+// External Imports
+import * as bcrypt from "bcrypt";
+import { InjectRepository } from "@nestjs/typeorm";
 import { Injectable, Logger } from "@nestjs/common";
 import type { OnApplicationBootstrap } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
+
+// Internal Imports
 import { Event } from "../../events/entities/event.entity";
 import { Ticket } from "../../tickets/entities/ticket.entity";
 import { User } from "../../users/entities/user.entity";

@@ -1,12 +1,14 @@
-// Imports
+// External Imports
+import * as bcrypt from "bcrypt";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import * as bcrypt from "bcrypt";
-import type { User } from "../users/entities/user.entity";
-import { UsersService } from "../users/users.service";
+
+// Internal Imports
+import type { JwtPayload } from "./strategies/jwt.strategy";
 import type { LoginDto } from "./dto/login.dto";
 import type { RegisterDto } from "./dto/register.dto";
-import type { JwtPayload } from "./strategies/jwt.strategy";
+import type { User } from "../users/entities/user.entity";
+import { UsersService } from "../users/users.service";
 
 // Interface for Auth Response
 export interface AuthResponse {

@@ -1,4 +1,4 @@
-// Imports
+// External Imports
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 // DTO Definition

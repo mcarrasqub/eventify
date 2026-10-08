@@ -1,9 +1,11 @@
-// Imports
-import { ForbiddenException, Injectable } from "@nestjs/common";
+// External Imports
 import type { CanActivate, ExecutionContext } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import type { User } from "../../users/entities/user.entity";
+
+// Internal Imports
 import { ROLES_KEY } from "../decorators/roles.decorator";
+import type { User } from "../../users/entities/user.entity";
 
 // Guard Definition
 @Injectable()

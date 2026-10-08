@@ -1,6 +1,8 @@
-// Imports
+// External Imports
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+
+// Internal Imports
 import { User } from "./entities/user.entity";
 import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";

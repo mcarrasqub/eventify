@@ -1,6 +1,8 @@
-// Imports
+// External Imports
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+
+// Internal Imports
 import { Event } from "../events/entities/event.entity";
 import { Ticket } from "./entities/ticket.entity";
 import { TicketsController } from "./tickets.controller";

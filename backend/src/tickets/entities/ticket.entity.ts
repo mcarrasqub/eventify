@@ -1,4 +1,4 @@
-// Imports
+// External Imports
 import {
   Column,
   Entity,
@@ -7,6 +7,8 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import type { Relation } from "typeorm";
+
+// Internal Imports
 import { Event } from "../../events/entities/event.entity";
 import { User } from "../../users/entities/user.entity";
 

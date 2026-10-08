@@ -1,8 +1,10 @@
-// Imports
+// External Imports
 import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
+
+// Internal Imports
 import { AuthService, type AuthResponse } from "./auth.service";
-import { Public } from "./decorators/public.decorator";
 import { LoginDto } from "./dto/login.dto";
+import { Public } from "./decorators/public.decorator";
 import { RegisterDto } from "./dto/register.dto";
 
 // Controller Definition

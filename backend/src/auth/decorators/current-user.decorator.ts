@@ -1,6 +1,8 @@
-// Imports
+// External Imports
 import { createParamDecorator } from "@nestjs/common";
 import type { ExecutionContext } from "@nestjs/common";
+
+// Internal Imports
 import type { User } from "../../users/entities/user.entity";
 
 // Decorator Definition

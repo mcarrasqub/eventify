@@ -1,9 +1,11 @@
-// Imports
-import { Injectable } from "@nestjs/common";
-import type { ExecutionContext } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
+// External Imports
 import { AuthGuard } from "@nestjs/passport";
+import type { ExecutionContext } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import type { Observable } from "rxjs";
+import { Reflector } from "@nestjs/core";
+
+// Internal Imports
 import { IS_PUBLIC_KEY } from "../decorators/public.decorator";
 
 // Guard Definition

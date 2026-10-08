@@ -1,6 +1,8 @@
-// Imports
+// External Imports
 import { Logger, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+
+// Internal Imports
 import { AppModule } from "./app.module";
 
 // Bootstrap Function

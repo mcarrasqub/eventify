@@ -1,4 +1,4 @@
-// Imports
+// External Imports
 import { IsInt, IsNotEmpty, Min } from "class-validator";
 
 // DTO Definition

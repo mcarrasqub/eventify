@@ -15,9 +15,9 @@ import {
 
 // Internal Imports
 import { CreateEventDto } from "./dto/create-event.dto";
+import type { Event } from "./entities/event.entity";
 import type { EventSummaryDto } from "./dto/event-summary.dto";
 import type { EventsByCityDto } from "./dto/events-by-city.dto";
-import type { Event } from "./entities/event.entity";
 import { EventsService } from "./events.service";
 import { Public } from "../auth/decorators/public.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
