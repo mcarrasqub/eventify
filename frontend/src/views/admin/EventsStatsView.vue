@@ -33,16 +33,7 @@ onMounted(async () => {
   }
 });
 
-// Computed
-const totalEventsCount = computed<number>(() => summary.value?.totalEvents ?? 0);
-
-const totalCitiesCount = computed<number>(() => summary.value?.citiesCovered ?? 0);
-
-const topCityInfo = computed<{ name: string; count: number }>(() => ({
-  name: summary.value?.topCity ?? 'N/A',
-  count: summary.value?.topCityEventCount ?? 0,
-}));
-
+// Computed for Graph Data
 const eventDistributionByCity = computed<{
   labels: string[];
   data: number[];
@@ -50,16 +41,6 @@ const eventDistributionByCity = computed<{
   labels: byCityData.value.map((item) => item.city),
   data: byCityData.value.map((item) => item.eventCount),
 }));
-
-const cityBreakdown = computed<
-  Array<{ city: string; numberOfEventsPerCity: number; percentage: number }>
->(() =>
-  byCityData.value.map((item) => ({
-    city: item.city,
-    numberOfEventsPerCity: item.eventCount,
-    percentage: item.percentage,
-  })),
-);
 </script>
 
 <template>
@@ -97,7 +78,7 @@ const cityBreakdown = computed<
         <div class="rounded-2xl border border-white/10 bg-midnight-soft p-5 shadow-xl">
           <p class="font-mono text-xs uppercase tracking-[0.15em] text-ink-muted">Total Events</p>
           <p class="mt-2 font-display text-3xl font-bold text-white">
-            {{ totalEventsCount }}
+            {{ summary?.totalEvents ?? 0 }}
           </p>
         </div>
 
@@ -105,7 +86,7 @@ const cityBreakdown = computed<
         <div class="rounded-2xl border border-white/10 bg-midnight-soft p-5 shadow-xl">
           <p class="font-mono text-xs uppercase tracking-[0.15em] text-ink-muted">Cities Covered</p>
           <p class="mt-2 font-display text-3xl font-bold text-rose-gold">
-            {{ totalCitiesCount }}
+            {{ summary?.citiesCovered ?? 0 }}
           </p>
         </div>
 
@@ -114,9 +95,9 @@ const cityBreakdown = computed<
           <p class="font-mono text-xs uppercase tracking-[0.15em] text-ink-muted">Top City</p>
           <div class="mt-2 flex items-baseline gap-2">
             <p class="font-display text-2xl font-bold text-white">
-              {{ topCityInfo.name }}
+              {{ summary?.topCity ?? 'N/A' }}
             </p>
-            <span class="font-mono text-xs text-rose-light"> ({{ topCityInfo.count }} events) </span>
+            <span class="font-mono text-xs text-rose-light"> ({{ summary?.topCityEventCount ?? 0 }} events) </span>
           </div>
         </div>
       </div>
@@ -161,15 +142,15 @@ const cityBreakdown = computed<
 
           <div class="space-y-4">
             <div
-              v-for="item in cityBreakdown"
+              v-for="item in byCityData"
               :key="item.city"
               class="rounded-xl border border-white/5 bg-midnight-lift p-4"
             >
               <div class="mb-2 flex items-center justify-between text-sm">
                 <span class="font-medium text-white">{{ item.city }}</span>
                 <span class="font-mono text-xs text-rose-gold">
-                  {{ item.numberOfEventsPerCity }}
-                  {{ item.numberOfEventsPerCity === 1 ? 'event' : 'events' }} ({{ item.percentage }}%)
+                  {{ item.eventCount }}
+                  {{ item.eventCount === 1 ? 'event' : 'events' }} ({{ item.percentage }}%)
                 </span>
               </div>
               <!-- Progress Bar -->

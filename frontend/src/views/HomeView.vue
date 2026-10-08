@@ -9,8 +9,11 @@ import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
 import { getErrorMessage } from '@/utils/errorHandler.js';
 
+// Constants
+const popularCategoryNames = ['Technology', 'Music', 'Design', 'Gastronomy', 'Sports', 'Theater'];
+
 // Reactive State
-const currentUser = computed(() => AuthService.getCurrentUser());
+const currentUser = AuthService.getCurrentUser();
 const featuredEvents = ref<EventInterface[]>([]);
 const allEvents = ref<EventInterface[]>([]);
 const isLoading = ref<boolean>(true);
@@ -32,9 +35,7 @@ onMounted(async () => {
 });
 
 const popularCategories = computed(() => {
-  const categoryNames = ['Technology', 'Music', 'Design', 'Gastronomy', 'Sports', 'Theater'];
-
-  return categoryNames.map((name) => ({
+  return popularCategoryNames.map((name) => ({
     name,
     count: allEvents.value.filter((event) => event.category === name).length,
   }));

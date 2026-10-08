@@ -60,9 +60,7 @@ const soldTickets = computed<number>(() => {
   return Math.max(0, capacity - availableTickets.value);
 });
 
-const ticketUnitPrice = computed<number>(() => event.value?.price ?? 0);
-
-const totalCost = computed<number>(() => quantitySelector.value * ticketUnitPrice.value);
+const totalCost = computed<number>(() => quantitySelector.value * (event.value?.price ?? 0));
 
 const canPurchase = computed<boolean>(
   () => event.value?.status === 'Active' && availableTickets.value > 0,
@@ -242,7 +240,7 @@ async function handlePurchase(): Promise<void> {
             <div class="flex items-center justify-between">
               <span class="text-xs text-ink-muted">Price per ticket</span>
               <span class="font-mono text-lg font-bold text-rose-gold">
-                ${{ ticketUnitPrice }}
+                ${{ event?.price ?? 0 }}
               </span>
             </div>
             <div class="flex items-center justify-between border-t border-rose-gold/20 pt-3">
