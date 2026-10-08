@@ -1,14 +1,17 @@
-// Imports
-import { Module } from "@nestjs/common";
+// External Imports
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
+import { Module } from "@nestjs/common";
 import { PassportModule } from "@nestjs/passport";
-import { UsersModule } from "../users/users.module";
+
+// Internal Imports
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
+import { AuthValidator } from "./auth.validator";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
-import { RolesGuard } from "./guards/roles.guard";
 import { JwtStrategy } from "./strategies/jwt.strategy";
+import { RolesGuard } from "./guards/roles.guard";
+import { UsersModule } from "../users/users.module";
 
 // Module Definition
 @Module({
@@ -30,9 +33,10 @@ import { JwtStrategy } from "./strategies/jwt.strategy";
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtAuthGuard, RolesGuard],
+  providers: [AuthService, AuthValidator, JwtStrategy, JwtAuthGuard, RolesGuard],
   exports: [
     AuthService,
+    AuthValidator,
     JwtStrategy,
     JwtAuthGuard,
     RolesGuard,
@@ -41,3 +45,4 @@ import { JwtStrategy } from "./strategies/jwt.strategy";
   ],
 })
 export class AuthModule {}
+

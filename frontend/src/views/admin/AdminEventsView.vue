@@ -3,11 +3,12 @@
 import { computed, onMounted, ref } from 'vue';
 
 // Internal Imports
+import { ErrorHandlerService } from '@/services/ErrorHandlerService.js';
 import EventFormComponent from '@/components/EventFormComponent.vue';
-import FilterSelectorComponent from '@/components/FilterSelectorComponent.vue';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
-import { getErrorMessage } from '@/utils/errorHandler.js';
+import { EventUtil } from '@/utils/EventUtil.js';
+import FilterSelectorComponent from '@/components/FilterSelectorComponent.vue';
 import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { VenueService } from '@/services/VenueService.js';
 
@@ -36,7 +37,7 @@ async function loadData(): Promise<void> {
     allEvents.value = fetchedEvents;
     allVenues.value = fetchedVenues;
   } catch (err: unknown) {
-    errorMessage.value = getErrorMessage(err, 'Failed to load events.');
+    errorMessage.value = ErrorHandlerService.getErrorMessage(err, 'Failed to load events.');
     console.error(err);
   } finally {
     isLoading.value = false;
@@ -50,12 +51,12 @@ onMounted(() => {
 // Computed Filters
 const categoryOptions = computed<string[]>(() => [
   'All',
-  ...EventService.getUniqueCategories(allEvents.value),
+  ...EventUtil.getUniqueCategories(allEvents.value),
 ]);
 
 const statusOptions = computed<string[]>(() => [
   'All',
-  ...EventService.getUniqueStatuses(allEvents.value),
+  ...EventUtil.getUniqueStatuses(allEvents.value),
 ]);
 
 const filteredEvents = computed<EventInterface[]>(() => {
@@ -93,7 +94,7 @@ async function handleDeleteEvent(id: number, title: string): Promise<void> {
     await EventService.delete(id);
     await loadData();
   } catch (err: unknown) {
-    alert(getErrorMessage(err, `Could not delete event "${title}".`));
+    alert(ErrorHandlerService.getErrorMessage(err, `Could not delete event "${title}".`));
     console.error(err);
   }
 }

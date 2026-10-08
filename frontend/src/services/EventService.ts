@@ -5,17 +5,16 @@ import type {
   EventSummaryDTO,
   UpdateEventDTO,
 } from '@/dtos/EventDTO.js';
+import { BaseService } from '@/services/BaseService.js';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
-import httpClient from '@/utils/httpClient.js';
 
 export type { EventSummaryDTO, EventsByCityDTO };
 
 // Service Class
-export class EventService {
+export class EventService extends BaseService {
   // CRUD Methods
   static async create(eventDTO: CreateEventDTO): Promise<EventInterface> {
-    const response = await httpClient.post<EventInterface>('/events', eventDTO);
-    return response.data;
+    return await this.post<EventInterface>('/events', eventDTO);
   }
 
   static async search(query: string, categorySelector: string): Promise<EventInterface[]> {
@@ -27,28 +26,24 @@ export class EventService {
       params.category = categorySelector;
     }
 
-    const response = await httpClient.get<EventInterface[]>('/events', { params });
-    return response.data;
+    return await this.get<EventInterface[]>('/events', { params });
   }
 
   static async update(id: number, eventDTO: UpdateEventDTO): Promise<EventInterface> {
-    const response = await httpClient.patch<EventInterface>(`/events/${id}`, eventDTO);
-    return response.data;
+    return await this.patch<EventInterface>(`/events/${id}`, eventDTO);
   }
 
   static async delete(id: number): Promise<void> {
-    await httpClient.delete(`/events/${id}`);
+    await this.deleteHttp(`/events/${id}`);
   }
 
-  // Getters & Stats Methods
+  // Getters
   static async getAll(): Promise<EventInterface[]> {
-    const response = await httpClient.get<EventInterface[]>('/events');
-    return response.data;
+    return await this.get<EventInterface[]>('/events');
   }
 
   static async getById(id: number): Promise<EventInterface> {
-    const response = await httpClient.get<EventInterface>(`/events/${id}`);
-    return response.data;
+    return await this.get<EventInterface>(`/events/${id}`);
   }
 
   static async getByVenueId(venueId: number): Promise<EventInterface[]> {
@@ -61,23 +56,11 @@ export class EventService {
     return events.slice(0, 6);
   }
 
-  static async getEventSummary(): Promise<EventSummaryDTO> {
-    const response = await httpClient.get<EventSummaryDTO>('/events/summary');
-    return response.data;
+  static async getSummary(): Promise<EventSummaryDTO> {
+    return await this.get<EventSummaryDTO>('/events/summary');
   }
 
-  static async getEventsByCity(): Promise<EventsByCityDTO[]> {
-    const response = await httpClient.get<EventsByCityDTO[]>('/events/by-city');
-    return response.data;
-  }
-
-  static getUniqueCategories(events: EventInterface[]): string[] {
-    const categories = events.map((event) => event.category);
-    return Array.from(new Set(categories));
-  }
-
-  static getUniqueStatuses(events: EventInterface[]): string[] {
-    const statuses = events.map((event) => event.status);
-    return Array.from(new Set(statuses));
+  static async getByCity(): Promise<EventsByCityDTO[]> {
+    return await this.get<EventsByCityDTO[]>('/events/by-city');
   }
 }

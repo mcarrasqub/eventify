@@ -3,16 +3,16 @@
 import { computed, onMounted, ref, watch } from 'vue';
 
 // Internal Imports
-import FilterSelectorComponent from '@/components/FilterSelectorComponent.vue';
-import type { SelectorOption } from '@/components/FilterSelectorComponent.vue';
 import BarGraphComponent from '@/components/graphs/BarGraphComponent.vue';
-import GraphComponent from '@/components/graphs/PieGraphComponent.vue';
-import type { EventRevenueDTO, TicketDistributionDTO } from '@/dtos/TicketDTO.js';
+import { ErrorHandlerService } from '@/services/ErrorHandlerService.js';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
-import type { TicketInterface } from '@/interfaces/TicketInterface.js';
+import type { EventRevenueDTO, TicketDistributionDTO } from '@/dtos/TicketDTO.js';
 import { EventService } from '@/services/EventService.js';
+import FilterSelectorComponent from '@/components/FilterSelectorComponent.vue';
+import GraphComponent from '@/components/graphs/PieGraphComponent.vue';
+import type { SelectorOption } from '@/components/FilterSelectorComponent.vue';
+import type { TicketInterface } from '@/interfaces/TicketInterface.js';
 import { TicketService } from '@/services/TicketService.js';
-import { getErrorMessage } from '@/utils/errorHandler.js';
 
 // Reactive State
 const eventSelector = ref<string>('');
@@ -34,7 +34,7 @@ onMounted(async () => {
     const [eventsRes, revenueRes, distRes, ticketsRes] = await Promise.all([
       EventService.getAll(),
       TicketService.getRevenueByEvent(),
-      TicketService.getTicketDistribution(),
+      TicketService.getDistribution(),
       TicketService.getAll(),
     ]);
     eventsList.value = eventsRes;
@@ -42,7 +42,7 @@ onMounted(async () => {
     ticketDistribution.value = distRes;
     filteredTickets.value = ticketsRes;
   } catch (err: unknown) {
-    errorMessage.value = getErrorMessage(err, 'Failed to load ticket statistics.');
+    errorMessage.value = ErrorHandlerService.getErrorMessage(err, 'Failed to load ticket statistics.');
     console.error(err);
   } finally {
     isLoading.value = false;
@@ -54,7 +54,7 @@ watch(eventSelector, async (newVal) => {
   const eventId = newVal ? Number(newVal) : undefined;
   try {
     const [distRes, ticketsRes] = await Promise.all([
-      TicketService.getTicketDistribution(eventId),
+      TicketService.getDistribution(eventId),
       TicketService.getAll(eventId),
     ]);
     ticketDistribution.value = distRes;

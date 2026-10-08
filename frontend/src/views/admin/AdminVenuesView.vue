@@ -3,13 +3,14 @@
 import { computed, onMounted, ref } from 'vue';
 
 // Internal Imports
-import FilterSelectorComponent from '@/components/FilterSelectorComponent.vue';
-import VenueFormComponent from '@/components/VenueFormComponent.vue';
+import { ErrorHandlerService } from '@/services/ErrorHandlerService.js';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
-import { getErrorMessage } from '@/utils/errorHandler.js';
+import FilterSelectorComponent from '@/components/FilterSelectorComponent.vue';
+import VenueFormComponent from '@/components/VenueFormComponent.vue';
 import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { VenueService } from '@/services/VenueService.js';
+import { VenueUtil } from '@/utils/VenueUtil.js';
 
 // Reactive State (Data, UI, Search, Selectors and Modals)
 const allVenues = ref<VenueInterface[]>([]);
@@ -35,7 +36,7 @@ async function loadData(): Promise<void> {
     allVenues.value = fetchedVenues;
     allEvents.value = fetchedEvents;
   } catch (err: unknown) {
-    errorMessage.value = getErrorMessage(err, 'Failed to load venues.');
+    errorMessage.value = ErrorHandlerService.getErrorMessage(err, 'Failed to load venues.');
     console.error(err);
   } finally {
     isLoading.value = false;
@@ -50,7 +51,7 @@ onMounted(() => {
 // Computed Filters
 const cityOptions = computed<string[]>(() => [
   'All',
-  ...VenueService.getUniqueCities(allVenues.value),
+  ...VenueUtil.getUniqueCities(allVenues.value),
 ]);
 
 const filteredVenues = computed<VenueInterface[]>(() => {
@@ -89,7 +90,7 @@ async function handleDeleteVenue(id: number, name: string): Promise<void> {
     await VenueService.delete(id);
     await loadData();
   } catch (err: unknown) {
-    alert(getErrorMessage(err, `Could not delete venue "${name}".`));
+    alert(ErrorHandlerService.getErrorMessage(err, `Could not delete venue "${name}".`));
     console.error(err);
   }
 }

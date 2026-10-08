@@ -1,4 +1,4 @@
-// Imports
+// External Imports
 import {
   Body,
   Controller,
@@ -8,15 +8,17 @@ import {
   Post,
   Query,
 } from "@nestjs/common";
+
+// Internal Imports
+import { CreateTicketDto } from "./dto/create-ticket.dto";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
+import type { EventRevenueDto } from "./dto/event-revenue.dto";
 import { Public } from "../auth/decorators/public.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
-import type { User } from "../users/entities/user.entity";
-import { CreateTicketDto } from "./dto/create-ticket.dto";
-import type { EventRevenueDto } from "./dto/event-revenue.dto";
-import type { TicketDistributionDto } from "./dto/ticket-distribution.dto";
 import type { Ticket } from "./entities/ticket.entity";
+import type { TicketDistributionDto } from "./dto/ticket-distribution.dto";
 import { TicketsService } from "./tickets.service";
+import type { User } from "../users/entities/user.entity";
 
 // Controller Definition
 @Controller("tickets")
@@ -34,7 +36,7 @@ export class TicketsController {
   @Roles("admin")
   @Get("distribution/all")
   async getAllDistribution(): Promise<TicketDistributionDto> {
-    return await this.ticketsService.getTicketDistribution();
+    return await this.ticketsService.getDistribution();
   }
 
   @Roles("admin")
@@ -42,7 +44,7 @@ export class TicketsController {
   async getEventDistribution(
     @Param("eventId", ParseIntPipe) eventId: number,
   ): Promise<TicketDistributionDto> {
-    return await this.ticketsService.getTicketDistribution(eventId);
+    return await this.ticketsService.getDistribution(eventId);
   }
 
   @Public()
@@ -50,7 +52,7 @@ export class TicketsController {
   async getAvailableTickets(
     @Param("eventId", ParseIntPipe) eventId: number,
   ): Promise<number> {
-    return await this.ticketsService.getAvailableTickets(eventId);
+    return await this.ticketsService.getAvailable(eventId);
   }
 
   @Roles("admin")
@@ -62,10 +64,10 @@ export class TicketsController {
   }
 
   @Post()
-  async purchase(
+  async create(
     @Body() createTicketDto: CreateTicketDto,
     @CurrentUser() user: User,
   ): Promise<Ticket[]> {
-    return await this.ticketsService.purchase(createTicketDto, user.id);
+    return await this.ticketsService.create(createTicketDto, user.id);
   }
 }

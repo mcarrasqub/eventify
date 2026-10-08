@@ -1,16 +1,19 @@
-// Imports
+// External Imports
 import {
   Body,
   Controller,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
 } from "@nestjs/common";
+
+// Internal Imports
+import { CreateUserDto } from "./dto/create-user.dto";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
-import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./entities/user.entity";
 import { UsersService } from "./users.service";
@@ -39,21 +42,21 @@ export class UsersController {
   }
 
   @Get(":id")
-  async findOne(@Param("id") id: string): Promise<User> {
-    return await this.usersService.findById(Number(id));
+  async findOne(@Param("id", ParseIntPipe) id: number): Promise<User> {
+    return await this.usersService.findById(id);
   }
 
   @Patch(":id")
   async update(
-    @Param("id") id: string,
+    @Param("id", ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
-    return await this.usersService.update(Number(id), updateUserDto);
+    return await this.usersService.update(id, updateUserDto);
   }
 
   @Delete(":id")
   @Roles("admin")
-  async remove(@Param("id") id: string): Promise<void> {
-    return await this.usersService.remove(Number(id));
+  async remove(@Param("id", ParseIntPipe) id: number): Promise<void> {
+    return await this.usersService.remove(id);
   }
 }

@@ -1,6 +1,6 @@
-// Imports
-import { SetMetadata } from "@nestjs/common";
+// External Imports
 import type { CustomDecorator } from "@nestjs/common";
+import { SetMetadata } from "@nestjs/common";
 
 // Roles Key Constant
 export const ROLES_KEY = "roles";

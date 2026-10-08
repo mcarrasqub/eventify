@@ -4,10 +4,10 @@ import { computed, onMounted, ref } from 'vue';
 
 // Internal Imports
 import { AuthService } from '@/services/AuthService.js';
+import { ErrorHandlerService } from '@/services/ErrorHandlerService.js';
 import EventCardComponent from '@/components/EventCardComponent.vue';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
-import { getErrorMessage } from '@/utils/errorHandler.js';
 
 // Constants
 const popularCategoryNames = ['Technology', 'Music', 'Design', 'Gastronomy', 'Sports', 'Theater'];
@@ -27,7 +27,7 @@ onMounted(async () => {
     featuredEvents.value = featured;
     allEvents.value = all;
   } catch (err: unknown) {
-    errorMessage.value = getErrorMessage(err, 'Failed to load home page events.');
+    errorMessage.value = ErrorHandlerService.getErrorMessage(err, 'Failed to load home page events.');
     console.error(err);
   } finally {
     isLoading.value = false;

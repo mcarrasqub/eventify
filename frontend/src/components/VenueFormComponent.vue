@@ -4,7 +4,7 @@ import { computed, ref, watch } from 'vue';
 
 // Internal Imports
 import type { CreateVenueDTO, UpdateVenueDTO } from '@/dtos/VenueDTO.js';
-import { getErrorMessage } from '@/utils/errorHandler.js';
+import { ErrorHandlerService } from '@/services/ErrorHandlerService.js';
 import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { VenueService } from '@/services/VenueService.js';
 
@@ -190,7 +190,7 @@ async function handleSubmit(): Promise<void> {
       handleClose();
     }
   } catch (err: unknown) {
-    errorMessage.value = getErrorMessage(err, 'Could not save the venue.');
+    errorMessage.value = ErrorHandlerService.getErrorMessage(err, 'Could not save the venue.');
     console.error(err);
   } finally {
     isSubmitting.value = false;

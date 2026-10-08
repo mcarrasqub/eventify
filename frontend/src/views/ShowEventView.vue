@@ -6,9 +6,9 @@ import { useRoute } from 'vue-router';
 
 // Internal Imports
 import { AuthService } from '@/services/AuthService.js';
+import { ErrorHandlerService } from '@/services/ErrorHandlerService.js';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
-import { getErrorMessage } from '@/utils/errorHandler.js';
 import MapComponent from '@/components/MapComponent.vue';
 import { TicketService } from '@/services/TicketService.js';
 import type { VenueInterface } from '@/interfaces/VenueInterface.js';
@@ -30,7 +30,7 @@ const purchaseMessage = ref<string>('');
 const fetchAvailableTickets = async (): Promise<void> => {
   if (eventId) {
     try {
-      availableTickets.value = await TicketService.getAvailableTickets(eventId);
+      availableTickets.value = await TicketService.getAvailable(eventId);
     } catch (err: unknown) {
       console.error('Failed to load available tickets:', err);
     }
@@ -48,7 +48,7 @@ onMounted(async () => {
     }
     await fetchAvailableTickets();
   } catch (err: unknown) {
-    errorMessage.value = getErrorMessage(err, 'Failed to load event details.');
+    errorMessage.value = ErrorHandlerService.getErrorMessage(err, 'Failed to load event details.');
     console.error(err);
   } finally {
     isLoading.value = false;
@@ -78,7 +78,7 @@ async function handlePurchase(): Promise<void> {
   }
 
   try {
-    const createdTickets = await TicketService.purchase({
+    const createdTickets = await TicketService.create({
       eventId: event.value.id,
       quantity: quantitySelector.value,
     });

@@ -3,10 +3,10 @@
 import { computed, onMounted, ref } from 'vue';
 
 // Internal Imports
-import PieGraphComponent from '@/components/graphs/PieGraphComponent.vue';
+import { ErrorHandlerService } from '@/services/ErrorHandlerService.js';
 import type { EventsByCityDTO, EventSummaryDTO } from '@/dtos/EventDTO.js';
 import { EventService } from '@/services/EventService.js';
-import { getErrorMessage } from '@/utils/errorHandler.js';
+import PieGraphComponent from '@/components/graphs/PieGraphComponent.vue';
 
 // Reactive State
 const summary = ref<EventSummaryDTO | null>(null);
@@ -20,13 +20,13 @@ onMounted(async () => {
   errorMessage.value = '';
   try {
     const [summaryRes, cityRes] = await Promise.all([
-      EventService.getEventSummary(),
-      EventService.getEventsByCity(),
+      EventService.getSummary(),
+      EventService.getByCity(),
     ]);
     summary.value = summaryRes;
     byCityData.value = cityRes;
   } catch (err: unknown) {
-    errorMessage.value = getErrorMessage(err, 'Failed to load events statistics.');
+    errorMessage.value = ErrorHandlerService.getErrorMessage(err, 'Failed to load events statistics.');
     console.error(err);
   } finally {
     isLoading.value = false;

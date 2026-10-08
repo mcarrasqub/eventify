@@ -4,8 +4,9 @@ import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 
 // Internal Imports
-import type { LoginDTO } from '@/dtos/UserDTO.js';
 import { AuthService } from '@/services/AuthService.js';
+import { ErrorHandlerService } from '@/services/ErrorHandlerService.js';
+import type { LoginDTO } from '@/dtos/UserDTO.js';
 
 // Variables
 const router = useRouter();
@@ -33,8 +34,11 @@ async function handleLogin(): Promise<void> {
     } else {
       router.push('/');
     }
-  } catch {
-    errorMessage.value = 'Invalid email or password. Please check your credentials and try again.';
+  } catch (err: unknown) {
+    errorMessage.value = ErrorHandlerService.getErrorMessage(
+      err,
+      'Invalid email or password. Please check your credentials and try again.',
+    );
   }
 }
 </script>

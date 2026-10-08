@@ -1,16 +1,15 @@
-// Imports
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+// External Imports
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Event } from "../events/entities/event.entity";
+
+// Internal Imports
 import { CreateTicketDto } from "./dto/create-ticket.dto";
+import { Event } from "../events/entities/event.entity";
 import type { EventRevenueDto } from "./dto/event-revenue.dto";
-import type { TicketDistributionDto } from "./dto/ticket-distribution.dto";
 import { Ticket } from "./entities/ticket.entity";
+import type { TicketDistributionDto } from "./dto/ticket-distribution.dto";
+import { TicketsValidator } from "./tickets.validator";
 
 // Service Class
 @Injectable()
@@ -21,27 +20,10 @@ export class TicketsService {
     private readonly ticketRepository: Repository<Ticket>,
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
+    private readonly ticketsValidator: TicketsValidator,
   ) {}
 
   // Methods
-  async getAvailableTickets(eventId: number): Promise<number> {
-    const event = await this.eventRepository.findOne({
-      where: { id: eventId },
-      relations: ["venue"],
-    });
-
-    if (!event) {
-      throw new NotFoundException("Event not found");
-    }
-
-    const sold = await this.ticketRepository.count({
-      where: { eventId },
-    });
-
-    const capacity = event.venue?.capacity ?? 0;
-    return Math.max(0, capacity - sold);
-  }
-
   async getRevenueByEvent(): Promise<EventRevenueDto[]> {
     const events = await this.eventRepository.find();
     const result: EventRevenueDto[] = [];
@@ -60,26 +42,24 @@ export class TicketsService {
     return result;
   }
 
-  async getTicketDistribution(eventId?: number): Promise<TicketDistributionDto> {
+  async getDistribution(eventId?: number): Promise<TicketDistributionDto> {
     if (eventId) {
       const event = await this.eventRepository.findOne({
         where: { id: eventId },
         relations: ["venue"],
       });
 
-      if (!event) {
-        throw new NotFoundException("Event not found");
-      }
+      this.ticketsValidator.validateEventExists(event);
 
       const sold = await this.ticketRepository.count({
-        where: { eventId: event.id },
+        where: { eventId: event!.id },
       });
-      const capacity = event.venue?.capacity ?? 0;
+      const capacity = event!.venue?.capacity ?? 0;
       const available = Math.max(0, capacity - sold);
 
       return {
-        eventId: event.id,
-        eventTitle: event.title,
+        eventId: event!.id,
+        eventTitle: event!.title,
         sold,
         available,
       };
@@ -109,6 +89,22 @@ export class TicketsService {
     };
   }
 
+  async getAvailable(eventId: number): Promise<number> {
+    const event = await this.eventRepository.findOne({
+      where: { id: eventId },
+      relations: ["venue"],
+    });
+
+    this.ticketsValidator.validateEventExists(event);
+
+    const sold = await this.ticketRepository.count({
+      where: { eventId },
+    });
+
+    const capacity = event!.venue?.capacity ?? 0;
+    return Math.max(0, capacity - sold);
+  }
+
   async findAll(eventId?: number): Promise<Ticket[]> {
     if (eventId) {
       return await this.ticketRepository.find({
@@ -122,34 +118,25 @@ export class TicketsService {
     });
   }
 
-  async purchase(
+  async create(
     createTicketDto: CreateTicketDto,
     userId: number,
   ): Promise<Ticket[]> {
     const { eventId, quantity } = createTicketDto;
 
-    if (!quantity || quantity <= 0 || !Number.isInteger(quantity)) {
-      throw new BadRequestException("Quantity must be a positive integer.");
-    }
+    this.ticketsValidator.validateQuantity(quantity);
 
     const event = await this.eventRepository.findOne({
       where: { id: eventId },
       relations: ["venue"],
     });
 
-    if (!event) {
-      throw new NotFoundException("Event not found");
-    }
+    this.ticketsValidator.validateEventExists(event);
+    this.ticketsValidator.validateEventActive(event!);
 
-    if (event.status !== "Active") {
-      throw new BadRequestException("Event is not active for ticket purchase");
-    }
+    const available = await this.getAvailable(eventId);
 
-    const available = await this.getAvailableTickets(eventId);
-
-    if (quantity > available) {
-      throw new BadRequestException("Not enough tickets available");
-    }
+    this.ticketsValidator.validateAvailableTickets(quantity, available);
 
     const ticketsToCreate: Ticket[] = [];
     for (let i = 0; i < quantity; i++) {

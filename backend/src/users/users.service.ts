@@ -1,15 +1,14 @@
-// Imports
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
+// External Imports
 import * as bcrypt from "bcrypt";
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+
+// Internal Imports
 import type { CreateUserDto } from "./dto/create-user.dto";
 import type { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./entities/user.entity";
+import { UsersValidator } from "./users.validator";
 
 // Service Definition
 @Injectable()
@@ -17,13 +16,12 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    private readonly usersValidator: UsersValidator,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const existingUser = await this.findByEmail(createUserDto.email);
-    if (existingUser) {
-      throw new ConflictException("Email already registered");
-    }
+    this.usersValidator.validateEmailNotRegistered(existingUser);
 
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(
@@ -52,11 +50,7 @@ export class UsersService {
       relations: ["tickets"],
     });
 
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-
-    return user;
+    return this.usersValidator.validateUserExists(user, id);
   }
 
   async findByEmail(email: string): Promise<User | null> {
