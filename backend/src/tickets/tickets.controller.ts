@@ -36,7 +36,7 @@ export class TicketsController {
   @Roles("admin")
   @Get("distribution/all")
   async getAllDistribution(): Promise<TicketDistributionDto> {
-    return await this.ticketsService.getTicketDistribution();
+    return await this.ticketsService.getDistribution();
   }
 
   @Roles("admin")
@@ -44,7 +44,7 @@ export class TicketsController {
   async getEventDistribution(
     @Param("eventId", ParseIntPipe) eventId: number,
   ): Promise<TicketDistributionDto> {
-    return await this.ticketsService.getTicketDistribution(eventId);
+    return await this.ticketsService.getDistribution(eventId);
   }
 
   @Public()
@@ -52,7 +52,7 @@ export class TicketsController {
   async getAvailableTickets(
     @Param("eventId", ParseIntPipe) eventId: number,
   ): Promise<number> {
-    return await this.ticketsService.getAvailableTickets(eventId);
+    return await this.ticketsService.getAvailable(eventId);
   }
 
   @Roles("admin")
@@ -64,10 +64,10 @@ export class TicketsController {
   }
 
   @Post()
-  async purchase(
+  async create(
     @Body() createTicketDto: CreateTicketDto,
     @CurrentUser() user: User,
   ): Promise<Ticket[]> {
-    return await this.ticketsService.purchase(createTicketDto, user.id);
+    return await this.ticketsService.create(createTicketDto, user.id);
   }
 }

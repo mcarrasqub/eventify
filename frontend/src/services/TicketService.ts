@@ -11,11 +11,13 @@ export type { EventRevenueDTO, TicketDistributionDTO };
 
 // Service Class
 export class TicketService extends BaseService {
-  public static async purchase(ticketDTO: CreateTicketDTO): Promise<TicketInterface[]> {
+  // Methods
+  public static async create(ticketDTO: CreateTicketDTO): Promise<TicketInterface[]> {
     return await this.post<TicketInterface[]>('/tickets', ticketDTO);
   }
 
-  public static async getAvailableTickets(eventId: number): Promise<number> {
+  // Getters
+  public static async getAvailable(eventId: number): Promise<number> {
     return await this.get<number>(`/tickets/available/${eventId}`);
   }
 
@@ -23,7 +25,7 @@ export class TicketService extends BaseService {
     return await this.get<EventRevenueDTO[]>('/tickets/revenue');
   }
 
-  public static async getTicketDistribution(eventId?: number): Promise<TicketDistributionDTO> {
+  public static async getDistribution(eventId?: number): Promise<TicketDistributionDTO> {
     const url = eventId ? `/tickets/distribution/${eventId}` : '/tickets/distribution/all';
     return await this.get<TicketDistributionDTO>(url);
   }
@@ -37,9 +39,5 @@ export class TicketService extends BaseService {
     return await this.get<TicketInterface[]>('/tickets', {
       params: { eventId },
     });
-  }
-
-  public static getSoldTicketsCount(_eventId: number): number {
-    return 0;
   }
 }

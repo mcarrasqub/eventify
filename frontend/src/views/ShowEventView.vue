@@ -30,7 +30,7 @@ const purchaseMessage = ref<string>('');
 const fetchAvailableTickets = async (): Promise<void> => {
   if (eventId) {
     try {
-      availableTickets.value = await TicketService.getAvailableTickets(eventId);
+      availableTickets.value = await TicketService.getAvailable(eventId);
     } catch (err: unknown) {
       console.error('Failed to load available tickets:', err);
     }
@@ -78,7 +78,7 @@ async function handlePurchase(): Promise<void> {
   }
 
   try {
-    const createdTickets = await TicketService.purchase({
+    const createdTickets = await TicketService.create({
       eventId: event.value.id,
       quantity: quantitySelector.value,
     });

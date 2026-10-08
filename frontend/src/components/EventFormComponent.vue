@@ -6,6 +6,7 @@ import { computed, ref, watch } from 'vue';
 import type { CreateEventDTO, UpdateEventDTO } from '@/dtos/EventDTO.js';
 import type { EventInterface, EventStatus } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
+import { EventUtil } from '@/utils/EventUtil.js';
 import { ErrorHandlerService } from '@/services/ErrorHandlerService.js';
 import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { VenueService } from '@/services/VenueService.js';
@@ -120,7 +121,7 @@ watch(
           EventService.getAll(),
         ]);
         venues.value = fetchedVenues;
-        existingCategories.value = EventService.getUniqueCategories(fetchedEvents);
+        existingCategories.value = EventUtil.getUniqueCategories(fetchedEvents);
       } catch (err: unknown) {
         console.error('Failed to load form options:', err);
       }

@@ -37,7 +37,7 @@ export class EventService extends BaseService {
     await this.deleteHttp(`/events/${id}`);
   }
 
-  // Getters & Stats Methods
+  // Getters
   static async getAll(): Promise<EventInterface[]> {
     return await this.get<EventInterface[]>('/events');
   }
@@ -56,21 +56,11 @@ export class EventService extends BaseService {
     return events.slice(0, 6);
   }
 
-  static async getEventSummary(): Promise<EventSummaryDTO> {
+  static async getSummary(): Promise<EventSummaryDTO> {
     return await this.get<EventSummaryDTO>('/events/summary');
   }
 
-  static async getEventsByCity(): Promise<EventsByCityDTO[]> {
+  static async getByCity(): Promise<EventsByCityDTO[]> {
     return await this.get<EventsByCityDTO[]>('/events/by-city');
-  }
-
-  static getUniqueCategories(events: EventInterface[]): string[] {
-    const categories = events.map((event) => event.category);
-    return Array.from(new Set(categories));
-  }
-
-  static getUniqueStatuses(events: EventInterface[]): string[] {
-    const statuses = events.map((event) => event.status);
-    return Array.from(new Set(statuses));
   }
 }

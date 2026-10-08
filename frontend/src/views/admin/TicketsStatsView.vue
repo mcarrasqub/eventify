@@ -34,7 +34,7 @@ onMounted(async () => {
     const [eventsRes, revenueRes, distRes, ticketsRes] = await Promise.all([
       EventService.getAll(),
       TicketService.getRevenueByEvent(),
-      TicketService.getTicketDistribution(),
+      TicketService.getDistribution(),
       TicketService.getAll(),
     ]);
     eventsList.value = eventsRes;
@@ -54,7 +54,7 @@ watch(eventSelector, async (newVal) => {
   const eventId = newVal ? Number(newVal) : undefined;
   try {
     const [distRes, ticketsRes] = await Promise.all([
-      TicketService.getTicketDistribution(eventId),
+      TicketService.getDistribution(eventId),
       TicketService.getAll(eventId),
     ]);
     ticketDistribution.value = distRes;

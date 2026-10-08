@@ -26,24 +26,6 @@ export class TicketsService {
   ) {}
 
   // Methods
-  async getAvailableTickets(eventId: number): Promise<number> {
-    const event = await this.eventRepository.findOne({
-      where: { id: eventId },
-      relations: ["venue"],
-    });
-
-    if (!event) {
-      throw new NotFoundException("Event not found");
-    }
-
-    const sold = await this.ticketRepository.count({
-      where: { eventId },
-    });
-
-    const capacity = event.venue?.capacity ?? 0;
-    return Math.max(0, capacity - sold);
-  }
-
   async getRevenueByEvent(): Promise<EventRevenueDto[]> {
     const events = await this.eventRepository.find();
     const result: EventRevenueDto[] = [];
@@ -62,7 +44,7 @@ export class TicketsService {
     return result;
   }
 
-  async getTicketDistribution(eventId?: number): Promise<TicketDistributionDto> {
+  async getDistribution(eventId?: number): Promise<TicketDistributionDto> {
     if (eventId) {
       const event = await this.eventRepository.findOne({
         where: { id: eventId },
@@ -111,6 +93,24 @@ export class TicketsService {
     };
   }
 
+  async getAvailable(eventId: number): Promise<number> {
+    const event = await this.eventRepository.findOne({
+      where: { id: eventId },
+      relations: ["venue"],
+    });
+
+    if (!event) {
+      throw new NotFoundException("Event not found");
+    }
+
+    const sold = await this.ticketRepository.count({
+      where: { eventId },
+    });
+
+    const capacity = event.venue?.capacity ?? 0;
+    return Math.max(0, capacity - sold);
+  }
+
   async findAll(eventId?: number): Promise<Ticket[]> {
     if (eventId) {
       return await this.ticketRepository.find({
@@ -124,7 +124,7 @@ export class TicketsService {
     });
   }
 
-  async purchase(
+  async create(
     createTicketDto: CreateTicketDto,
     userId: number,
   ): Promise<Ticket[]> {
@@ -147,7 +147,7 @@ export class TicketsService {
       throw new BadRequestException("Event is not active for ticket purchase");
     }
 
-    const available = await this.getAvailableTickets(eventId);
+    const available = await this.getAvailable(eventId);
 
     if (quantity > available) {
       throw new BadRequestException("Not enough tickets available");

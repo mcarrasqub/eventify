@@ -33,13 +33,13 @@ export class EventsController {
   @Roles("admin")
   @Get("summary")
   async getSummary(): Promise<EventSummaryDto> {
-    return await this.eventsService.getEventSummary();
+    return await this.eventsService.getSummary();
   }
 
   @Roles("admin")
   @Get("by-city")
   async getByCity(): Promise<EventsByCityDto[]> {
-    return await this.eventsService.getEventsByCity();
+    return await this.eventsService.getByCity();
   }
 
   @Public()

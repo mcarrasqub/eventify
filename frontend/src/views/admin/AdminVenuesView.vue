@@ -10,6 +10,7 @@ import FilterSelectorComponent from '@/components/FilterSelectorComponent.vue';
 import VenueFormComponent from '@/components/VenueFormComponent.vue';
 import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { VenueService } from '@/services/VenueService.js';
+import { VenueUtil } from '@/utils/VenueUtil.js';
 
 // Reactive State (Data, UI, Search, Selectors and Modals)
 const allVenues = ref<VenueInterface[]>([]);
@@ -50,7 +51,7 @@ onMounted(() => {
 // Computed Filters
 const cityOptions = computed<string[]>(() => [
   'All',
-  ...VenueService.getUniqueCities(allVenues.value),
+  ...VenueUtil.getUniqueCities(allVenues.value),
 ]);
 
 const filteredVenues = computed<VenueInterface[]>(() => {

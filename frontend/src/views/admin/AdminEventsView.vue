@@ -7,6 +7,7 @@ import { ErrorHandlerService } from '@/services/ErrorHandlerService.js';
 import EventFormComponent from '@/components/EventFormComponent.vue';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
+import { EventUtil } from '@/utils/EventUtil.js';
 import FilterSelectorComponent from '@/components/FilterSelectorComponent.vue';
 import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { VenueService } from '@/services/VenueService.js';
@@ -50,12 +51,12 @@ onMounted(() => {
 // Computed Filters
 const categoryOptions = computed<string[]>(() => [
   'All',
-  ...EventService.getUniqueCategories(allEvents.value),
+  ...EventUtil.getUniqueCategories(allEvents.value),
 ]);
 
 const statusOptions = computed<string[]>(() => [
   'All',
-  ...EventService.getUniqueStatuses(allEvents.value),
+  ...EventUtil.getUniqueStatuses(allEvents.value),
 ]);
 
 const filteredEvents = computed<EventInterface[]>(() => {

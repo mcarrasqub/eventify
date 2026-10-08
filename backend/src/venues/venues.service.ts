@@ -20,11 +20,6 @@ export class VenuesService {
     private readonly venuesRepository: Repository<Venue>,
   ) {}
 
-  async create(createVenueDto: CreateVenueDto): Promise<Venue> {
-    const newVenue = this.venuesRepository.create(createVenueDto);
-    return await this.venuesRepository.save(newVenue);
-  }
-
   async findAll(): Promise<Venue[]> {
     return await this.venuesRepository.find({
       relations: ["events"],
@@ -42,6 +37,11 @@ export class VenuesService {
     }
 
     return venue;
+  }
+
+  async create(createVenueDto: CreateVenueDto): Promise<Venue> {
+    const newVenue = this.venuesRepository.create(createVenueDto);
+    return await this.venuesRepository.save(newVenue);
   }
 
   async update(id: number, updateVenueDto: UpdateVenueDto): Promise<Venue> {

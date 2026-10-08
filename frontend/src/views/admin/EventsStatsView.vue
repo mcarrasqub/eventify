@@ -20,8 +20,8 @@ onMounted(async () => {
   errorMessage.value = '';
   try {
     const [summaryRes, cityRes] = await Promise.all([
-      EventService.getEventSummary(),
-      EventService.getEventsByCity(),
+      EventService.getSummary(),
+      EventService.getByCity(),
     ]);
     summary.value = summaryRes;
     byCityData.value = cityRes;

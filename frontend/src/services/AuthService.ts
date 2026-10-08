@@ -37,6 +37,11 @@ export class AuthService extends BaseService {
     authStore.logout();
   }
 
+  static isAuthenticated(): boolean {
+    const authStore = useAuthStore();
+    return authStore.isAuthenticated();
+  }
+
   // Getters
   static getCurrentUser(): UserResponseDTO | null {
     const authStore = useAuthStore();
@@ -46,11 +51,6 @@ export class AuthService extends BaseService {
   static getToken(): string | null {
     const authStore = useAuthStore();
     return authStore.token;
-  }
-
-  static isAuthenticated(): boolean {
-    const authStore = useAuthStore();
-    return authStore.isAuthenticated();
   }
 }
 

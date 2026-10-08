@@ -26,9 +26,4 @@ export class VenueService extends BaseService {
   static async getById(id: number): Promise<VenueInterface> {
     return await this.get<VenueInterface>(`/venues/${id}`);
   }
-
-  static getUniqueCities(venues: VenueInterface[]): string[] {
-    const cities = venues.map((venue) => venue.city);
-    return Array.from(new Set(cities));
-  }
 }
