@@ -1,68 +1,51 @@
 // Internal Imports
-import type { CreateTicketDTO } from '@/dtos/TicketDTO.js';
+import type {
+  CreateTicketDTO,
+  EventRevenueDTO,
+  TicketDistributionDTO,
+} from '@/dtos/TicketDTO.js';
 import type { TicketInterface } from '@/interfaces/TicketInterface.js';
-import { EventService } from '@/services/EventService.js';
-import { VenueService } from '@/services/VenueService.js';
-import { useTicketStore } from '@/stores/ticketstore.js';
-import Utils from '@/utils/Utils.js';
+import httpClient from '@/utils/httpClient.js';
+
+export type { EventRevenueDTO, TicketDistributionDTO };
 
 // Service Class
 export class TicketService {
-  // CRUD Methods
-  static create(ticketDTO: CreateTicketDTO): TicketInterface[] | null {
-    const event = EventService.getById(ticketDTO.eventId);
-
-    if (!event || event.status !== 'Active') {
-      return null;
-    }
-
-    const availableTickets = TicketService.getAvailableTickets(ticketDTO.eventId);
-
-    if (ticketDTO.quantity > availableTickets) {
-      return null;
-    }
-
-    const store = useTicketStore();
-    const createdTickets: TicketInterface[] = [];
-
-    for (let i = 0; i < ticketDTO.quantity; i++) {
-      const newTicket: TicketInterface = {
-        id: Utils.generateNextId(store.tickets),
-        status: ticketDTO.status,
-        eventId: ticketDTO.eventId,
-        userId: ticketDTO.userId,
-      };
-
-      store.tickets.push(newTicket);
-      createdTickets.push(newTicket);
-    }
-
-    return createdTickets;
+  public static async purchase(ticketDTO: CreateTicketDTO): Promise<TicketInterface[]> {
+    const response = await httpClient.post<TicketInterface[]>('/tickets', ticketDTO);
+    return response.data;
   }
 
-  // Getters
-  static getAll(): TicketInterface[] {
-    return useTicketStore().tickets;
+  public static async getAvailableTickets(eventId: number): Promise<number> {
+    const response = await httpClient.get<number>(`/tickets/available/${eventId}`);
+    return response.data;
   }
 
-  static getById(id: number): TicketInterface | undefined {
-    return useTicketStore().tickets.find((ticket) => ticket.id === id);
+  public static async getRevenueByEvent(): Promise<EventRevenueDTO[]> {
+    const response = await httpClient.get<EventRevenueDTO[]>('/tickets/revenue');
+    return response.data;
   }
 
-  static getByEventId(eventId: number): TicketInterface[] {
-    return useTicketStore().tickets.filter((ticket) => ticket.eventId === eventId);
+  public static async getTicketDistribution(eventId?: number): Promise<TicketDistributionDTO> {
+    const url = eventId ? `/tickets/distribution/${eventId}` : '/tickets/distribution/all';
+    const response = await httpClient.get<TicketDistributionDTO>(url);
+    return response.data;
   }
 
-  static getAvailableTickets(eventId: number): number {
-    const event = EventService.getById(eventId);
-    const venue = VenueService.getById(event?.venueId ?? 0);
-    const capacity = venue?.capacity ?? 0;
-    const soldTickets = TicketService.getSoldTicketsCount(eventId);
-
-    return capacity - soldTickets;
+  public static async getAll(eventId?: number): Promise<TicketInterface[]> {
+    const params = eventId ? { eventId } : undefined;
+    const response = await httpClient.get<TicketInterface[]>('/tickets', { params });
+    return response.data;
   }
 
-  static getSoldTicketsCount(eventId: number): number {
-    return TicketService.getByEventId(eventId).length;
+  public static async getByEventId(eventId: number): Promise<TicketInterface[]> {
+    const response = await httpClient.get<TicketInterface[]>('/tickets', {
+      params: { eventId },
+    });
+    return response.data;
+  }
+
+  public static getSoldTicketsCount(_eventId: number): number {
+    return 0;
   }
 }

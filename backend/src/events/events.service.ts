@@ -6,12 +6,15 @@ import { Repository } from "typeorm";
 // Internal Imports
 import type { CreateEventDto } from "./dto/create-event.dto";
 import { Event } from "./entities/event.entity";
+import type { EventSummaryDto } from "./dto/event-summary.dto";
+import type { EventsByCityDto } from "./dto/events-by-city.dto";
 import type { UpdateEventDto } from "./dto/update-event.dto";
 import { Venue } from "../venues/entities/venue.entity";
 
 // Service Definition
 @Injectable()
 export class EventsService {
+  // Constructor
   constructor(
     @InjectRepository(Event)
     private readonly eventsRepository: Repository<Event>,
@@ -19,6 +22,7 @@ export class EventsService {
     private readonly venuesRepository: Repository<Venue>,
   ) {}
 
+  // Methods
   async create(createEventDto: CreateEventDto): Promise<Event> {
     const venue = await this.venuesRepository.findOneBy({
       id: createEventDto.venueId,
@@ -68,6 +72,75 @@ export class EventsService {
     }
 
     return event;
+  }
+
+  async getEventSummary(): Promise<EventSummaryDto> {
+    const events = await this.eventsRepository.find({
+      relations: ["venue"],
+    });
+
+    const totalEvents = events.length;
+
+    if (totalEvents === 0) {
+      return {
+        totalEvents: 0,
+        citiesCovered: 0,
+        topCity: "N/A",
+        topCityEventCount: 0,
+      };
+    }
+
+    const cityMap = new Map<string, number>();
+    for (const event of events) {
+      const cityName = event.venue?.city ?? "Unknown";
+      cityMap.set(cityName, (cityMap.get(cityName) || 0) + 1);
+    }
+
+    let topCity = "N/A";
+    let maxCount = 0;
+
+    for (const [city, count] of cityMap.entries()) {
+      if (count > maxCount) {
+        maxCount = count;
+        topCity = city;
+      }
+    }
+
+    return {
+      totalEvents,
+      citiesCovered: cityMap.size,
+      topCity,
+      topCityEventCount: maxCount,
+    };
+  }
+
+  async getEventsByCity(): Promise<EventsByCityDto[]> {
+    const events = await this.eventsRepository.find({
+      relations: ["venue"],
+    });
+
+    const totalEvents = events.length;
+    if (totalEvents === 0) {
+      return [];
+    }
+
+    const cityMap = new Map<string, number>();
+    for (const event of events) {
+      const cityName = event.venue?.city ?? "Unknown";
+      cityMap.set(cityName, (cityMap.get(cityName) || 0) + 1);
+    }
+
+    const result: EventsByCityDto[] = [];
+    for (const [city, eventCount] of cityMap.entries()) {
+      const percentage = Math.round((eventCount / totalEvents) * 100);
+      result.push({
+        city,
+        eventCount,
+        percentage,
+      });
+    }
+
+    return result;
   }
 
   async update(id: number, updateEventDto: UpdateEventDto): Promise<Event> {

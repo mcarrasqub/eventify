@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // External Imports
+import axios from 'axios';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 // Internal Imports
 import { AuthService } from '@/services/AuthService.js';
-import type { CreateTicketDTO } from '@/dtos/TicketDTO.js';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
 import { getErrorMessage } from '@/utils/errorHandler.js';
@@ -21,10 +21,21 @@ const eventId = Number(route.params.id);
 // Reactive State
 const event = ref<EventInterface | null>(null);
 const venue = ref<VenueInterface | null>(null);
+const availableTickets = ref<number>(0);
 const isLoading = ref<boolean>(true);
 const errorMessage = ref<string>('');
 const quantitySelector = ref<number>(1);
 const purchaseMessage = ref<string>('');
+
+const fetchAvailableTickets = async (): Promise<void> => {
+  if (eventId) {
+    try {
+      availableTickets.value = await TicketService.getAvailableTickets(eventId);
+    } catch (err: unknown) {
+      console.error('Failed to load available tickets:', err);
+    }
+  }
+};
 
 onMounted(async () => {
   isLoading.value = true;
@@ -35,6 +46,7 @@ onMounted(async () => {
     if (fetchedEvent && fetchedEvent.venueId) {
       venue.value = await VenueService.getById(fetchedEvent.venueId);
     }
+    await fetchAvailableTickets();
   } catch (err: unknown) {
     errorMessage.value = getErrorMessage(err, 'Failed to load event details.');
     console.error(err);
@@ -44,14 +56,8 @@ onMounted(async () => {
 });
 
 const soldTickets = computed<number>(() => {
-  if (!event.value) return 0;
-  return TicketService.getSoldTicketsCount(event.value.id);
-});
-
-const availableTickets = computed<number>(() => {
-  if (!venue.value) return 0;
-  const capacity = venue.value.capacity ?? 0;
-  return Math.max(0, capacity - soldTickets.value);
+  const capacity = venue.value?.capacity ?? 0;
+  return Math.max(0, capacity - availableTickets.value);
 });
 
 const ticketUnitPrice = computed<number>(() => event.value?.price ?? 0);
@@ -63,7 +69,9 @@ const canPurchase = computed<boolean>(
 );
 
 // Methods
-function handlePurchase(): void {
+async function handlePurchase(): Promise<void> {
+  if (!event.value) return;
+
   const currentUser = AuthService.getCurrentUser();
 
   if (!currentUser) {
@@ -71,34 +79,25 @@ function handlePurchase(): void {
     return;
   }
 
-  if (!event.value) {
-    return;
-  }
+  try {
+    const createdTickets = await TicketService.purchase({
+      eventId: event.value.id,
+      quantity: quantitySelector.value,
+    });
 
-  const ticketDTO: CreateTicketDTO = {
-    eventId: event.value.id,
-    quantity: quantitySelector.value,
-    status: 'UNUSED',
-    userId: currentUser.id,
-  };
-
-  const storeTickets = TicketService.getAll();
-  const createdTickets = [];
-  for (let i = 0; i < ticketDTO.quantity; i++) {
-    const newTicket = {
-      id: storeTickets.length + 1,
-      status: ticketDTO.status,
-      eventId: ticketDTO.eventId,
-      userId: ticketDTO.userId,
-    };
-    storeTickets.push(newTicket);
-    createdTickets.push(newTicket);
-  }
-
-  if (createdTickets.length > 0) {
-    purchaseMessage.value = `Successfully acquired ${createdTickets.length} ticket(s) for "${event.value.title}"!`;
-  } else {
-    purchaseMessage.value = 'Could not complete the purchase. Please check ticket availability.';
+    if (createdTickets && createdTickets.length > 0) {
+      purchaseMessage.value = `Successfully acquired ${createdTickets.length} ticket(s) for "${event.value.title}"!`;
+      await fetchAvailableTickets();
+    } else {
+      purchaseMessage.value = 'Could not complete the purchase. Please check ticket availability.';
+    }
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.data?.message) {
+      const msg = error.response.data.message;
+      purchaseMessage.value = Array.isArray(msg) ? msg.join(', ') : msg;
+    } else {
+      purchaseMessage.value = 'Could not complete the purchase. Please check ticket availability.';
+    }
   }
 }
 </script>

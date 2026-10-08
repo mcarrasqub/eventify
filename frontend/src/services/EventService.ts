@@ -1,7 +1,14 @@
 // Internal Imports
-import type { CreateEventDTO, UpdateEventDTO } from '@/dtos/EventDTO.js';
+import type {
+  CreateEventDTO,
+  EventsByCityDTO,
+  EventSummaryDTO,
+  UpdateEventDTO,
+} from '@/dtos/EventDTO.js';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
 import httpClient from '@/utils/httpClient.js';
+
+export type { EventSummaryDTO, EventsByCityDTO };
 
 // Service Class
 export class EventService {
@@ -33,7 +40,7 @@ export class EventService {
     await httpClient.delete(`/events/${id}`);
   }
 
-  // Getters
+  // Getters & Stats Methods
   static async getAll(): Promise<EventInterface[]> {
     const response = await httpClient.get<EventInterface[]>('/events');
     return response.data;
@@ -54,6 +61,16 @@ export class EventService {
     return events.slice(0, 6);
   }
 
+  static async getEventSummary(): Promise<EventSummaryDTO> {
+    const response = await httpClient.get<EventSummaryDTO>('/events/summary');
+    return response.data;
+  }
+
+  static async getEventsByCity(): Promise<EventsByCityDTO[]> {
+    const response = await httpClient.get<EventsByCityDTO[]>('/events/by-city');
+    return response.data;
+  }
+
   static getUniqueCategories(events: EventInterface[]): string[] {
     const categories = events.map((event) => event.category);
     return Array.from(new Set(categories));
@@ -64,5 +81,3 @@ export class EventService {
     return Array.from(new Set(statuses));
   }
 }
-
-

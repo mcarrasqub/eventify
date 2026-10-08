@@ -7,6 +7,7 @@ import { JwtAuthGuard } from "./auth/guards/jwt-auth.guard";
 import { Module } from "@nestjs/common";
 import { RolesGuard } from "./auth/guards/roles.guard";
 import { SeedModule } from "./database/seeds/seed.module";
+import { TicketsModule } from "./tickets/tickets.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UsersModule } from "./users/users.module";
 import { VenuesModule } from "./venues/venues.module";
@@ -27,6 +28,7 @@ import { VenuesModule } from "./venues/venues.module";
     AuthModule,
     EventsModule,
     SeedModule,
+    TicketsModule,
     UsersModule,
     VenuesModule,
   ],
