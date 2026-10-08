@@ -6,7 +6,7 @@ import { computed, ref, watch } from 'vue';
 import type { CreateEventDTO, UpdateEventDTO } from '@/dtos/EventDTO.js';
 import type { EventInterface, EventStatus } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
-import { getErrorMessage } from '@/utils/errorHandler.js';
+import { ErrorHandlerService } from '@/services/ErrorHandlerService.js';
 import type { VenueInterface } from '@/interfaces/VenueInterface.js';
 import { VenueService } from '@/services/VenueService.js';
 
@@ -242,7 +242,7 @@ async function handleSubmit(): Promise<void> {
       handleClose();
     }
   } catch (err: unknown) {
-    errorMessage.value = getErrorMessage(
+    errorMessage.value = ErrorHandlerService.getErrorMessage(
       err,
       isEditMode.value ? 'Could not update the event.' : 'Could not create the event.',
     );

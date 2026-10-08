@@ -5,8 +5,8 @@ import type {
   EventSummaryDTO,
   UpdateEventDTO,
 } from '@/dtos/EventDTO.js';
-import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { BaseService } from '@/services/BaseService.js';
+import type { EventInterface } from '@/interfaces/EventInterface.js';
 
 export type { EventSummaryDTO, EventsByCityDTO };
 

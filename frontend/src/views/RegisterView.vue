@@ -4,8 +4,9 @@ import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 
 // Internal Imports
-import type { RegisterDTO } from '@/dtos/UserDTO.js';
 import { AuthService } from '@/services/AuthService.js';
+import { ErrorHandlerService } from '@/services/ErrorHandlerService.js';
+import type { RegisterDTO } from '@/dtos/UserDTO.js';
 
 // Interfaces
 interface RegisterFormData {
@@ -65,22 +66,11 @@ async function handleRegister(): Promise<void> {
     } else {
       router.push('/');
     }
-  } catch (error: unknown) {
-    if (
-      typeof error === 'object' &&
-      error !== null &&
-      'response' in error &&
-      typeof (error as { response?: { data?: { message?: string | string[] } } }).response?.data
-        ?.message !== 'undefined'
-    ) {
-      const serverMessage = (error as { response: { data: { message: string | string[] } } })
-        .response.data.message;
-      errorMessage.value = Array.isArray(serverMessage)
-        ? serverMessage.join(', ')
-        : String(serverMessage);
-    } else {
-      errorMessage.value = 'An error occurred while creating your account. Please try again.';
-    }
+  } catch (err: unknown) {
+    errorMessage.value = ErrorHandlerService.getErrorMessage(
+      err,
+      'An error occurred while creating your account. Please try again.',
+    );
   } finally {
     isSubmitting.value = false;
   }

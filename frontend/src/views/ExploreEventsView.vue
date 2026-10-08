@@ -4,10 +4,10 @@ import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 // Internal Imports
+import { ErrorHandlerService } from '@/services/ErrorHandlerService.js';
 import EventCardComponent from '@/components/EventCardComponent.vue';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
-import { getErrorMessage } from '@/utils/errorHandler.js';
 
 // Variables
 const route = useRoute();
@@ -42,7 +42,7 @@ async function loadEvents(): Promise<void> {
   try {
     events.value = await EventService.search(searchQuery.value, categorySelector.value);
   } catch (err: unknown) {
-    errorMessage.value = getErrorMessage(err, 'Failed to load events.');
+    errorMessage.value = ErrorHandlerService.getErrorMessage(err, 'Failed to load events.');
     console.error(err);
   } finally {
     isLoading.value = false;

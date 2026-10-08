@@ -6,9 +6,9 @@ import { useRoute } from 'vue-router';
 
 // Internal Imports
 import { AuthService } from '@/services/AuthService.js';
+import { ErrorHandlerService } from '@/services/ErrorHandlerService.js';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
-import { getErrorMessage } from '@/utils/errorHandler.js';
 import MapComponent from '@/components/MapComponent.vue';
 import { TicketService } from '@/services/TicketService.js';
 import type { VenueInterface } from '@/interfaces/VenueInterface.js';
@@ -48,7 +48,7 @@ onMounted(async () => {
     }
     await fetchAvailableTickets();
   } catch (err: unknown) {
-    errorMessage.value = getErrorMessage(err, 'Failed to load event details.');
+    errorMessage.value = ErrorHandlerService.getErrorMessage(err, 'Failed to load event details.');
     console.error(err);
   } finally {
     isLoading.value = false;
