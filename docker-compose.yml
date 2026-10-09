@@ -1,0 +1,29 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      args:
+        CORS_ORIGIN: "${CORS_ORIGIN:-http://localhost:8080}"
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      SQLITE_PATH: /data/database.sqlite
+      CORS_ORIGIN: "${CORS_ORIGIN:-http://localhost:8080}"
+    volumes:
+      - backend-data:/data
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: "${VITE_API_BASE_URL:-http://localhost:3000}"
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    environment:
+      VITE_API_BASE_URL: "${VITE_API_BASE_URL:-http://localhost:3000}"
+
+volumes:
+  backend-data:

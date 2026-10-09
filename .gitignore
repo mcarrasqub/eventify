@@ -8,7 +8,9 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-.DS_Store
+dist
+backend/dist
+frontend/dist
 dist-ssr
 coverage
 *.local
@@ -37,7 +39,19 @@ __screenshots__/
 # Vite
 *.timestamp-*-*.mjs
 
+# Environments
+.env
+.env.*
+!.env.example
+frontend/.env
+backend/.env
+
+# SQLite Database
+*.sqlite
+*.sqlite3
+*.db
+backend/*.sqlite
+
 # Agents
 .agents/
-
-
+.github/
