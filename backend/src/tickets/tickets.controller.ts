@@ -57,10 +57,10 @@ export class TicketsController {
 
   @Roles("admin")
   @Get()
-  async getAll(@Query("eventId") eventId?: string): Promise<Ticket[]> {
-    return await this.ticketsService.findAll(
-      eventId ? Number(eventId) : undefined,
-    );
+  async getAll(
+    @Query("eventId", new ParseIntPipe({ optional: true })) eventId?: number,
+  ): Promise<Ticket[]> {
+    return await this.ticketsService.findAll(eventId);
   }
 
   @Post()

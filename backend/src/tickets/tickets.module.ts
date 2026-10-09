@@ -17,4 +17,3 @@ import { TicketsValidator } from "./tickets.validator";
   exports: [TicketsService, TicketsValidator],
 })
 export class TicketsModule {}
-
