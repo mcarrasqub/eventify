@@ -43,7 +43,7 @@ async function bootstrap(): Promise<void> {
   const port = process.env.PORT ? Number(process.env.PORT) : 3000;
   await app.listen(port);
   logger.log(
-    `🚀 Eventify API Backend is running on: http://localhost:${port}/api`,
+    ` Eventify API Backend is running on: http://localhost:${port}/api`,
   );
 }
 

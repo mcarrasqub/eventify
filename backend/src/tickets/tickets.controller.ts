@@ -49,7 +49,7 @@ export class TicketsController {
 
   @Public()
   @Get("available/:eventId")
-  async getAvailableTickets(
+  async getAvailable(
     @Param("eventId", ParseIntPipe) eventId: number,
   ): Promise<number> {
     return await this.ticketsService.getAvailable(eventId);

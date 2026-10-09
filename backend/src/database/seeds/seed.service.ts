@@ -165,7 +165,7 @@ export class SeedService implements OnApplicationBootstrap {
       venueId: venue1.id,
     });
 
-    this.logger.log("🎉 Seeded 4 events linked to venues");
+    this.logger.log(" Seeded 4 events linked to venues");
 
     // 4. Seed Tickets for normal user
     await this.ticketRepository.save([
