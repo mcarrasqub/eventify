@@ -11,4 +11,10 @@ export class EventUtil {
     const statuses = events.map((event) => event.status);
     return Array.from(new Set(statuses));
   }
+
+  static getCategories(defaultCategories: string[], events: EventInterface[]): string[] {
+    const uniqueFromEvents = this.getUniqueCategories(events);
+    const merged = Array.from(new Set([...defaultCategories, ...uniqueFromEvents]));
+    return merged.filter((cat) => cat.trim().length > 0);
+  }
 }

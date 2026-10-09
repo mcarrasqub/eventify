@@ -66,12 +66,11 @@ const form = ref<CreateEventDTO>(getInitialForm());
 const errorMessage = ref<string>('');
 const isSubmitting = ref<boolean>(false);
 const venues = ref<VenueInterface[]>([]);
-const existingCategories = ref<string[]>([]);
+const fetchedEvents = ref<EventInterface[]>([]);
 
-const categoryOptions = computed<string[]>(() => {
-  const merged = Array.from(new Set([...defaultCategories, ...existingCategories.value]));
-  return merged.filter((cat) => cat.length > 0);
-});
+const categoryOptions = computed<string[]>(() =>
+  EventUtil.getCategories(defaultCategories, fetchedEvents.value),
+);
 
 // Helper for initial form values
 function getInitialForm(): CreateEventDTO {
@@ -116,12 +115,12 @@ watch(
       }
 
       try {
-        const [fetchedVenues, fetchedEvents] = await Promise.all([
+        const [fetchedVenues, eventsList] = await Promise.all([
           VenueService.getAll(),
           EventService.getAll(),
         ]);
         venues.value = fetchedVenues;
-        existingCategories.value = EventUtil.getUniqueCategories(fetchedEvents);
+        fetchedEvents.value = eventsList;
       } catch (err: unknown) {
         console.error('Failed to load form options:', err);
       }

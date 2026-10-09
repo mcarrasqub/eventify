@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // External Imports
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 // Internal Imports
@@ -8,6 +8,7 @@ import { ErrorHandlerService } from '@/services/ErrorHandlerService.js';
 import EventCardComponent from '@/components/EventCardComponent.vue';
 import type { EventInterface } from '@/interfaces/EventInterface.js';
 import { EventService } from '@/services/EventService.js';
+import { EventUtil } from '@/utils/EventUtil.js';
 
 // Variables
 const route = useRoute();
@@ -17,11 +18,12 @@ const searchQuery = ref<string>('');
 const initialCategory = typeof route.query.category === 'string' ? route.query.category : 'All';
 const categorySelector = ref<string>(initialCategory);
 const events = ref<EventInterface[]>([]);
+const allEvents = ref<EventInterface[]>([]);
 const isLoading = ref<boolean>(true);
 const errorMessage = ref<string>('');
 
-// Constants
-const categories = [
+// Base Categories List
+const defaultCategories = [
   'All',
   'Technology',
   'Music',
@@ -34,7 +36,21 @@ const categories = [
   'Education',
   'Entertainment',
   'Food & Drink',
+  'Comedy',
 ];
+
+// Computed Categories (Delegated to EventUtil)
+const categories = computed<string[]>(() =>
+  EventUtil.getCategories(defaultCategories, allEvents.value),
+);
+
+async function loadCategories(): Promise<void> {
+  try {
+    allEvents.value = await EventService.getAll();
+  } catch (err: unknown) {
+    console.error('Failed to load event categories:', err);
+  }
+}
 
 async function loadEvents(): Promise<void> {
   isLoading.value = true;
@@ -49,8 +65,8 @@ async function loadEvents(): Promise<void> {
   }
 }
 
-onMounted(() => {
-  loadEvents();
+onMounted(async () => {
+  await Promise.all([loadCategories(), loadEvents()]);
 });
 
 watch([searchQuery, categorySelector], () => {
