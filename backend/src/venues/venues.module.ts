@@ -16,4 +16,3 @@ import { VenuesValidator } from "./venues.validator";
   exports: [VenuesService, VenuesValidator, TypeOrmModule],
 })
 export class VenuesModule {}
-

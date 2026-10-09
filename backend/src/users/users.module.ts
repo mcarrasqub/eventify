@@ -16,4 +16,3 @@ import { UsersValidator } from "./users.validator";
   exports: [UsersService, UsersValidator, TypeOrmModule],
 })
 export class UsersModule {}
-

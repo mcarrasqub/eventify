@@ -17,4 +17,3 @@ import { Venue } from "../venues/entities/venue.entity";
   exports: [EventsService, EventsValidator],
 })
 export class EventsModule {}
-

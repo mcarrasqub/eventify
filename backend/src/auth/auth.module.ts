@@ -33,7 +33,13 @@ import { UsersModule } from "../users/users.module";
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthValidator, JwtStrategy, JwtAuthGuard, RolesGuard],
+  providers: [
+    AuthService,
+    AuthValidator,
+    JwtStrategy,
+    JwtAuthGuard,
+    RolesGuard,
+  ],
   exports: [
     AuthService,
     AuthValidator,
@@ -45,4 +51,3 @@ import { UsersModule } from "../users/users.module";
   ],
 })
 export class AuthModule {}
-
