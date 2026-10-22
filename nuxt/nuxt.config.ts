@@ -5,7 +5,8 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   routeRules: {
-    '/blog/**': { prerender: true },
+    '/blog/**': { prerender: true }, // SSG
+    '/events/**': { ssr: true },     // SSR
     '/': { ssr: true },
   },
   nitro: {
