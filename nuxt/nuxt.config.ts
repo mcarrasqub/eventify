@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '/blog/**': { prerender: true }, // SSG
     '/events/**': { ssr: true },     // SSR
     '/': { ssr: true },
+    '/tools/**': { ssr: false },     // CSR (Client-Side Rendering)
   },
   nitro: {
     prerender: {

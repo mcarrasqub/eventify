@@ -17,6 +17,9 @@
           <li class="nav-item">
             <NuxtLink class="nav-link py-1 px-2" to="/events" active-class="active">Eventos</NuxtLink>
           </li>
+          <li class="nav-item">
+            <NuxtLink class="nav-link py-1 px-2" to="/tools" active-class="active">Ayuda FAQ</NuxtLink>
+          </li>
         </ul>
       </nav>
     </div>

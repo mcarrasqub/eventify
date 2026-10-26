@@ -30,5 +30,20 @@
         </NuxtLink>
       </div>
     </div>
+
+    <div class="card p-4 my-3 bg-light border-0 shadow-sm">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="h5 mb-0">Centro de Ayuda & FAQ</h2>
+        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">CSR</span>
+      </div>
+      <p class="mb-3">
+        Preguntas frecuentes para asistentes y organizadores, desplegadas en modo CSR (Client-Side Rendering).
+      </p>
+      <div>
+        <NuxtLink to="/tools" class="btn btn-warning text-dark fw-semibold">
+          Ir a Centro de Ayuda →
+        </NuxtLink>
+      </div>
+    </div>
   </div>
 </template>
