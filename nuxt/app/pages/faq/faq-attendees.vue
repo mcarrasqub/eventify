@@ -28,7 +28,7 @@ useSeoMeta({
     <div class="mt-3">
       <details
         v-for="faq in attendeeFaqs"
-        :key="faq.question"
+        :key="faq.id"
         class="border rounded-3 bg-body p-3 mb-2 shadow-sm"
       >
         <summary class="fw-semibold text-primary" style="cursor: pointer">

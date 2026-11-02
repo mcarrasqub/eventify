@@ -1,7 +1,7 @@
 export interface FaqInterface {
-  id?: number;
+  id: number;
   question: string;
   answer: string;
-  category?: 'attendees' | 'organizers';
+  category: 'attendees' | 'organizers';
   targetRoute?: string;
 }

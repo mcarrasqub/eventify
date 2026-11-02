@@ -117,7 +117,7 @@ useSeoMeta({
       <ul v-else-if="filteredFaqs.length > 0" class="list-group">
         <li
           v-for="faq in filteredFaqs"
-          :key="faq.question"
+          :key="faq.id"
           class="list-group-item d-flex justify-content-between align-items-start py-3"
         >
           <div class="me-3">
