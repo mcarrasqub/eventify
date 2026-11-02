@@ -1,27 +1,37 @@
 <script setup lang="ts">
-import { articles } from '~/data/articles'
+// Imports
+import { articles } from '~/data/articles';
+import { DateFormatUtil } from '~/utils/DateFormatUtil';
+
+// SEO
+useSeoMeta({
+  title: 'Blog · Eventify',
+  description: 'Artículos sobre cómo sacar provecho de un dashboard de gestión de eventos.',
+});
 </script>
 
 <template>
-  <div>
-    <h1 class="h2 mb-3">Blog de Eventify</h1>
-    <p class="text-muted">Artículos técnicos sobre gestión de eventos desplegados como SSG.</p>
-    <ul class="list-group">
+  <section>
+    <!-- Page title -->
+    <h1 class="h2 mb-3 text-primary">Blog</h1>
+
+    <!-- Article list -->
+    <ul class="list-group shadow-sm">
       <li
         v-for="article in articles"
         :key="article.id"
-        class="list-group-item position-relative py-3"
+        class="list-group-item list-group-item-action position-relative py-3"
       >
         <NuxtLink
-          class="stretched-link text-decoration-none fw-semibold text-dark"
+          class="stretched-link text-decoration-none fw-semibold"
           :to="`/blog/${article.id}`"
         >
           {{ article.title }}
         </NuxtLink>
-        <span class="text-body-secondary d-block small mt-1">
-          {{ article.category }} · {{ article.author }} · {{ article.date }}
+        <span class="text-body-secondary d-block small">
+          {{ article.author }} · {{ DateFormatUtil.formatLongDate(article.publishedAt) }}
         </span>
       </li>
     </ul>
-  </div>
+  </section>
 </template>

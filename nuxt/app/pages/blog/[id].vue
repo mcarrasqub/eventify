@@ -1,29 +1,43 @@
 <script setup lang="ts">
-import { articles } from '~/data/articles'
+// Imports
+import { articles } from '~/data/articles';
+import { DateFormatUtil } from '~/utils/DateFormatUtil';
 
 definePageMeta({
   validate(route) {
-    const param = String(route.params.id)
-    return articles.some((a) => a.id === param)
+    const param = String(route.params.id);
+    return articles.some((article) => article.id === param);
   },
-})
+});
 
-const route = useRoute()
-const id = computed(() => String(route.params.id))
-const article = computed(() => articles.find((a) => a.id === id.value))
+// Variables
+const route = useRoute();
+const id = computed(() => String(route.params.id));
+
+// Computed
+const article = computed(() => articles.find((item) => item.id === id.value));
+
+// SEO
+useSeoMeta({
+  title: () => `${article.value?.title} · Eventify`,
+  description: () => article.value?.summary,
+});
 </script>
 
 <template>
-  <article v-if="article">
-    <p class="mb-2">
+  <article v-if="article" class="mx-auto" style="max-width: 720px">
+    <!-- Back navigation -->
+    <p class="mb-1">
       <NuxtLink class="text-decoration-none small" to="/blog">← Todos los artículos</NuxtLink>
     </p>
-    <h1 class="h2 mb-2">{{ article.title }}</h1>
-    <p class="text-muted small mb-3">
-      <strong>{{ article.category }}</strong> · {{ article.author }} · {{ article.date }}
+
+    <!-- Article header -->
+    <h1 class="h2 fw-bold text-primary">{{ article.title }}</h1>
+    <p class="text-body-secondary small">
+      {{ article.author }} · {{ DateFormatUtil.formatLongDate(article.publishedAt) }}
     </p>
-    <hr />
-    <p class="lead mb-3">{{ article.summary }}</p>
-    <p class="mb-0 fs-6 lh-base">{{ article.content }}</p>
+
+    <!-- Article content -->
+    <p v-for="paragraph in article.paragraphs" :key="paragraph">{{ paragraph }}</p>
   </article>
 </template>
