@@ -8,13 +8,13 @@ const searchQuery = ref('');
 const faqCategories = [
   {
     title: 'FAQ Asistentes',
-    to: '/faq/faq-attendees',
+    to: '/faq/attendees',
     description: 'Guía de compra, descarga de boletos digitales, políticas de cesión y acceso.',
     color: 'primary',
   },
   {
     title: 'FAQ Organizadores',
-    to: '/faq/faq-organizers',
+    to: '/faq/organizers',
     description: 'Gestión de recintos, validación de códigos QR, tarifas y liquidación de ventas.',
     color: 'success',
   },
