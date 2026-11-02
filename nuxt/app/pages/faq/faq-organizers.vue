@@ -11,18 +11,10 @@ useSeoMeta({
 
 <template>
   <section>
-    <!-- Breadcrumb navigation -->
-    <nav aria-label="breadcrumb" class="mb-3">
-      <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item">
-          <NuxtLink to="/" class="text-decoration-none">Inicio</NuxtLink>
-        </li>
-        <li class="breadcrumb-item">
-          <NuxtLink to="/tools" class="text-decoration-none">Herramientas</NuxtLink>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">FAQ Organizadores</li>
-      </ol>
-    </nav>
+    <!-- Back navigation -->
+    <p class="mb-1">
+      <NuxtLink class="text-decoration-none small" to="/faq">← Todas las preguntas frecuentes</NuxtLink>
+    </p>
 
     <!-- Header -->
     <div class="mb-3">

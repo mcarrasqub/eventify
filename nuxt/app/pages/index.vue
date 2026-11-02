@@ -10,27 +10,13 @@ useSeoMeta({
   <div>
     <!-- Hero banner -->
     <section class="p-5 mb-5 bg-body-tertiary border rounded-4 shadow-sm text-center">
-      <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 mb-3 rounded-pill fw-semibold">
-        Plataforma Eventify Mini
-      </span>
       <h1 class="display-5 fw-bold text-primary mb-3">
         Tu portal de eventos, entradas y experiencias
       </h1>
-      <p class="lead text-body-secondary mb-4 mx-auto" style="max-width: 680px">
+      <p class="lead text-body-secondary mb-0 mx-auto" style="max-width: 680px">
         Explora nuestra cartelera en tiempo real, aprende con artículos especializados y resuelve
         tus dudas en nuestro centro de ayuda.
       </p>
-      <div class="d-flex flex-wrap justify-content-center gap-3">
-        <NuxtLink class="btn btn-primary px-4 py-2 fw-semibold" to="/events">
-          Explorar eventos →
-        </NuxtLink>
-        <NuxtLink class="btn btn-outline-primary px-4 py-2" to="/blog">
-          Leer blog
-        </NuxtLink>
-        <NuxtLink class="btn btn-outline-secondary px-4 py-2" to="/tools">
-          Centro de ayuda
-        </NuxtLink>
-      </div>
     </section>
 
     <!-- Quick access cards -->
@@ -75,7 +61,7 @@ useSeoMeta({
               Preguntas frecuentes con buscador rápido para asistentes y organizadores de eventos.
             </p>
             <div class="mt-3">
-              <NuxtLink to="/tools" class="btn btn-sm btn-outline-success w-100">
+              <NuxtLink to="/faq" class="btn btn-sm btn-outline-success w-100">
                 Ir a FAQ →
               </NuxtLink>
             </div>

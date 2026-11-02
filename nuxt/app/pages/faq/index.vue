@@ -5,16 +5,16 @@ import { allFaqs } from '~/data/faqs';
 // Variables
 const searchQuery = ref('');
 
-const tools = [
+const faqCategories = [
   {
     title: 'FAQ Asistentes',
-    to: '/tools/faq-attendees',
+    to: '/faq/faq-attendees',
     description: 'Guía de compra, descarga de boletos digitales, políticas de cesión y acceso.',
     color: 'primary',
   },
   {
     title: 'FAQ Organizadores',
-    to: '/tools/faq-organizers',
+    to: '/faq/faq-organizers',
     description: 'Gestión de recintos, validación de códigos QR, tarifas y liquidación de ventas.',
     color: 'success',
   },
@@ -38,7 +38,7 @@ const clearSearch = (): void => {
 
 // SEO
 useSeoMeta({
-  title: 'Centro de Ayuda & FAQ · Eventify',
+  title: 'Preguntas Frecuentes (FAQ) · Eventify',
   description: 'Preguntas frecuentes y soporte para asistentes y organizadores en Eventify.',
 });
 </script>
@@ -47,7 +47,7 @@ useSeoMeta({
   <section>
     <!-- Header -->
     <div class="mb-4">
-      <h1 class="h2 mb-1 text-primary">Centro de Ayuda & FAQ</h1>
+      <h1 class="h2 mb-1 text-primary">Preguntas Frecuentes (FAQ)</h1>
       <p class="text-body-secondary mb-0">
         Encuentra respuestas rápidas para asistentes y organizadores de eventos.
       </p>
@@ -55,21 +55,21 @@ useSeoMeta({
 
     <!-- Category cards -->
     <div class="row g-4 mb-4">
-      <div v-for="tool in tools" :key="tool.to" class="col-md-6">
+      <div v-for="category in faqCategories" :key="category.to" class="col-md-6">
         <div
           class="card h-100 shadow-sm border-0 border-top border-4"
-          :class="`border-${tool.color}`"
+          :class="`border-${category.color}`"
         >
           <div class="card-body p-4 d-flex flex-column">
-            <h2 class="h5 card-title mb-2 text-dark">{{ tool.title }}</h2>
+            <h2 class="h5 card-title mb-2 text-dark">{{ category.title }}</h2>
             <p class="card-text text-body-secondary flex-grow-1">
-              {{ tool.description }}
+              {{ category.description }}
             </p>
             <div class="mt-3">
               <NuxtLink
-                :to="tool.to"
+                :to="category.to"
                 class="btn w-100"
-                :class="`btn-outline-${tool.color}`"
+                :class="`btn-outline-${category.color}`"
               >
                 Ver Preguntas →
               </NuxtLink>

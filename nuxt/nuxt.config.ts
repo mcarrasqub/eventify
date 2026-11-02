@@ -10,7 +10,7 @@ export default defineNuxtConfig({
     '/': { ssr: true }, // SSR
     '/blog/**': { prerender: true }, // SSG
     '/events/**': { ssr: true }, // SSR
-    '/tools/**': { ssr: false }, // CSR
+    '/faq/**': { ssr: false }, // CSR
   },
   nitro: {
     prerender: {
