@@ -1,5 +1,5 @@
 // Imports
-import type { FaqInterface } from '../interfaces/FaqInterface';
+import type { FaqInterface } from '~/interfaces/FaqInterface';
 
 // Variables
 export const attendeeFaqs: FaqInterface[] = [

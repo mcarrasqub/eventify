@@ -1,5 +1,5 @@
-// Internal imports
-import type { ArticleInterface } from '../interfaces/ArticleInterface';
+// Imports
+import type { ArticleInterface } from '~/interfaces/ArticleInterface';
 
 // Variables
 export const articles: ArticleInterface[] = [
