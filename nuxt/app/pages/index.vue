@@ -26,7 +26,8 @@ useSeoMeta({
           <div class="card-body p-4 d-flex flex-column">
             <h2 class="h5 card-title mb-2 text-primary">Cartelera de Eventos</h2>
             <p class="card-text text-body-secondary flex-grow-1">
-              Descubre conciertos, conferencias y festivales con detalles de recintos, fechas y precios.
+              Descubre conciertos, conferencias y festivales con detalles de recintos, fechas y
+              precios.
             </p>
             <div class="mt-3">
               <NuxtLink to="/events" class="btn btn-sm btn-outline-primary w-100">

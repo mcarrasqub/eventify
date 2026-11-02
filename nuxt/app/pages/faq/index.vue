@@ -25,9 +25,7 @@ const filteredFaqs = computed(() => {
   const query = searchQuery.value.trim().toLowerCase();
   if (!query) return [];
   return allFaqs.filter(
-    (faq) =>
-      faq.question.toLowerCase().includes(query) ||
-      faq.answer.toLowerCase().includes(query),
+    (faq) => faq.question.toLowerCase().includes(query) || faq.answer.toLowerCase().includes(query),
   );
 });
 
@@ -123,7 +121,11 @@ useSeoMeta({
           <div class="me-3">
             <span
               class="badge mb-1"
-              :class="faq.category === 'attendees' ? 'bg-primary-subtle text-primary' : 'bg-success-subtle text-success'"
+              :class="
+                faq.category === 'attendees'
+                  ? 'bg-primary-subtle text-primary'
+                  : 'bg-success-subtle text-success'
+              "
             >
               {{ faq.category === 'attendees' ? 'Asistentes' : 'Organizadores' }}
             </span>

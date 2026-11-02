@@ -20,9 +20,7 @@
             <NuxtLink class="nav-link py-1 px-2" to="/blog" active-class="active">Blog</NuxtLink>
           </li>
           <li class="nav-item">
-            <NuxtLink class="nav-link py-1 px-2" to="/faq" active-class="active">
-              FAQ
-            </NuxtLink>
+            <NuxtLink class="nav-link py-1 px-2" to="/faq" active-class="active"> FAQ </NuxtLink>
           </li>
         </ul>
       </nav>

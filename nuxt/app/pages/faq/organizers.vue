@@ -13,7 +13,9 @@ useSeoMeta({
   <section>
     <!-- Back navigation -->
     <p class="mb-1">
-      <NuxtLink class="text-decoration-none small" to="/faq">← Todas las preguntas frecuentes</NuxtLink>
+      <NuxtLink class="text-decoration-none small" to="/faq"
+        >← Todas las preguntas frecuentes</NuxtLink
+      >
     </p>
 
     <!-- Header -->
